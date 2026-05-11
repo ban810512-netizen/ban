@@ -6,489 +6,506 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#1a5c1a">
 <link rel="manifest" href="./manifest.json">
-<link rel="icon" href="./assets/icons/icon-192.png">
 <title>파크골프 프로</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Segoe UI',system-ui,sans-serif;touch-action:none;user-select:none}
-#GC{position:fixed;top:0;left:0;width:100%;height:100%}
-canvas{display:block;width:100%!important;height:100%!important}
-#hud{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;display:none}
-/* Golf King Style — Top Left Info Panel */
-#infoPanel{position:absolute;top:8px;left:8px;pointer-events:auto;z-index:15}
-#ipCourse{background:rgba(0,0,0,.75);border-radius:10px;padding:6px 12px;margin-bottom:4px;display:flex;align-items:center;gap:8px;backdrop-filter:blur(4px)}
-#ipCourse .crs{font-size:13px;font-weight:800;color:#ffd700}
-#ipCourse .hinfo{font-size:11px;color:rgba(255,255,255,.8)}
-#ipClub{background:rgba(0,0,0,.75);border-radius:10px;padding:8px 12px;margin-bottom:4px;backdrop-filter:blur(4px)}
-.clubRow{display:flex;align-items:center;gap:8px}
-.clubIcon{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#2a6aaa,#4a8acc);display:flex;align-items:center;justify-content:center;font-size:14px}
-.clubName{font-size:13px;font-weight:700;color:#fff}
-.clubLv{font-size:9px;color:#ffd700;background:rgba(255,215,0,.15);padding:1px 5px;border-radius:4px;margin-left:4px}
-.clubDist{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
-#ipWind{background:rgba(0,0,0,.75);border-radius:10px;padding:6px 12px;display:flex;align-items:center;gap:8px;backdrop-filter:blur(4px)}
-.windIcon{width:22px;height:22px;border-radius:50%;background:rgba(255,140,40,.2);display:flex;align-items:center;justify-content:center;font-size:12px}
-.windSpd{font-size:14px;font-weight:800;color:#ff9944}
-.windUnit{font-size:9px;color:rgba(255,255,255,.4);margin-left:2px}
-.windDir{display:inline-block;font-size:14px;color:#ff9944;margin-left:4px}
-/* Top Right — Hole/Stroke/Distance */
-#topRight{position:absolute;top:8px;right:8px;display:flex;gap:4px;z-index:15}
-.trBox{background:rgba(0,0,0,.75);border-radius:10px;padding:6px 10px;text-align:center;backdrop-filter:blur(4px);min-width:48px}
-.trBox .trl{font-size:8px;color:rgba(255,255,255,.4);letter-spacing:.5px;text-transform:uppercase}
-.trBox .trv{font-size:15px;color:#fff;font-weight:800}
-.trBox .trv.gold{color:#ffd700}
-/* Club button (bottom right) */
-#clubBtn{position:absolute;bottom:140px;right:8px;pointer-events:auto;z-index:15;background:rgba(0,0,0,.8);color:#fff;border:2px solid rgba(46,204,113,.5);border-radius:50%;width:48px;height:48px;font-size:10px;font-weight:700;cursor:pointer;display:none;text-align:center;line-height:1.2;backdrop-filter:blur(4px)}
-#clubBtn:active{background:rgba(46,204,113,.3)}
-/* Minimap — top right area below boxes */
-#minimap{position:absolute;top:60px;right:8px;width:110px;height:110px;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);z-index:12;pointer-events:none;overflow:hidden;display:none;background:rgba(0,40,0,.5);backdrop-filter:blur(2px)}
-/* Distance to pin — center bottom */
-#distPin{position:absolute;bottom:135px;left:50%;transform:translateX(-50%);z-index:15;pointer-events:none;display:none}
-#distPin .dpv{font-size:28px;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.8),0 0 20px rgba(0,0,0,.4)}
-#distPin .dpu{font-size:12px;color:rgba(255,255,255,.6);margin-left:2px}
-#bigMsg{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:20;pointer-events:none;display:none;font-size:38px;font-weight:900;color:#ffd700;text-shadow:0 0 20px rgba(255,215,0,.5),0 2px 4px rgba(0,0,0,.8)}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;touch-action:none;user-select:none}
+canvas{display:block;width:100%!important;height:100%!important;position:fixed;top:0;left:0}
+
+/* === 골프킹 스타일 HUD === */
+#hud{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;display:none}
+#topBar{position:absolute;top:0;left:0;width:100%;padding:8px;display:flex;justify-content:space-between;align-items:flex-start}
+#leftInfo{display:flex;flex-direction:column;gap:4px}
+.info-pill{background:rgba(0,0,0,.7);backdrop-filter:blur(8px);border-radius:12px;padding:6px 14px;display:flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.08)}
+.info-pill .label{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.5px}
+.info-pill .value{font-size:14px;font-weight:800;color:#fff}
+.info-pill .value.gold{color:#ffd700}
+.info-pill .value.green{color:#2ecc71}
+#rightInfo{display:flex;gap:4px}
+.stat-box{background:rgba(0,0,0,.7);backdrop-filter:blur(8px);border-radius:12px;padding:8px 12px;text-align:center;min-width:52px;border:1px solid rgba(255,255,255,.08)}
+.stat-box .sl{font-size:8px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px}
+.stat-box .sv{font-size:16px;font-weight:900;color:#fff}
+
+/* 미니맵 */
+#miniWrap{position:absolute;top:90px;right:8px;width:120px;height:120px;border-radius:14px;overflow:hidden;border:1.5px solid rgba(255,255,255,.12);background:rgba(0,30,0,.6);backdrop-filter:blur(4px);display:none}
+#miniCvs{width:100%;height:100%}
+
+/* 거리 표시 */
+#distShow{position:absolute;bottom:155px;left:50%;transform:translateX(-50%);pointer-events:none;display:none}
+#distShow .dv{font-size:32px;font-weight:900;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.8),0 0 30px rgba(0,0,0,.3)}
+#distShow .du{font-size:13px;color:rgba(255,255,255,.5);margin-left:2px}
+
+/* 클럽 버튼 */
+#clubBtn{position:absolute;bottom:155px;right:12px;pointer-events:auto;z-index:15;width:52px;height:52px;border-radius:50%;background:rgba(0,0,0,.75);border:2px solid rgba(46,204,113,.4);color:#fff;font-size:10px;font-weight:700;cursor:pointer;display:none;backdrop-filter:blur(6px);text-align:center;line-height:1.2}
+
+/* 큰 메시지 */
+#bigMsg{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:20;pointer-events:none;display:none;font-size:42px;font-weight:900;color:#ffd700;text-shadow:0 0 30px rgba(255,215,0,.5),0 3px 6px rgba(0,0,0,.8)}
+
+/* === 스윙 패널 === */
 #swingPanel{position:absolute;bottom:0;left:0;width:100%;z-index:18;display:none;pointer-events:auto}
-#swingPanel .gaugeLabel .gl{font-size:11px}
-#swingInner{padding:10px 16px 18px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.75) 30%,rgba(0,0,0,.92))}
-.barWrap{position:relative;height:26px;border-radius:13px;overflow:hidden;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.15);margin-bottom:10px}
-.barWrap .sweet{position:absolute;top:0;left:42%;width:16%;height:100%;border-left:2px solid rgba(255,255,255,.5);border-right:2px solid rgba(255,255,255,.5);background:rgba(46,204,113,.12);z-index:1;pointer-events:none}
-.gaugeLabel{display:flex;justify-content:space-between;margin-bottom:4px;font-size:10px;font-weight:700}
-.gaugeLabel .gl{color:rgba(255,255,255,.5)}
-.gaugeLabel .gv{color:#ffd700;font-size:13px;font-weight:800}
-#pwrFill{height:100%;width:0%;border-radius:11px;background:linear-gradient(90deg,#2ecc40 0%,#2ecc40 40%,#f1c40f 60%,#e74c3c 85%,#c0392b 100%);transition:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+#swingInner{padding:12px 16px 20px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.8) 35%,rgba(0,0,0,.95))}
+.gauge-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.gauge-row .gl{font-size:11px;color:rgba(255,255,255,.5);font-weight:600}
+.gauge-row .gv{font-size:14px;font-weight:800;color:#ffd700}
+.bar-wrap{position:relative;height:28px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);margin-bottom:12px}
+.bar-wrap .sweet{position:absolute;top:0;left:42%;width:16%;height:100%;border-left:2px solid rgba(255,255,255,.4);border-right:2px solid rgba(255,255,255,.4);background:rgba(46,204,113,.1);z-index:1}
+#pwrFill{height:100%;width:0%;border-radius:14px;background:linear-gradient(90deg,#2ecc71 0%,#2ecc71 40%,#f1c40f 65%,#e74c3c 90%);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
 #accWrap{display:none}
-#accFill{height:100%;width:0%;border-radius:11px;background:linear-gradient(90deg,#e74c3c 0%,#f39c12 20%,#2ecc40 42%,#27ae60 50%,#2ecc40 58%,#f39c12 80%,#e74c3c 100%);transition:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
-#swBtn{width:100%;padding:12px;border:none;border-radius:10px;font-size:16px;font-weight:800;cursor:pointer;color:#fff;background:linear-gradient(135deg,#27ae60,#2ecc71);box-shadow:0 3px 12px rgba(46,204,64,.35);letter-spacing:1px}
-#flyover{position:absolute;top:0;left:0;width:100%;height:100%;z-index:25;display:none;pointer-events:auto}
-#flyTop{position:absolute;top:0;left:0;width:100%;padding:14px;background:linear-gradient(180deg,rgba(0,0,0,.75),transparent)}
-#flyH{font-size:26px;font-weight:900;color:#ffd700}
-#flyInfo{display:flex;gap:14px;margin-top:4px;font-size:12px;color:rgba(255,255,255,.8)}
-#flyInfo em{font-style:normal;color:#ffd700}
-#flySk{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.4);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:7px 22px;font-size:12px;cursor:pointer}
-.scrFull{position:absolute;top:0;left:0;width:100%;height:100%;z-index:30;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
-#scoreScr,#resultScr{background:linear-gradient(135deg,rgba(0,35,0,.96),rgba(0,18,0,.98))}
-.si{max-width:420px;margin:0 auto;padding:18px 14px}
-.st{font-size:22px;font-weight:900;color:#ffd700;text-align:center;margin-bottom:4px}
-.ss{font-size:12px;color:rgba(255,255,255,.5);text-align:center;margin-bottom:14px}
-.scTbl{width:100%;border-collapse:collapse;margin-bottom:14px}
-.scTbl th{background:rgba(255,215,0,.12);color:#ffd700;font-size:9px;padding:5px 3px;font-weight:700}
-.scTbl td{text-align:center;padding:5px 3px;font-size:12px;color:#fff;border-bottom:1px solid rgba(255,255,255,.06)}
-.eagle{color:#ffd700!important;font-weight:800}.birdie{color:#ff4444!important;font-weight:700}.par{color:rgba(255,255,255,.5)}.bogey{color:#4af}.dbogey{color:#88f}
-.tot{text-align:center;font-size:16px;font-weight:800;color:#fff;margin:10px 0;padding:8px;background:rgba(255,215,0,.08);border-radius:8px}
-.btn{display:block;width:100%;padding:12px;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;color:#fff;margin-top:8px;text-align:center}
-.btn.p{background:linear-gradient(135deg,#27ae60,#2ecc71)}.btn.s{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15)}
+#accFill{height:100%;width:0%;border-radius:14px;background:linear-gradient(90deg,#e74c3c 0%,#f39c12 20%,#2ecc71 42%,#27ae60 50%,#2ecc71 58%,#f39c12 80%,#e74c3c 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+#accLabel{display:none}
+#swBtn{width:100%;padding:14px;border:none;border-radius:14px;font-size:17px;font-weight:800;cursor:pointer;color:#fff;background:linear-gradient(135deg,#27ae60,#2ecc71);box-shadow:0 4px 15px rgba(46,204,64,.35);letter-spacing:1px}
+
+/* === 플라이오버 === */
+#flyover{position:fixed;top:0;left:0;width:100%;height:100%;z-index:25;display:none;pointer-events:auto}
+#flyTop{position:absolute;top:0;left:0;width:100%;padding:16px;background:linear-gradient(180deg,rgba(0,0,0,.8),transparent)}
+#flyH{font-size:30px;font-weight:900;color:#ffd700}
+#flyInfo{display:flex;gap:16px;margin-top:6px;font-size:13px;color:rgba(255,255,255,.8)}
+#flyInfo em{font-style:normal;color:#ffd700;font-weight:700}
+#flySk{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.5);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:8px 26px;font-size:13px;cursor:pointer;backdrop-filter:blur(4px)}
+
+/* === 메뉴/스코어/결과 등 풀스크린 === */
+.scr-full{position:fixed;top:0;left:0;width:100%;height:100%;z-index:30;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#menuScr{display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(0,50,0,.96),rgba(0,20,0,.98))}
+#menuLogo{font-size:38px;font-weight:900;color:#ffd700;text-shadow:0 0 30px rgba(255,215,0,.3);margin-bottom:4px;letter-spacing:2px}
+#menuSub{font-size:14px;color:rgba(255,255,255,.35);margin-bottom:30px}
+.mbtn{display:block;width:230px;padding:14px;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;color:#fff;margin:6px 0;text-align:center}
+.mbtn:active{transform:scale(.96);filter:brightness(.85)}
+.mbtn.primary{background:linear-gradient(135deg,#27ae60,#2ecc71);box-shadow:0 4px 12px rgba(46,204,64,.3)}
+.mbtn.secondary{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+
+#scoreScr,#resultScr{background:linear-gradient(135deg,rgba(0,35,0,.97),rgba(0,15,0,.99))}
+.scr-inner{max-width:420px;margin:0 auto;padding:20px 16px}
+.scr-title{font-size:24px;font-weight:900;color:#ffd700;text-align:center;margin-bottom:6px}
+.scr-sub{font-size:12px;color:rgba(255,255,255,.45);text-align:center;margin-bottom:16px}
+.sc-tbl{width:100%;border-collapse:collapse;margin-bottom:16px}
+.sc-tbl th{background:rgba(255,215,0,.1);color:#ffd700;font-size:9px;padding:6px 4px;font-weight:700}
+.sc-tbl td{text-align:center;padding:6px 4px;font-size:12px;color:#fff;border-bottom:1px solid rgba(255,255,255,.05)}
+.eagle{color:#ffd700!important;font-weight:800}.birdie{color:#ff4444!important;font-weight:700}.par-sc{color:rgba(255,255,255,.5)}.bogey{color:#4af}.dbogey{color:#88f}
+.total-box{text-align:center;font-size:18px;font-weight:800;color:#fff;margin:12px 0;padding:10px;background:rgba(255,215,0,.08);border-radius:10px}
+.btn{display:block;width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;color:#fff;margin-top:10px;text-align:center}
+.btn.p{background:linear-gradient(135deg,#27ae60,#2ecc71)}.btn.s{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
 .btn:active{transform:scale(.97);filter:brightness(.85)}
-.resHole{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px;color:#fff}
-#menuScr{position:absolute;top:0;left:0;width:100%;height:100%;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(0,50,0,.95),rgba(0,25,0,.98))}
-#menuLogo{font-size:34px;font-weight:900;color:#ffd700;text-shadow:0 0 25px rgba(255,215,0,.35);margin-bottom:3px;letter-spacing:2px}
-#menuSub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:26px}
-.mb{display:block;width:220px;padding:13px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;color:#fff;margin:5px 0;text-align:center}
-.mb:active{transform:scale(.96);filter:brightness(.85)}
-#btnPlay{background:linear-gradient(135deg,#27ae60,#2ecc71)}
-#btnRec{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15)}
-#btnSet{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15)}
-#courseScr,#recordScr,#settingScr{background:linear-gradient(135deg,rgba(0,35,0,.97),rgba(0,18,0,.98))}
-.ph{display:flex;align-items:center;padding:12px 14px;background:rgba(0,0,0,.25)}
-.ph h2{flex:1;text-align:center;font-size:16px;color:#ffd700;font-weight:800}
-.pb{background:none;border:none;color:rgba(255,255,255,.6);font-size:22px;cursor:pointer;padding:3px 6px}
-.ci{display:flex;align-items:center;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer}
-.ci:active{background:rgba(255,255,255,.04)}
-.cn{font-size:14px;font-weight:700;color:#fff}.cc{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px}
-.sr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05)}
-.sr label{font-size:13px;color:#fff;font-weight:600}
-.sr input[type="range"]{width:110px;accent-color:#2ecc71}
-.tg{position:relative;width:44px;height:24px;background:rgba(255,255,255,.15);border-radius:12px;cursor:pointer;transition:.3s}
-.tg.on{background:#2ecc71}.tg::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.3s}.tg.on::after{left:22px}
-#loading{position:absolute;top:0;left:0;width:100%;height:100%;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a1a0a}
-.lt{color:#ffd700;font-size:15px;font-weight:700;margin-top:14px}
-.lb{width:180px;height:3px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:8px;overflow:hidden}
-.lf{height:100%;width:0%;background:linear-gradient(90deg,#27ae60,#ffd700);border-radius:2px;transition:width .3s}
+
+#courseScr,#recordScr,#settingScr{background:linear-gradient(135deg,rgba(0,35,0,.97),rgba(0,15,0,.99))}
+.page-hdr{display:flex;align-items:center;padding:14px 16px;background:rgba(0,0,0,.2)}
+.page-hdr h2{flex:1;text-align:center;font-size:17px;color:#ffd700;font-weight:800}
+.back-btn{background:none;border:none;color:rgba(255,255,255,.6);font-size:24px;cursor:pointer;padding:4px 8px}
+.course-item{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer}
+.course-item:active{background:rgba(255,255,255,.03)}
+.ci-icon{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#2a8a2a,#4aba4a);display:flex;align-items:center;justify-content:center;font-size:20px;margin-right:14px;flex-shrink:0}
+.ci-name{font-size:15px;font-weight:700;color:#fff}
+.ci-desc{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.04)}
+.setting-row label{font-size:14px;color:#fff;font-weight:600}
+.setting-row input[type="range"]{width:120px;accent-color:#2ecc71}
+
+/* 로딩 */
+#loading{position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a1a0a}
+.ld-icon{font-size:42px}
+.ld-txt{color:#ffd700;font-size:16px;font-weight:700;margin-top:16px}
+.ld-bar{width:200px;height:3px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:10px;overflow:hidden}
+.ld-fill{height:100%;width:0%;background:linear-gradient(90deg,#27ae60,#ffd700);border-radius:2px;transition:width .3s}
 </style>
 </head>
 <body>
-<div id="GC">
+<div id="gameContainer"></div>
+
 <!-- HUD -->
 <div id="hud">
-<!-- Golf King Style Top Left Panel -->
-<div id="infoPanel">
-<div id="ipCourse"><span class="crs" id="hCrs">서울숲</span><span class="hinfo" id="hHole">1홀</span><span class="hinfo">·</span><span class="hinfo" id="hPar">PAR 4</span></div>
-<div id="ipClub"><div class="clubRow"><div class="clubIcon" id="clubIco">🏌</div><div><div style="display:flex;align-items:center"><span class="clubName" id="clubNm">드라이버</span><span class="clubLv">LV.1</span></div><div class="clubDist" id="clubDst">비거리: ~40m</div></div></div></div>
-<div id="ipWind"><div class="windIcon">💨</div><span class="windSpd" id="hWndSpd">0.0</span><span class="windUnit">m/s</span><span class="windDir" id="hWndArr">↑</span></div>
+<div id="topBar">
+<div id="leftInfo">
+<div class="info-pill"><span class="label" id="hCourse">서울숲</span><span class="value gold" id="hHole">1홀</span><span class="value" style="font-size:11px" id="hPar">PAR 3</span></div>
+<div class="info-pill"><span style="font-size:14px">🏌</span><span class="value green" id="hClub">파크골프 클럽</span></div>
+<div class="info-pill"><span style="font-size:13px">💨</span><span class="value" id="hWind" style="color:#ff9944">0.0 m/s</span><span id="hWindDir" style="color:#ff9944;font-size:14px">→</span></div>
 </div>
-<!-- Top Right Boxes -->
-<div id="topRight">
-<div class="trBox"><span class="trl">타수</span><span class="trv" id="hStk">0</span></div>
-<div class="trBox"><span class="trl">거리</span><span class="trv gold" id="hDst">0m</span></div>
+<div id="rightInfo">
+<div class="stat-box"><span class="sl">타수</span><span class="sv" id="hStroke">0</span></div>
+<div class="stat-box"><span class="sl">거리</span><span class="sv" style="color:#ffd700" id="hDist">0m</span></div>
 </div>
-<!-- Distance to Pin (center bottom) -->
-<div id="distPin"><span class="dpv" id="dpDist">0</span><span class="dpu">m</span></div>
 </div>
+<div id="miniWrap"><canvas id="miniCvs" width="180" height="180"></canvas></div>
+<div id="distShow"><span class="dv" id="dpVal">0</span><span class="du">m</span></div>
+</div>
+
 <button id="clubBtn">클럽<br>변경</button>
-<div id="minimap"><canvas id="mmCvs" width="160" height="160"></canvas></div>
 <div id="bigMsg"></div>
-<!-- Swing Panel -->
+
+<!-- 스윙 패널 -->
 <div id="swingPanel"><div id="swingInner">
-<div class="gaugeLabel"><span class="gl">⚡ 파워</span><span class="gv" id="swVal">0%</span></div>
-<div class="barWrap" id="pwrWrap"><div id="pwrFill"></div></div>
-<div class="gaugeLabel" id="accLabel" style="display:none"><span class="gl">🎯 정확도</span><span class="gv" id="accValTxt">조준중...</span></div>
-<div class="barWrap" id="accWrap"><div class="sweet"></div><div id="accFill"></div></div>
+<div class="gauge-row"><span class="gl">⚡ 파워</span><span class="gv" id="pwrVal">0%</span></div>
+<div class="bar-wrap" id="pwrWrap"><div id="pwrFill"></div></div>
+<div class="gauge-row" id="accLabel"><span class="gl">🎯 정확도</span><span class="gv" id="accVal">조준중...</span></div>
+<div class="bar-wrap" id="accWrap"><div class="sweet"></div><div id="accFill"></div></div>
 <button id="swBtn" ontouchstart="onSwTap(event)" onclick="onSwTap(event)">탭하여 스윙!</button>
 </div></div>
-<!-- Flyover -->
-<div id="flyover"><div id="flyTop"><div id="flyH">1홀</div><div id="flyInfo"><span>PAR <em id="flyPar">4</em></span><span><em id="flyDist">50</em>m</span></div></div><button id="flySk" ontouchstart="endFly()" onclick="endFly()">건너뛰기 ▶</button></div>
-<!-- Scorecard -->
-<div id="scoreScr" class="scrFull"><div class="si"><div class="st" id="scTitle">스코어카드</div><div class="ss" id="scSub"></div><table class="scTbl" id="scTbl"></table><div class="tot" id="scTot"></div><button class="btn p" id="scNext" onclick="nextHole()">다음 홀</button></div></div>
-<!-- Result -->
-<div id="resultScr" class="scrFull"><div class="si"><div class="st" id="rsTitle">라운드 결과</div><div class="ss" id="rsSub"></div><div id="rsBody"></div><div class="tot" id="rsTot"></div><button class="btn p" onclick="startRound(G.ci)">다시 플레이</button><button class="btn s" onclick="showMenu()" style="margin-top:6px">메인 메뉴</button></div></div>
-<!-- Menu -->
-<div id="menuScr"><div id="menuLogo">파크골프 프로</div><div id="menuSub">전국투어 2026</div>
-<button class="mb" id="btnPlay" onclick="openCourseSelect()">🏆 전국투어</button>
-<button class="mb" id="btnRec" onclick="openRecords()">📊 기록실</button>
-<button class="mb" id="btnSet" onclick="openSettings()">⚙️ 설정</button></div>
-<!-- Course Select -->
-<div id="courseScr" class="scrFull"><div class="ph"><button class="pb" onclick="showMenu()">←</button><h2>코스 선택</h2><div style="width:32px"></div></div><div id="cList"></div></div>
-<!-- Records -->
-<div id="recordScr" class="scrFull"><div class="ph"><button class="pb" onclick="showMenu()">←</button><h2>기록실</h2><div style="width:32px"></div></div><div id="rList"></div></div>
-<!-- Settings -->
-<div id="settingScr" class="scrFull"><div class="ph"><button class="pb" onclick="showMenu()">←</button><h2>설정</h2><div style="width:32px"></div></div>
-<div class="sr"><label>볼륨</label><input type="range" id="sVol" min="0" max="100" value="80"></div>
-<div class="sr"><label>진동</label><div class="tg on" id="sVib" onclick="this.classList.toggle('on')"></div></div>
+
+<!-- 플라이오버 -->
+<div id="flyover">
+<div id="flyTop"><div id="flyH">1홀</div><div id="flyInfo"><span>PAR <em id="flyPar">3</em></span><span><em id="flyDist">30</em>m</span></div></div>
+<button id="flySk" ontouchstart="endFly()" onclick="endFly()">건너뛰기 ▶</button>
 </div>
-<!-- Loading -->
-<div id="loading"><div style="font-size:36px">⛳</div><div class="lt">로딩중...</div><div class="lb"><div class="lf" id="ldFill"></div></div></div>
+
+<!-- 스코어카드 -->
+<div id="scoreScr" class="scr-full"><div class="scr-inner"><div class="scr-title" id="scTitle">스코어카드</div><div class="scr-sub" id="scSub"></div><table class="sc-tbl" id="scTbl"></table><div class="total-box" id="scTot"></div><button class="btn p" id="scNext" onclick="nextHole()">다음 홀</button></div></div>
+
+<!-- 결과 -->
+<div id="resultScr" class="scr-full"><div class="scr-inner"><div class="scr-title" id="rsTitle">라운드 결과</div><div class="scr-sub" id="rsSub"></div><div id="rsBody"></div><div class="total-box" id="rsTot"></div><button class="btn p" id="rsReplay">다시 플레이</button><button class="btn s" id="rsMenuBtn" style="margin-top:8px">메인 메뉴</button></div></div>
+
+<!-- 메뉴 -->
+<div id="menuScr" class="scr-full"><div id="menuLogo">파크골프 프로</div><div id="menuSub">전국투어 2026</div>
+<button class="mbtn primary" onclick="openCourseSelect()">🏆 전국투어</button>
+<button class="mbtn secondary" onclick="openRecords()">📊 기록실</button>
+<button class="mbtn secondary" onclick="openSettings()">⚙️ 설정</button></div>
+
+<!-- 코스 선택 -->
+<div id="courseScr" class="scr-full"><div class="page-hdr"><button class="back-btn" onclick="showMenu()">←</button><h2>코스 선택</h2><div style="width:36px"></div></div><div id="cList"></div></div>
+
+<!-- 기록 -->
+<div id="recordScr" class="scr-full"><div class="page-hdr"><button class="back-btn" onclick="showMenu()">←</button><h2>기록실</h2><div style="width:36px"></div></div><div id="rList"></div></div>
+
+<!-- 설정 -->
+<div id="settingScr" class="scr-full"><div class="page-hdr"><button class="back-btn" onclick="showMenu()">←</button><h2>설정</h2><div style="width:36px"></div></div>
+<div class="setting-row"><label>볼륨</label><input type="range" id="sVol" min="0" max="100" value="80"></div>
+<div class="setting-row"><label>진동</label><div id="sVib" style="width:44px;height:24px;background:#2ecc71;border-radius:12px;cursor:pointer;position:relative" onclick="this.dataset.on=this.dataset.on==='1'?'0':'1';this.style.background=this.dataset.on==='1'?'#2ecc71':'rgba(255,255,255,.15)'" data-on="1"><div style="position:absolute;top:2px;left:22px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.3s"></div></div></div>
 </div>
+
+<!-- 로딩 -->
+<div id="loading"><div class="ld-icon">⛳</div><div class="ld-txt">로딩중...</div><div class="ld-bar"><div class="ld-fill" id="ldFill"></div></div></div>
+
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js"}}</script>
 <script type="module">
-import * as THREE from 'three';
-window.THREE = THREE;
+import*as THREE from'three';
 
-/* ===== UTILITIES ===== */
+/* ========== 유틸리티 ========== */
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const lerp=(a,b,t)=>a+(b-a)*t;
 const rad=d=>d*Math.PI/180;
+const $=id=>document.getElementById(id);
 function mulberry32(s){return function(){s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t^=t+Math.imul(t^t>>>7,61|t);return((t^t>>>14)>>>0)/4294967296}}
-function mkM(geo,mat,x,y,z,cs){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);if(cs)m.castShadow=true;return m}
 
-
-/* ===== TEXTURES ===== */
-const TEX={
-grass(w=1024,h=1024){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
-// Rich base with subtle color variation
-for(let y=0;y<h;y+=1){const b=.20+Math.sin(y*.008)*.04+Math.sin(y*.025)*.02;
-x.fillStyle=`hsl(${108+Math.sin(y*.01)*8},${52+Math.sin(y*.015)*10}%,${(b+Math.random()*.03)*100}%)`;x.fillRect(0,y,w,1)}
-// Subtle light/dark patches (dappled sunlight)
-for(let i=0;i<40;i++){const px=Math.random()*w,py=Math.random()*h,pr=30+Math.random()*80;
-const bright=Math.random()>.5;
-const rg=x.createRadialGradient(px,py,0,px,py,pr);
-rg.addColorStop(0,bright?`rgba(120,200,80,.08)`:`rgba(30,80,20,.06)`);
-rg.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=rg;x.fillRect(px-pr,py-pr,pr*2,pr*2)}
-// Dense grass blades with variety
-for(let i=0;i<18000;i++){const bx=Math.random()*w,by=Math.random()*h,bl=3+Math.random()*14;
-const hue=95+Math.random()*35,sat=35+Math.random()*35,lit=16+Math.random()*24;
-x.strokeStyle=`hsla(${hue},${sat}%,${lit}%,${.25+Math.random()*.4})`;
-x.lineWidth=.3+Math.random()*.9;x.beginPath();x.moveTo(bx,by);
-const bend=(Math.random()-.5)*4;x.quadraticCurveTo(bx+bend,by-bl*.5,bx+bend*.7,by-bl);x.stroke()}
-// Tiny flowers/clover scattered
-for(let i=0;i<200;i++){const fx=Math.random()*w,fy=Math.random()*h;
-x.fillStyle=Math.random()>.7?`rgba(255,255,200,.12)`:`rgba(180,220,160,.08)`;
-x.beginPath();x.arc(fx,fy,.5+Math.random()*1,0,Math.PI*2);x.fill()}
-const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(14,14);t.anisotropy=4;return t},
-fairway(w=1024,h=1024){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
-x.fillStyle='#2a8a2a';x.fillRect(0,0,w,h);const sw=48;
-for(let i=0;i<w;i+=sw){x.fillStyle=Math.floor(i/sw)%2===0?'rgba(20,90,20,.18)':'rgba(50,150,50,.15)';x.fillRect(i,0,sw,h)}
-for(let i=0;i<8000;i++){const bx=Math.random()*w,by=Math.random()*h;
-x.strokeStyle=`hsla(${110+Math.random()*20},${50+Math.random()*20}%,${25+Math.random()*20}%,.25)`;
-x.lineWidth=.3+Math.random()*.5;x.beginPath();x.moveTo(bx,by);x.lineTo(bx+(Math.random()-.5)*1.5,by-2-Math.random()*5);x.stroke()}
-const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(3,10);t.anisotropy=4;return t},
-green(w=1024,h=1024){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
-const g=x.createRadialGradient(w/2,h/2,0,w/2,h/2,w*.7);g.addColorStop(0,'#3dbf3d');g.addColorStop(.7,'#35a835');g.addColorStop(1,'#2d9a2d');
-x.fillStyle=g;x.fillRect(0,0,w,h);
-for(let r=8;r<w*.65;r+=5){x.strokeStyle=r%10<5?'rgba(55,195,55,.08)':'rgba(35,155,35,.08)';x.lineWidth=2.5;x.beginPath();x.arc(w/2,h/2,r,0,Math.PI*2);x.stroke()}
-const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=4;return t},
-sand(w=512,h=512){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
-x.fillStyle='#d4be8a';x.fillRect(0,0,w,h);
-for(let i=0;i<15000;i++){const v=Math.random();x.fillStyle=v<.3?'rgba(210,185,130,.3)':v<.6?'rgba(240,215,160,.25)':'rgba(185,160,100,.25)';x.fillRect(Math.random()*w,Math.random()*h,.8+Math.random()*1.5,.8+Math.random()*1.5)}
-const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(2,2);return t},
-water(w=512,h=512){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
-const g=x.createLinearGradient(0,0,w,h);g.addColorStop(0,'#0d5575');g.addColorStop(.5,'#0a4060');g.addColorStop(1,'#073050');
-x.fillStyle=g;x.fillRect(0,0,w,h);
-for(let i=0;i<50;i++){const cx=Math.random()*w,cy=Math.random()*h,cr=4+Math.random()*25;
-x.strokeStyle=`rgba(80,180,240,${.06+Math.random()*.08})`;x.lineWidth=.8;x.beginPath();x.arc(cx,cy,cr,0,Math.PI*2);x.stroke()}
-const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(2,2);return t},
-dirt(){const c=document.createElement('canvas');c.width=256;c.height=256;const x=c.getContext('2d');
-x.fillStyle='#8B7355';x.fillRect(0,0,256,256);
-for(let i=0;i<5000;i++){x.fillStyle=Math.random()>.5?'rgba(120,95,60,.25)':'rgba(160,130,90,.25)';x.fillRect(Math.random()*256,Math.random()*256,1+Math.random()*2,1+Math.random()*2)}
-const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(4,4);return t},
-bark(){const c=document.createElement('canvas');c.width=128;c.height=256;const x=c.getContext('2d');
-x.fillStyle='#5a3a1a';x.fillRect(0,0,128,256);
-for(let y=0;y<256;y+=1.5){x.fillStyle=`rgba(${55+Math.random()*25},${30+Math.random()*18},${10+Math.random()*10},${.15+Math.random()*.25})`;x.fillRect(0,y,128,1.5)}
-const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t},
-rough(w=512,h=512){const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
-x.fillStyle='#3a6a2a';x.fillRect(0,0,w,h);
-for(let i=0;i<8000;i++){x.strokeStyle=`hsla(${100+Math.random()*35},${40+Math.random()*25}%,${20+Math.random()*25}%,.35)`;
-x.lineWidth=.4+Math.random()*1;x.beginPath();const bx=Math.random()*w,by=Math.random()*h;x.moveTo(bx,by);x.lineTo(bx+(Math.random()-.5)*5,by-5-Math.random()*14);x.stroke()}
-const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(8,8);return t},
-sky(){const c=document.createElement('canvas');c.width=4096;c.height=2048;const x=c.getContext('2d');
-// Photorealistic sky gradient
-const g=x.createLinearGradient(0,0,0,2048);
-g.addColorStop(0,'#0a1628');g.addColorStop(.05,'#0f2040');g.addColorStop(.12,'#1a3868');
-g.addColorStop(.22,'#2a5fa0');g.addColorStop(.32,'#4088cc');g.addColorStop(.42,'#62ade4');
-g.addColorStop(.50,'#82c4f0');g.addColorStop(.56,'#9ed4f6');g.addColorStop(.62,'#b5e0f8');
-g.addColorStop(.68,'#cceafc');g.addColorStop(.73,'#dff0fa');g.addColorStop(.77,'#f0f5f8');
-g.addColorStop(.80,'#fff8ee');g.addColorStop(.83,'#ffe8c8');g.addColorStop(.86,'#f0d4a0');
-g.addColorStop(.89,'#c8b888');g.addColorStop(.92,'#8aaa6a');g.addColorStop(.95,'#5a8a4a');
-g.addColorStop(1,'#3a6a30');
-x.fillStyle=g;x.fillRect(0,0,4096,2048);
-// Atmospheric haze near horizon
-const hz=x.createLinearGradient(0,1300,0,1700);
-hz.addColorStop(0,'rgba(200,220,240,0)');hz.addColorStop(.5,'rgba(220,235,250,.18)');hz.addColorStop(1,'rgba(240,245,255,.08)');
-x.fillStyle=hz;x.fillRect(0,1300,4096,400);
-// Volumetric cumulus clouds - big realistic shapes
-for(let i=0;i<45;i++){const cx=Math.random()*4096,cy=280+Math.random()*580;
-const cw=180+Math.random()*500,ch=35+Math.random()*80;
-// Cloud base shadow
-for(let j=0;j<18;j++){const ox=cx+(Math.random()-.5)*cw,oy=cy+(Math.random()-.5)*ch+ch*.2;
-const r=25+Math.random()*45;
-const rg=x.createRadialGradient(ox,oy,0,ox,oy,r);
-rg.addColorStop(0,'rgba(140,150,170,.06)');rg.addColorStop(1,'rgba(140,150,170,0)');
-x.fillStyle=rg;x.fillRect(ox-r,oy-r,r*2,r*2)}
-// Cloud bright tops
-for(let j=0;j<25;j++){const ox=cx+(Math.random()-.5)*cw*.9,oy=cy+(Math.random()-.5)*ch*.7-ch*.15;
-const r=20+Math.random()*65;
-const rg=x.createRadialGradient(ox,oy-r*.1,r*.15,ox,oy,r);
-rg.addColorStop(0,'rgba(255,255,255,.28)');rg.addColorStop(.3,'rgba(255,255,255,.18)');
-rg.addColorStop(.6,'rgba(245,248,255,.08)');rg.addColorStop(1,'rgba(245,248,255,0)');
-x.fillStyle=rg;x.fillRect(ox-r,oy-r,r*2,r*2)}}
-// Wispy cirrus clouds high up
-for(let i=0;i<30;i++){const cx=Math.random()*4096,cy=120+Math.random()*250;
-x.save();x.translate(cx,cy);x.rotate((Math.random()-.5)*.3);
-x.globalAlpha=.04+Math.random()*.06;
-x.fillStyle='#fff';x.beginPath();
-const w=80+Math.random()*200,h=2+Math.random()*5;
-x.ellipse(0,0,w,h,0,0,Math.PI*2);x.fill();x.restore();x.globalAlpha=1}
-// Sun glow - warm & realistic
-const sunX=2900,sunY=780;
-const s1=x.createRadialGradient(sunX,sunY,0,sunX,sunY,80);
-s1.addColorStop(0,'rgba(255,255,240,.45)');s1.addColorStop(.3,'rgba(255,250,220,.25)');
-s1.addColorStop(.7,'rgba(255,240,200,.08)');s1.addColorStop(1,'rgba(255,230,180,0)');
-x.fillStyle=s1;x.fillRect(sunX-100,sunY-100,200,200);
-// Wide sun halo
-const s2=x.createRadialGradient(sunX,sunY,0,sunX,sunY,450);
-s2.addColorStop(0,'rgba(255,248,230,.2)');s2.addColorStop(.2,'rgba(255,240,210,.1)');
-s2.addColorStop(.5,'rgba(255,225,180,.04)');s2.addColorStop(1,'rgba(255,200,150,0)');
-x.fillStyle=s2;x.fillRect(sunX-500,sunY-500,1000,1000);
-// God rays from sun
-for(let i=0;i<12;i++){const a=-Math.PI*.3+Math.random()*Math.PI*.6;
-const len=300+Math.random()*400;
-x.save();x.translate(sunX,sunY);x.rotate(a);
-const rg=x.createLinearGradient(0,0,0,len);
-rg.addColorStop(0,'rgba(255,245,220,.06)');rg.addColorStop(.5,'rgba(255,240,200,.02)');
-rg.addColorStop(1,'rgba(255,235,190,0)');
-x.fillStyle=rg;x.fillRect(-8,0,16,len);x.restore()}
-const t=new THREE.CanvasTexture(c);t.mapping=THREE.EquirectangularReflectionMapping;return t}
-};
-
-/* ===== COURSE DATA ===== */
+/* ========== 파크골프 코스 데이터 ========== */
 const COURSES=[
-{name:'서울숲',city:'서울',par:[3,4,3,4,3,5,3,4,3],dist:[30,55,35,60,40,80,32,58,38],theme:'spring',wind:2,trees:'deciduous',water:[4,8]},
-{name:'한강공원',city:'서울',par:[4,3,4,3,4,3,4,3,4],dist:[50,35,55,30,60,38,52,33,58],theme:'summer',wind:3,trees:'mixed',water:[2,5,8]},
-{name:'월드컵공원',city:'서울',par:[3,4,3,5,3,4,3,4,3],dist:[28,48,32,72,36,56,30,50,34],theme:'autumn',wind:2,trees:'deciduous',water:[3,7]},
-{name:'대구스타디움',city:'대구',par:[4,3,4,3,5,3,4,3,4],dist:[52,30,58,35,78,32,55,28,60],theme:'summer',wind:3,trees:'pine',water:[1,5]},
-{name:'해운대',city:'부산',par:[3,4,3,4,3,4,3,5,3],dist:[35,60,38,55,40,58,36,75,32],theme:'coastal',wind:4,trees:'palm',water:[2,4,6,8]},
-{name:'경주보문',city:'경주',par:[4,3,5,3,4,3,4,3,4],dist:[55,32,80,28,58,35,52,30,62],theme:'autumn',wind:2,trees:'mixed',water:[3,6]},
-{name:'무등산',city:'광주',par:[3,3,4,3,4,3,5,3,3],dist:[32,28,56,35,52,30,76,38,34],theme:'mountain',wind:3,trees:'pine',water:[4,7]},
-{name:'태백산',city:'태백',par:[4,3,3,4,3,5,3,4,3],dist:[58,35,30,55,38,82,32,56,36],theme:'mountain',wind:4,trees:'pine',water:[5,8]},
-{name:'제주한라',city:'제주',par:[3,4,3,4,3,4,5,3,4],dist:[38,60,35,58,32,62,78,30,55],theme:'tropical',wind:5,trees:'palm',water:[1,3,5,7]},
-{name:'남해독일마을',city:'남해',par:[4,3,4,3,5,3,3,4,3],dist:[52,28,56,35,76,30,32,58,38],theme:'coastal',wind:4,trees:'mixed',water:[2,4,7]}
-];
-const CLUBS=[
-{name:'드라이버',power:16,loft:12},{name:'우드',power:11,loft:18},
-{name:'아이언',power:7.5,loft:28},{name:'퍼터',power:3.5,loft:3}
+{name:'서울숲',city:'서울',par:[3,4,3,3,5,3,4,3,5],dist:[25,40,20,30,55,22,35,28,50],trees:'mixed',water:[5,9]},
+{name:'일산호수',city:'고양',par:[3,3,4,3,5,4,3,3,5],dist:[22,28,42,25,60,38,20,30,48],trees:'deciduous',water:[4,6]},
+{name:'제주오름',city:'제주',par:[4,3,3,5,3,4,3,5,3],dist:[35,22,28,52,20,40,24,48,26],trees:'palm',water:[2,8]},
+{name:'경주보문',city:'경주',par:[3,4,3,5,3,3,4,5,3],dist:[24,38,26,50,22,30,42,55,20],trees:'pine',water:[3,7]},
+{name:'강릉솔밭',city:'강릉',par:[3,3,5,3,4,3,3,5,4],dist:[20,25,48,28,35,22,30,52,40],trees:'pine',water:[5]},
+{name:'담양죽녹원',city:'담양',par:[4,3,3,3,5,4,3,3,5],dist:[36,22,24,28,55,38,20,26,50],trees:'mixed',water:[6,9]},
+{name:'부산해운대',city:'부산',par:[3,5,3,4,3,3,5,3,4],dist:[22,52,26,40,20,28,48,24,38],trees:'palm',water:[2,4]},
+{name:'대전유성',city:'대전',par:[3,3,4,3,5,3,4,3,5],dist:[24,20,35,28,50,22,40,26,55],trees:'deciduous',water:[5,8]},
+{name:'전주한옥',city:'전주',par:[4,3,3,5,3,3,4,3,5],dist:[38,22,26,48,20,30,42,24,52],trees:'mixed',water:[4,9]},
+{name:'춘천소양',city:'춘천',par:[3,4,3,3,5,3,4,5,3],dist:[20,36,24,28,55,22,40,50,26],trees:'pine',water:[3,6]}
 ];
 
-/* ===== STORAGE ===== */
-const STO={key:'pg9',_d:null,
-load(){try{this._d=JSON.parse(localStorage.getItem(this.key))||{}}catch(e){this._d={}}
-if(!this._d.vol)this._d.vol=80;if(this._d.vib===undefined)this._d.vib=true;if(!this._d.best)this._d.best={};return this._d},
-save(d){if(d)this._d=d;try{localStorage.setItem(this.key,JSON.stringify(this._d))}catch(e){}},
-get d(){if(!this._d)this.load();return this._d}};
+const CLUB={name:'파크골프 클럽',power:4.5,loft:32};
+const PUTTER={name:'퍼터 모드',power:2.0,loft:12};
 
-/* ===== AUDIO ===== */
-const AUD={ctx:null,gain:null,
-init(){if(this.ctx)return;this.ctx=new(window.AudioContext||window.webkitAudioContext)();this.gain=this.ctx.createGain();this.gain.connect(this.ctx.destination);this.gain.gain.value=STO.d.vol/100},
+/* ========== 저장소 ========== */
+const STO={d:{vol:80,vib:true,best:{}},
+load(){try{const s=localStorage.getItem('pgpro2');if(s)this.d=JSON.parse(s)}catch(e){}},
+save(){try{localStorage.setItem('pgpro2',JSON.stringify(this.d))}catch(e){}}};
+STO.load();
+
+/* ========== 사운드 ========== */
+const AUD={ctx:null,
+init(){if(!this.ctx)this.ctx=new(window.AudioContext||window.webkitAudioContext)()},
 resume(){if(this.ctx&&this.ctx.state==='suspended')this.ctx.resume()},
-play(type){if(!this.ctx)return;this.resume();const t=this.ctx.currentTime;
-const mk=(f,dur,tp='sine',vol=.3)=>{const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=tp;o.frequency.value=f;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(this.gain);o.start(t);o.stop(t+dur)};
-const noise=(dur,vol=.1)=>{const sz=this.ctx.sampleRate*dur,buf=this.ctx.createBuffer(1,sz,this.ctx.sampleRate),d=buf.getChannelData(0);for(let i=0;i<sz;i++)d[i]=(Math.random()*2-1)*vol;const s=this.ctx.createBufferSource(),g=this.ctx.createGain();s.buffer=buf;g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(g);g.connect(this.gain);s.start(t);s.stop(t+dur)};
+play(type){if(!this.ctx)return;const vol=STO.d.vol/100;
+const mk=(freq,dur,wt,v)=>{const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=wt;o.frequency.value=freq;g.gain.setValueAtTime(v*vol,this.ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,this.ctx.currentTime+dur);o.connect(g);g.connect(this.ctx.destination);o.start();o.stop(this.ctx.currentTime+dur)};
 switch(type){
-case'hit':mk(800,.08,'square',.4);mk(400,.15,'sine',.3);noise(.1,.15);break;
-case'putt':mk(600,.06,'sine',.25);mk(300,.1,'sine',.15);break;
-case'hole':mk(523,.15,'sine',.35);setTimeout(()=>mk(659,.15,'sine',.35),100);setTimeout(()=>mk(784,.3,'sine',.4),200);break;
-case'splash':noise(.4,.2);mk(200,.3,'sine',.15);break;
-case'bounce':mk(500,.05,'square',.2);break;
-case'ob':mk(200,.3,'sawtooth',.2);mk(150,.4,'sawtooth',.15);break;
-case'swing':mk(300,.1,'sine',.15);mk(600,.08,'sine',.1);noise(.08,.1);break;
+case'hit':mk(220,.15,'triangle',.3);mk(440,.08,'square',.15);break;
+case'putt':mk(300,.1,'sine',.2);break;
+case'hole':mk(523,.12,'sine',.25);mk(659,.12,'sine',.25);mk(784,.2,'sine',.3);break;
+case'bounce':mk(180,.06,'triangle',.12);break;
+case'splash':mk(100,.2,'sine',.2);break;
+case'ob':mk(150,.3,'sawtooth',.15);break;
+case'swing':mk(200,.25,'triangle',.1);break;
 case'click':mk(1000,.03,'sine',.15);break}}};
 function vib(ms=20){try{if(STO.d.vib&&navigator.vibrate)navigator.vibrate(ms)}catch(e){}}
 
-/* ===== SCENE SETUP ===== */
+/* ========== THREE.JS 씬 ========== */
 let scene,camera,renderer,sunLight;
 let grp,grnC,grnR,teeP,holeP,flagM,bunks=[],waters=[],obB,fwPath=[];
 let M={},golfer=null;
 
 function initScene(){
 scene=new THREE.Scene();
-camera=new THREE.PerspectiveCamera(52,innerWidth/innerHeight,.1,600);
-renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
-renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;
+camera=new THREE.PerspectiveCamera(46,innerWidth/innerHeight,.1,800);
+renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance',alpha:false});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.15;
 renderer.outputColorSpace=THREE.SRGBColorSpace;
-document.getElementById('GC').prepend(renderer.domElement);
-sunLight=new THREE.DirectionalLight(0xfff5e0,3.2);
-sunLight.position.set(45,65,30);sunLight.castShadow=true;
-sunLight.shadow.mapSize.set(2048,2048);
-const sc=sunLight.shadow.camera;sc.left=-70;sc.right=70;sc.top=70;sc.bottom=-70;sc.near=1;sc.far=180;
-sunLight.shadow.bias=-.0008;sunLight.shadow.normalBias=.02;
-scene.add(sunLight);
-// Warm fill light from opposite side
-const fillLight=new THREE.DirectionalLight(0xffeedd,.6);fillLight.position.set(-30,20,-15);scene.add(fillLight);
-// Rim/back light for depth
-const rimLight=new THREE.DirectionalLight(0xaaccff,.4);rimLight.position.set(-10,40,-40);scene.add(rimLight);
-scene.add(new THREE.AmbientLight(0x6699bb,.5));
-scene.add(new THREE.HemisphereLight(0x99ccff,0x556633,.55));
-scene.background=TEX.sky();scene.environment=scene.background;
-scene.fog=new THREE.FogExp2(0xc0ddf0,.0022);
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)})}
+$('gameContainer').appendChild(renderer.domElement);
 
+// 강한 태양광 — 골프킹 스타일 밝고 따뜻한 느낌
+sunLight=new THREE.DirectionalLight(0xfffae0,4.0);
+sunLight.position.set(50,80,30);
+sunLight.castShadow=true;
+sunLight.shadow.mapSize.set(2048,2048);
+const sc=sunLight.shadow.camera;
+sc.left=-80;sc.right=80;sc.top=80;sc.bottom=-80;sc.near=1;sc.far=200;
+sunLight.shadow.bias=-.0006;sunLight.shadow.normalBias=.02;
+scene.add(sunLight);
+
+// 보조광 — 그림자 부분을 밝게
+const fill1=new THREE.DirectionalLight(0xffeedd,.7);fill1.position.set(-30,20,-15);scene.add(fill1);
+const fill2=new THREE.DirectionalLight(0xaaddff,.4);fill2.position.set(-10,40,-40);scene.add(fill2);
+scene.add(new THREE.AmbientLight(0x88aacc,.55));
+scene.add(new THREE.HemisphereLight(0x99ccff,0x447733,.65));
+
+// 하늘
+scene.background=mkSky();
+// 부드러운 안개 — 먼 배경만 살짝
+scene.fog=new THREE.FogExp2(0xd0e8f8,.00025);
+
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+}
+
+/* ========== 하늘 텍스처 — 골프킹 스타일 밝고 맑은 하늘 ========== */
+function mkSky(){
+const w=2048,h=1024,c=document.createElement('canvas');c.width=w;c.height=h;
+const x=c.getContext('2d');
+// 깊고 선명한 하늘 그라데이션
+const grad=x.createLinearGradient(0,0,0,h);
+grad.addColorStop(0,'#0a2a5a');
+grad.addColorStop(.08,'#1a4a8a');
+grad.addColorStop(.18,'#2a6abb');
+grad.addColorStop(.3,'#4a90d8');
+grad.addColorStop(.42,'#6ab0ec');
+grad.addColorStop(.52,'#90ccf5');
+grad.addColorStop(.6,'#b4ddf8');
+grad.addColorStop(.67,'#d0ebfc');
+grad.addColorStop(.72,'#e0f0e8');
+grad.addColorStop(.78,'#c4ddb0');
+grad.addColorStop(.85,'#88bb70');
+grad.addColorStop(.92,'#5a9a48');
+grad.addColorStop(1,'#3a7a30');
+x.fillStyle=grad;x.fillRect(0,0,w,h);
+
+// 사실적인 구름 — 여러 층
+for(let layer=0;layer<3;layer++){
+const numC=12+layer*6,baseY=60+layer*90,spread=h*.3;
+for(let i=0;i<numC;i++){
+const cx=Math.random()*w,cy=baseY+Math.random()*spread;
+const cw=180+Math.random()*400,ch=40+Math.random()*80;
+// 구름 몸체
+for(let p=0;p<8;p++){
+const px=cx+(Math.random()-.5)*cw*.7,py=cy+(Math.random()-.5)*ch*.5;
+const pr=30+Math.random()*80;
+const alpha=layer===0?.25:.12+Math.random()*.1;
+const cg=x.createRadialGradient(px,py,0,px,py,pr);
+cg.addColorStop(0,`rgba(255,255,255,${alpha})`);
+cg.addColorStop(.4,`rgba(250,252,255,${alpha*.6})`);
+cg.addColorStop(1,'rgba(255,255,255,0)');
+x.fillStyle=cg;x.beginPath();x.ellipse(px,py,pr*1.3,pr*.6,0,0,Math.PI*2);x.fill()}}}
+
+// 태양 — 밝고 따뜻한 글로우
+const sx=w*.72,sy=h*.15;
+for(let r=250;r>5;r-=8){
+const alpha=r<20?.8:r<50?.15:r<100?.06:.02;
+const sg=x.createRadialGradient(sx,sy,0,sx,sy,r);
+sg.addColorStop(0,`rgba(255,255,240,${alpha})`);
+sg.addColorStop(.3,`rgba(255,248,220,${alpha*.6})`);
+sg.addColorStop(1,'rgba(255,250,200,0)');
+x.fillStyle=sg;x.beginPath();x.arc(sx,sy,r,0,Math.PI*2);x.fill()}
+// 태양 코어
+const core=x.createRadialGradient(sx,sy,0,sx,sy,15);
+core.addColorStop(0,'rgba(255,255,255,1)');
+core.addColorStop(.5,'rgba(255,255,230,.9)');
+core.addColorStop(1,'rgba(255,250,200,0)');
+x.fillStyle=core;x.beginPath();x.arc(sx,sy,15,0,Math.PI*2);x.fill();
+
+const t=new THREE.CanvasTexture(c);t.mapping=THREE.EquirectangularReflectionMapping;return t}
+
+/* ========== 텍스처 생성 — 고품질 ========== */
+function mkGrassTex(baseH=120,baseS=55,baseL=28,detail=18000){
+const w=1024,h=1024,c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
+// 베이스 — 자연스러운 색 변화
+for(let y=0;y<h;y++){
+const hue=baseH+Math.sin(y*.008)*5+Math.sin(y*.025)*3;
+const sat=baseS+Math.sin(y*.015)*6+Math.cos(y*.03)*4;
+const lit=baseL+Math.sin(y*.005)*2+Math.random()*1.5;
+x.fillStyle=`hsl(${hue},${sat}%,${lit}%)`;x.fillRect(0,y,w,1)}
+// 밝은/어두운 패치 — 더 많이, 더 부드럽게
+for(let i=0;i<50;i++){const px=Math.random()*w,py=Math.random()*h,pr=50+Math.random()*150;
+const bright=Math.random()>.4;
+const rg=x.createRadialGradient(px,py,0,px,py,pr);
+rg.addColorStop(0,bright?`rgba(140,220,90,${.05+Math.random()*.06})`:`rgba(20,60,10,${.03+Math.random()*.04})`);
+rg.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=rg;x.fillRect(px-pr,py-pr,pr*2,pr*2)}
+// 잔디 블레이드 — 더 많이, 더 세밀
+for(let i=0;i<detail;i++){
+const bx=Math.random()*w,by=Math.random()*h,bl=5+Math.random()*16;
+const hue=baseH-12+Math.random()*24;
+const sat=40+Math.random()*35;
+const lit=16+Math.random()*24;
+x.strokeStyle=`hsla(${hue},${sat}%,${lit}%,${.15+Math.random()*.3})`;
+x.lineWidth=.3+Math.random()*.7;x.beginPath();x.moveTo(bx,by);
+x.quadraticCurveTo(bx+(Math.random()-.5)*5,by-bl*.5,bx+(Math.random()-.5)*4,by-bl);x.stroke()}
+const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t}
+
+function mkSandTex(){
+const w=512,h=512,c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
+// 사실적 모래 — 따뜻한 베이지
+const bg=x.createRadialGradient(w/2,h/2,0,w/2,h/2,w*.7);
+bg.addColorStop(0,'#dcc488');bg.addColorStop(1,'#c8a868');
+x.fillStyle=bg;x.fillRect(0,0,w,h);
+for(let i=0;i<12000;i++){
+const r=175+Math.random()*65,g2=145+Math.random()*55,b=85+Math.random()*55;
+x.fillStyle=`rgba(${r},${g2},${b},${.08+Math.random()*.15})`;
+const s=.4+Math.random()*2.2;x.fillRect(Math.random()*w,Math.random()*h,s,s)}
+const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t}
+
+function mkWaterTex(){
+const w=512,h=512,c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
+const g=x.createLinearGradient(0,0,w,h);
+g.addColorStop(0,'#1a6699');g.addColorStop(.3,'#2288bb');g.addColorStop(.6,'#2a99cc');g.addColorStop(1,'#1a77aa');
+x.fillStyle=g;x.fillRect(0,0,w,h);
+// 반짝이는 수면
+for(let i=0;i<100;i++){
+const lx=Math.random()*w,ly=Math.random()*h;
+x.strokeStyle=`rgba(200,230,255,${.04+Math.random()*.08})`;
+x.lineWidth=.5+Math.random()*.5;x.beginPath();
+x.moveTo(lx,ly);x.quadraticCurveTo(lx+15+Math.random()*20,ly+(Math.random()-.5)*6,lx+30+Math.random()*40,ly+(Math.random()-.5)*10);x.stroke()}
+const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;return t}
+
+/* ========== 재질 ========== */
 function initMaterials(){
+const grassTex=mkGrassTex(122,58,26,18000);grassTex.repeat.set(20,20);grassTex.anisotropy=4;
+const fwTex=mkGrassTex(118,62,32,14000);fwTex.repeat.set(10,10);fwTex.anisotropy=4;
+const grnTex=mkGrassTex(132,68,36,10000);grnTex.repeat.set(5,5);grnTex.anisotropy=4;
+const roughTex=mkGrassTex(112,48,20,10000);roughTex.repeat.set(12,12);roughTex.anisotropy=4;
 M={
-grass:new THREE.MeshStandardMaterial({map:TEX.grass(),roughness:.82}),
-fairway:new THREE.MeshStandardMaterial({map:TEX.fairway(),roughness:.65}),
-green:new THREE.MeshStandardMaterial({map:TEX.green(),roughness:.45}),
-sand:new THREE.MeshStandardMaterial({map:TEX.sand(),roughness:.92}),
-water:new THREE.MeshStandardMaterial({map:TEX.water(),roughness:.08,metalness:.35,transparent:true,opacity:.82}),
-dirt:new THREE.MeshStandardMaterial({map:TEX.dirt(),roughness:.88}),
-bark:new THREE.MeshStandardMaterial({map:TEX.bark(),roughness:.88}),
-rough:new THREE.MeshStandardMaterial({map:TEX.rough(),roughness:.88}),
-white:new THREE.MeshStandardMaterial({color:0xfafafa,roughness:.25,metalness:.08}),
-red:new THREE.MeshStandardMaterial({color:0xcc2222,roughness:.45}),
-pole:new THREE.MeshStandardMaterial({color:0xe8e8e8,roughness:.25,metalness:.5}),
-tee:new THREE.MeshStandardMaterial({color:0x3da83d,roughness:.55}),
-ob:new THREE.MeshStandardMaterial({color:0xffffff,roughness:.5}),
-rock:new THREE.MeshStandardMaterial({color:0x7a7a7a,roughness:.82,metalness:.06}),
-skin:new THREE.MeshStandardMaterial({color:0xf2c4a0,roughness:.55,metalness:.02}),
-shirt:new THREE.MeshStandardMaterial({color:0x1e5cb8,roughness:.48,metalness:.04}),
-pants:new THREE.MeshStandardMaterial({color:0x2d3a4d,roughness:.58}),
-shoes:new THREE.MeshStandardMaterial({color:0x1a1a1a,roughness:.45,metalness:.1}),
-hat:new THREE.MeshStandardMaterial({color:0xf0f0f0,roughness:.45}),
-glove:new THREE.MeshStandardMaterial({color:0xe8e8e8,roughness:.45}),
-clubM:new THREE.MeshStandardMaterial({color:0xb0b0b0,roughness:.15,metalness:.85}),
+grass:new THREE.MeshStandardMaterial({map:grassTex,roughness:.82}),
+fairway:new THREE.MeshStandardMaterial({map:fwTex,roughness:.55}),
+green:new THREE.MeshStandardMaterial({map:grnTex,roughness:.35}),
+sand:new THREE.MeshStandardMaterial({map:mkSandTex(),roughness:.88,color:0xeeddaa}),
+water:new THREE.MeshStandardMaterial({map:mkWaterTex(),roughness:.05,metalness:.5,transparent:true,opacity:.82,color:0x88ccee}),
+dirt:new THREE.MeshStandardMaterial({color:0x9a8a6a,roughness:.85,map:mkSandTex()}),
+bark:new THREE.MeshStandardMaterial({color:0x4a2a0a,roughness:.88}),
+barkLight:new THREE.MeshStandardMaterial({color:0x6a4a2a,roughness:.85}),
+rough:new THREE.MeshStandardMaterial({map:roughTex,roughness:.85}),
+skin:new THREE.MeshStandardMaterial({color:0xf2c4a0,roughness:.5}),
+shirt:new THREE.MeshStandardMaterial({color:0x2266cc,roughness:.45}),
+pants:new THREE.MeshStandardMaterial({color:0x334455,roughness:.55}),
+shoes:new THREE.MeshStandardMaterial({color:0x222222,roughness:.4,metalness:.1}),
+hat:new THREE.MeshStandardMaterial({color:0xf5f5f5,roughness:.4}),
+glove:new THREE.MeshStandardMaterial({color:0xe8e8e8,roughness:.4}),
+hair:new THREE.MeshStandardMaterial({color:0x28180a,roughness:.65}),
+clubMetal:new THREE.MeshStandardMaterial({color:0xb8b8b8,roughness:.1,metalness:.88}),
 grip:new THREE.MeshStandardMaterial({color:0x2a2a2a,roughness:.8}),
-hair:new THREE.MeshStandardMaterial({color:0x28180a,roughness:.68,metalness:.03}),
-fl1:new THREE.MeshStandardMaterial({color:0xff6688,roughness:.6}),
-fl2:new THREE.MeshStandardMaterial({color:0xffaa33,roughness:.6}),
-fl3:new THREE.MeshStandardMaterial({color:0xaa44ff,roughness:.6})
+white:new THREE.MeshStandardMaterial({color:0xfafafa,roughness:.2}),
+red:new THREE.MeshStandardMaterial({color:0xcc2222,roughness:.4}),
+pole:new THREE.MeshStandardMaterial({color:0xe8e8e8,roughness:.2,metalness:.5}),
+tee:new THREE.MeshStandardMaterial({color:0x3da83d,roughness:.5}),
+ob:new THREE.MeshStandardMaterial({color:0xffffff,roughness:.5}),
+rock:new THREE.MeshStandardMaterial({color:0x6a6a6a,roughness:.82}),
+rockLight:new THREE.MeshStandardMaterial({color:0x8a8a7a,roughness:.78}),
+fl1:new THREE.MeshStandardMaterial({color:0xff5577,roughness:.45,emissive:0x441111,emissiveIntensity:.15}),
+fl2:new THREE.MeshStandardMaterial({color:0xffaa22,roughness:.45,emissive:0x442211,emissiveIntensity:.15}),
+fl3:new THREE.MeshStandardMaterial({color:0xdd44ff,roughness:.45,emissive:0x330044,emissiveIntensity:.15}),
+fl4:new THREE.MeshStandardMaterial({color:0xffee44,roughness:.45,emissive:0x333300,emissiveIntensity:.1}),
+leaf:new THREE.MeshStandardMaterial({color:0x227733,roughness:.7,side:THREE.DoubleSide})
 }}
 
-/* ===== 3D GOLFER ===== */
+/* ========== 지형 높이 함수 — 더 풍부한 언덕 ========== */
+function gndH(x,z){
+return Math.sin(x*.03)*Math.cos(z*.03)*2.8
++Math.sin(x*.07+z*.05)*1.2
++Math.cos(x*.04-z*.06)*.9
++Math.sin(x*.015+z*.012)*1.8
++Math.cos(x*.1+z*.08)*.4}
+
+/* ========== 골퍼 캐릭터 — 골프킹 스타일 ========== */
 function createGolfer(){
-const g=new THREE.Group();
-const SEG=12; // Higher poly for smoother look
+const g=new THREE.Group(),S=14;
+function mk(geo,mat,x,y,z,shadow=true){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);if(shadow)m.castShadow=true;return m}
+
+// 몸통
 const torso=new THREE.Group();torso.name='torso';
-// Torso — slightly tapered, rounder
-const torsoGeo=new THREE.CylinderGeometry(.135,.115,.40,SEG);
-torso.add(Object.assign(new THREE.Mesh(torsoGeo,M.shirt),{castShadow:true}));
-// Collar detail
-const collar=new THREE.Mesh(new THREE.TorusGeometry(.12,.014,8,SEG),M.shirt);
-collar.position.y=.19;collar.rotation.x=Math.PI/2;torso.add(collar);
-// Shoulder pads for more natural silhouette
-const lShd=new THREE.Mesh(new THREE.SphereGeometry(.048,8,6),M.shirt);lShd.position.set(.14,.16,0);lShd.scale.set(1,.7,1);torso.add(lShd);
-const rShd=new THREE.Mesh(new THREE.SphereGeometry(.048,8,6),M.shirt);rShd.position.set(-.14,.16,0);rShd.scale.set(1,.7,1);torso.add(rShd);
-torso.position.y=.82;g.add(torso);
-// Hips + Belt
+torso.add(mk(new THREE.CylinderGeometry(.14,.12,.42,S),M.shirt,0,0,0));
+// 칼라
+const collar=mk(new THREE.TorusGeometry(.125,.015,8,S),M.shirt,0,.2,0,false);
+collar.rotation.x=Math.PI/2;torso.add(collar);
+// 어깨 패드
+for(const sx of[-1,1]){const sh=mk(new THREE.SphereGeometry(.06,8,6),M.shirt,sx*.16,.18,0,false);sh.scale.set(1,.65,1);torso.add(sh)}
+torso.position.y=.85;g.add(torso);
+
+// 골반+벨트
 const hips=new THREE.Group();hips.name='hips';
-hips.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(.115,.125,.13,SEG),M.pants),{castShadow:true}));
-hips.position.y=.6;g.add(hips);
-const belt=new THREE.Mesh(new THREE.TorusGeometry(.118,.012,8,20),new THREE.MeshStandardMaterial({color:0x3a2a1a,roughness:.5,metalness:.2}));
-belt.rotation.x=Math.PI/2;belt.position.y=.665;g.add(belt);
-// Belt buckle
-const buckle=new THREE.Mesh(new THREE.BoxGeometry(.022,.018,.006),new THREE.MeshStandardMaterial({color:0xc0a040,roughness:.3,metalness:.6}));
-buckle.position.set(0,.665,.12);g.add(buckle);
-// Head + Face — rounder, more detailed
+hips.add(mk(new THREE.CylinderGeometry(.12,.135,.16,S),M.pants,0,0,0));
+hips.position.y=.62;g.add(hips);
+// 벨트
+const belt=mk(new THREE.TorusGeometry(.128,.014,8,20),new THREE.MeshStandardMaterial({color:0x3a2a1a,roughness:.4,metalness:.25}),0,.69,0,false);
+belt.rotation.x=Math.PI/2;g.add(belt);
+
+// 머리
 const head=new THREE.Group();head.name='head';
-// Main head shape
-const headGeo=new THREE.SphereGeometry(.092,14,12);
-head.add(Object.assign(new THREE.Mesh(headGeo,M.skin),{castShadow:true}));
-// Ears
-for(const sx of[-.085,.085]){const ear=new THREE.Mesh(new THREE.SphereGeometry(.018,8,6),M.skin);ear.position.set(sx,-.01,.005);ear.scale.set(.6,1,.6);head.add(ear)}
-// Eyes - with white sclera
-for(const sx of[-.03,.03]){
-const sclera=new THREE.Mesh(new THREE.SphereGeometry(.014,8,6),new THREE.MeshBasicMaterial({color:0xf8f8f8}));
-sclera.position.set(sx,.006,.08);sclera.scale.set(1,.7,1);head.add(sclera);
-const iris=new THREE.Mesh(new THREE.SphereGeometry(.007,6,4),new THREE.MeshBasicMaterial({color:0x2a1a0a}));
-iris.position.set(sx,.006,.088);head.add(iris)}
-// Eyebrows
-for(const sx of[-.03,.03]){const brow=new THREE.Mesh(new THREE.BoxGeometry(.022,.005,.005),M.hair);brow.position.set(sx,.025,.082);head.add(brow)}
-// Nose
-const nose=new THREE.Mesh(new THREE.CylinderGeometry(.006,.01,.02,6),M.skin);
-nose.position.set(0,-.008,.088);nose.rotation.x=-.3;head.add(nose);
-// Mouth/smile line
-const mouth=new THREE.Mesh(new THREE.TorusGeometry(.015,.003,4,8,Math.PI),new THREE.MeshBasicMaterial({color:0xc08060}));
-mouth.position.set(0,-.028,.082);mouth.rotation.x=.1;head.add(mouth);
-// Hair + Cap
-const hairGeo=new THREE.SphereGeometry(.094,14,10,0,Math.PI*2,0,Math.PI*.48);
-head.add(new THREE.Mesh(hairGeo,M.hair));
-// Sideburns
-for(const sx of[-.078,.078]){const sb=new THREE.Mesh(new THREE.BoxGeometry(.012,.03,.012),M.hair);sb.position.set(sx,-.02,.03);head.add(sb)}
-const cap=new THREE.Mesh(new THREE.CylinderGeometry(.098,.098,.032,14),M.hat);cap.position.y=.062;cap.castShadow=true;head.add(cap);
-const visor=new THREE.Mesh(new THREE.BoxGeometry(.09,.008,.065),M.hat);visor.position.set(0,.052,.085);head.add(visor);
-// Cap logo dot
-const logo=new THREE.Mesh(new THREE.CircleGeometry(.012,8),new THREE.MeshBasicMaterial({color:0x2255aa}));
-logo.position.set(0,.045,.099);head.add(logo);
-head.position.y=.33;torso.add(head);
-// Arms — higher poly, natural taper
+head.add(mk(new THREE.SphereGeometry(.1,S,10),M.skin,0,0,0));
+// 귀
+for(const sx of[-1,1])head.add(mk(new THREE.SphereGeometry(.022,8,6),M.skin,sx*.092,-.01,0,false));
+// 눈 (흰자+동자+하이라이트)
+for(const sx of[-1,1]){
+head.add(mk(new THREE.SphereGeometry(.016,8,6),new THREE.MeshBasicMaterial({color:0xf8f8f8}),sx*.034,.01,.085,false));
+head.add(mk(new THREE.SphereGeometry(.009,6,4),new THREE.MeshBasicMaterial({color:0x1a0a0a}),sx*.034,.01,.093,false));
+head.add(mk(new THREE.SphereGeometry(.003,4,3),new THREE.MeshBasicMaterial({color:0xffffff}),sx*.034+.003,.015,.096,false))}
+// 눈썹
+for(const sx of[-1,1])head.add(mk(new THREE.BoxGeometry(.025,.006,.006),M.hair,sx*.034,.032,.087,false));
+// 코
+const nose=mk(new THREE.CylinderGeometry(.008,.013,.024,6),M.skin,0,-.004,.093,false);nose.rotation.x=-.3;head.add(nose);
+// 입 — 미소
+const mouth=mk(new THREE.TorusGeometry(.018,.003,4,10,Math.PI),new THREE.MeshBasicMaterial({color:0xc08060}),0,-.032,.087,false);mouth.rotation.x=.1;head.add(mouth);
+// 머리카락
+head.add(mk(new THREE.SphereGeometry(.102,S,10,0,Math.PI*2,0,Math.PI*.48),M.hair,0,.002,0,false));
+// 모자
+const capBody=mk(new THREE.CylinderGeometry(.105,.105,.04,S),M.hat,0,.07,0);head.add(capBody);
+head.add(mk(new THREE.BoxGeometry(.1,.008,.075),M.hat,0,.06,.092,false));
+head.position.y=.34;torso.add(head);
+
+// 팔
 function mkArm(name,side){
 const arm=new THREE.Group();arm.name=name;
-arm.add(mkM(new THREE.CylinderGeometry(.035,.030,.21,SEG),M.shirt,0,-.105,0,true));
+arm.add(mk(new THREE.CylinderGeometry(.038,.034,.22,S),M.shirt,0,-.11,0));
 const fore=new THREE.Group();fore.name=name.replace('Arm','Fore');
-fore.add(mkM(new THREE.CylinderGeometry(.030,.024,.19,SEG),M.skin,0,-.095,0,true));
-// Wrist detail
-fore.add(mkM(new THREE.CylinderGeometry(.025,.025,.015,8),M.skin,0,-.175,0,false));
-// Hand — slightly bigger, more visible
-const handMat=side<0?M.glove:M.skin;
-fore.add(mkM(new THREE.SphereGeometry(.025,8,6),handMat,0,-.19,0,false));
-fore.position.y=-.21;arm.add(fore);
-arm.position.set(side*.165,.05,0);torso.add(arm);return{arm,fore}}
+fore.add(mk(new THREE.CylinderGeometry(.034,.026,.2,S),M.skin,0,-.1,0));
+fore.add(mk(new THREE.SphereGeometry(.028,8,6),side<0?M.glove:M.skin,0,-.195,0,false));
+fore.position.y=-.22;arm.add(fore);
+arm.position.set(side*.18,.06,0);torso.add(arm);return{arm,fore}}
 const la=mkArm('lArm',1),ra=mkArm('rArm',-1);
-// Legs — thicker, more natural
+
+// 다리
 function mkLeg(name,side){
 const leg=new THREE.Group();leg.name=name;
-leg.add(mkM(new THREE.CylinderGeometry(.052,.042,.27,SEG),M.pants,0,-.135,0,true));
+leg.add(mk(new THREE.CylinderGeometry(.056,.046,.28,S),M.pants,0,-.14,0));
 const shin=new THREE.Group();shin.name=name.replace('Leg','Shin');
-shin.add(mkM(new THREE.CylinderGeometry(.042,.035,.27,SEG),M.pants,0,-.135,0,true));
-// Ankle
-shin.add(mkM(new THREE.CylinderGeometry(.036,.036,.02,8),M.pants,0,-.26,0,false));
-// Shoe — rounded box shape
-const shoeGeo=new THREE.BoxGeometry(.052,.032,.10);shoeGeo.translate(0,0,.01);
-shin.add(mkM(shoeGeo,M.shoes,0,-.28,.015,true));
-shin.position.y=-.27;leg.add(shin);
-leg.position.set(side*.068,0,0);hips.add(leg);return{leg,shin}}
+shin.add(mk(new THREE.CylinderGeometry(.046,.038,.28,S),M.pants,0,-.14,0));
+const shoeG=new THREE.BoxGeometry(.058,.038,.12);shoeG.translate(0,0,.012);
+shin.add(mk(shoeG,M.shoes,0,-.29,.015));
+shin.position.y=-.28;leg.add(shin);
+leg.position.set(side*.075,0,0);hips.add(leg);return{leg,shin}}
 const ll=mkLeg('lLeg',1),rl=mkLeg('rLeg',-1);
-// Golf Club
+
+// 파크골프 클럽
 const club=new THREE.Group();club.name='club';
-const shaft=new THREE.Mesh(new THREE.CylinderGeometry(.005,.005,.65,8),M.clubM);shaft.position.y=-.325;club.add(shaft);
-club.add(mkM(new THREE.CylinderGeometry(.009,.008,.14,8),M.grip,0,0,0,false));
-const ch=new THREE.Mesh(new THREE.BoxGeometry(.058,.02,.038),M.clubM);ch.position.y=-.65;ch.castShadow=true;club.add(ch);
-club.position.set(0,-.18,0);la.fore.add(club);
-// Shadow disc — softer
-const shd=new THREE.Mesh(new THREE.CircleGeometry(.22,16),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.18,depthWrite:false}));
-shd.rotation.x=-Math.PI/2;shd.position.y=.003;g.add(shd);
+club.add(mk(new THREE.CylinderGeometry(.006,.006,.55,8),M.clubMetal,0,-.275,0,false));
+club.add(mk(new THREE.CylinderGeometry(.01,.009,.12,8),M.grip,0,0,0,false));
+const headGeo=new THREE.BoxGeometry(.08,.03,.048);
+club.add(mk(headGeo,M.clubMetal,0,-.56,0));
+club.position.set(0,-.19,0);la.fore.add(club);
+
+// 그림자
+const shadow=new THREE.Mesh(new THREE.CircleGeometry(.28,16),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.22,depthWrite:false}));
+shadow.rotation.x=-Math.PI/2;shadow.position.y=.003;g.add(shadow);
+
 g.userData={torso,hips,head,lArm:la.arm,lFore:la.fore,rArm:ra.arm,rFore:ra.fore,lLeg:ll.leg,lShin:ll.shin,rLeg:rl.leg,rShin:rl.shin,club,torsoBaseY:torso.position.y};
-g.scale.set(2.0,2.0,2.0);
+g.scale.set(0.7,0.7,0.7);
 golfer=g;scene.add(g);golfer.visible=false;
 return g}
 
-/* ===== POSE SYSTEM ===== */
+/* ========== 포즈 시스템 ========== */
 const P={
 idle(g){const u=g.userData;u.torso.rotation.set(0,0,0);u.hips.rotation.set(0,0,0);u.head.rotation.set(0,0,0);
 u.lArm.rotation.set(.08,0,0);u.lFore.rotation.set(0,0,0);u.rArm.rotation.set(.08,0,0);u.rFore.rotation.set(0,0,0);
@@ -500,8 +517,7 @@ back(g,t){const u=g.userData,T=clamp(t,0,1),e=T<.5?2*T*T:1-Math.pow(-2*T+2,2)/2;
 u.torso.rotation.set(.18-e*.12,e*.65,e*.06);u.hips.rotation.set(.06,e*.18,0);u.head.rotation.set(.05,-e*.22,0);
 u.lArm.rotation.set(.55-e*.9,e*.35,.14+e*.22);u.lFore.rotation.set(.22+e*1.3,0,0);
 u.rArm.rotation.set(.55+e*.35,-e*.45,-.14-e*.32);u.rFore.rotation.set(.22+e*.85,0,0);
-u.lLeg.rotation.set(-.04+e*.06,0,-.03);u.lShin.rotation.set(.07,0,0);
-u.rLeg.rotation.set(-.04-e*.09,0,.03);u.rShin.rotation.set(.07+e*.12,0,0)},
+u.lLeg.rotation.set(-.04+e*.06,0,-.03);u.rLeg.rotation.set(-.04-e*.09,0,.03);u.rShin.rotation.set(.07+e*.12,0,0)},
 down(g,t){const u=g.userData,T=clamp(t,0,1),e=T*T*T;
 u.torso.rotation.set(lerp(.06,.32,e),lerp(.65,-.35,e),lerp(.06,0,e));
 u.hips.rotation.set(.06,lerp(.18,-.22,e),0);u.head.rotation.set(.05,lerp(-.22,.12,e),0);
@@ -509,239 +525,451 @@ u.lArm.rotation.set(lerp(-.35,1.05,e),lerp(.35,-.12,e),lerp(.36,.04,e));u.lFore.
 u.rArm.rotation.set(lerp(.9,.18,e),lerp(-.45,.22,e),lerp(-.46,.06,e));u.rFore.rotation.set(lerp(1.07,.18,e),0,0);
 u.lLeg.rotation.set(lerp(.02,-.09,e),0,-.03);u.rLeg.rotation.set(lerp(-.13,.02,e),0,.03);u.rShin.rotation.set(lerp(.19,.07,e),0,0)},
 impact(g){const u=g.userData;u.torso.rotation.set(.32,-.35,0);u.hips.rotation.set(.06,-.22,0);u.head.rotation.set(0,.12,0);
-u.lArm.rotation.set(1.05,-.12,.04);u.lFore.rotation.set(.2,0,0);u.rArm.rotation.set(.18,.22,.06);u.rFore.rotation.set(.18,0,0);
-u.lLeg.rotation.set(-.09,0,-.03);u.rLeg.rotation.set(.02,0,.03);u.rShin.rotation.set(.07,0,0)},
+u.lArm.rotation.set(1.05,-.12,.04);u.lFore.rotation.set(.2,0,0);u.rArm.rotation.set(.18,.22,.06);u.rFore.rotation.set(.18,0,0)},
 follow(g,t){const u=g.userData,T=clamp(t,0,1),e=1-Math.pow(1-T,3);
 u.torso.rotation.set(lerp(.32,.22,e),lerp(-.35,-.9,e),-e*.06);u.hips.rotation.set(.04,lerp(-.22,-.55,e),0);
 u.head.rotation.set(-e*.12,lerp(.12,.47,e),0);
 u.lArm.rotation.set(lerp(1.05,-.55,e),lerp(-.12,-.35,e),lerp(.04,-.18,e));u.lFore.rotation.set(lerp(.2,.72,e),0,0);
-u.rArm.rotation.set(lerp(.18,-.65,e),lerp(.22,.65,e),lerp(.06,.35,e));u.rFore.rotation.set(lerp(.18,.85,e),0,0);
-u.lLeg.rotation.set(lerp(-.09,-.02,e),0,-.03);u.rLeg.rotation.set(lerp(.02,-.18,e),0,.03);u.rShin.rotation.set(lerp(.07,.29,e),0,0)},
+u.rArm.rotation.set(lerp(.18,-.65,e),lerp(.22,.65,e),lerp(.06,.35,e));u.rFore.rotation.set(lerp(.18,.85,e),0,0)},
 paddr(g){const u=g.userData;u.torso.rotation.set(.26,0,0);u.hips.rotation.set(.08,0,0);u.head.rotation.set(.1,0,0);
-u.lArm.rotation.set(.52,0,.07);u.lFore.rotation.set(.14,0,0);u.rArm.rotation.set(.52,0,-.07);u.rFore.rotation.set(.14,0,0);
-u.lLeg.rotation.set(-.03,0,-.04);u.rLeg.rotation.set(-.03,0,.04);u.lShin.rotation.set(.04,0,0);u.rShin.rotation.set(.04,0,0)},
+u.lArm.rotation.set(.52,0,.07);u.lFore.rotation.set(.14,0,0);u.rArm.rotation.set(.52,0,-.07);u.rFore.rotation.set(.14,0,0)},
 pstroke(g,t){const u=g.userData;u.torso.rotation.set(.26,0,0);
 u.lArm.rotation.set(.52+t*.22,0,.07);u.lFore.rotation.set(.14-t*.1,0,0);
 u.rArm.rotation.set(.52+t*.22,0,-.07);u.rFore.rotation.set(.14-t*.1,0,0)},
 celebrate(g){const u=g.userData;u.torso.rotation.set(-.08,0,0);u.hips.rotation.set(0,0,0);u.head.rotation.set(-.15,0,0);
-u.lArm.rotation.set(-1.3,0,.35);u.lFore.rotation.set(0,0,0);u.rArm.rotation.set(-1.3,0,-.35);u.rFore.rotation.set(0,0,0);
-u.lLeg.rotation.set(0,0,-.02);u.rLeg.rotation.set(0,0,.02);u.lShin.rotation.set(0,0,0);u.rShin.rotation.set(0,0,0)}
+u.lArm.rotation.set(-1.3,0,.35);u.lFore.rotation.set(0,0,0);u.rArm.rotation.set(-1.3,0,-.35);u.rFore.rotation.set(0,0,0)}
 };
 
-/* ===== SWING ANIMATION ===== */
-const SA={active:false,phase:'idle',time:0,power:0,isPutt:false,cb:null,
+/* ========== 스윙 애니메이션 ========== */
+const SA={active:false,phase:'idle',time:0,power:0,isPutt:false,
 dur:{back:.55,down:.15,hit:.04,follow:.75},
-start(pwr,putt,cb){this.active=true;this.phase=putt?'pb':'back';this.time=0;this.power=pwr;this.isPutt=putt;this.cb=cb;if(!putt)AUD.play('swing')},
+start(pwr,putt){this.active=true;this.phase=putt?'pb':'back';this.time=0;this.power=pwr;this.isPutt=putt;if(!putt)AUD.play('swing')},
 update(dt){if(!this.active||!golfer)return;this.time+=dt;this.isPutt?this._putt():this._full()},
 _full(){const d=this.dur;
 if(this.phase==='back'){const t=this.time/d.back;P.back(golfer,t);if(t>=1){this.phase='down';this.time=0}}
-else if(this.phase==='down'){const t=this.time/d.down;P.down(golfer,t);if(t>=1){this.phase='hit';this.time=0;if(this.cb){this.cb();this.cb=null}vib(30)}}
-else if(this.phase==='hit'){const t=this.time/d.hit;P.impact(golfer);if(t>=1){this.phase='follow';this.time=0}}
+else if(this.phase==='down'){const t=this.time/d.down;P.down(golfer,t);if(t>=1){this.phase='hit';this.time=0;vib(30)}}
+else if(this.phase==='hit'){P.impact(golfer);if(this.time/d.hit>=1){this.phase='follow';this.time=0}}
 else if(this.phase==='follow'){const t=this.time/d.follow;P.follow(golfer,t);if(t>=1){this.active=false;this.phase='idle'}}},
 _putt(){const T=this.time/.55;
 if(T<.38)P.pstroke(golfer,-(T/.38));
-else if(T<.58){P.pstroke(golfer,-1+(T-.38)/.2*2);if(T>=.48&&this.cb){this.cb();this.cb=null;vib(15)}}
+else if(T<.58){P.pstroke(golfer,-1+(T-.38)/.2*2);if(T>=.48)vib(15)}
 else if(T<1)P.pstroke(golfer,1-(T-.58)/.42);
 else{this.active=false;this.phase='idle';P.paddr(golfer)}},
 reset(){this.active=false;this.phase='idle';this.time=0}};
 
-/* ===== TREES ===== */
-function mkTree(type,x,z,sc=1){const g=new THREE.Group(),s=(.7+Math.random()*.6)*sc;
-if(type==='palm'){const pts=[];for(let i=0;i<=10;i++){const t=i/10;pts.push(new THREE.Vector3(Math.sin(t*1.5)*.3*s,t*3*s,Math.cos(t*.5)*.1*s))}
-const curve=new THREE.CatmullRomCurve3(pts);const trunk=new THREE.Mesh(new THREE.TubeGeometry(curve,12,.06*s,6,false),M.bark);trunk.castShadow=true;g.add(trunk);
-for(let i=0;i<7;i++){const a=i/7*Math.PI*2,len=1.2*s+Math.random()*.5*s,sh=new THREE.Shape();sh.moveTo(0,0);sh.quadraticCurveTo(len*.3,.15*s,len,-.1*s);sh.quadraticCurveTo(len*.3,-.05*s,0,0);
-const fr=new THREE.Mesh(new THREE.ShapeGeometry(sh),new THREE.MeshStandardMaterial({color:0x228833,roughness:.7,side:THREE.DoubleSide}));fr.position.copy(pts[10]);fr.rotation.set(-.3+Math.random()*.3,a,Math.random()*.2-.1);fr.castShadow=true;g.add(fr)}}
-else if(type==='pine'){const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.04*s,.06*s,2*s,6),M.bark);trunk.position.y=s;trunk.castShadow=true;g.add(trunk);
-for(let i=0;i<4;i++){const y=.8*s+i*.5*s,r=(.7-i*.12)*s,h=.6*s;const cone=new THREE.Mesh(new THREE.ConeGeometry(r,h,8),new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(.28+Math.random()*.05,.6,.25+i*.05),roughness:.78}));cone.position.y=y+h/2;cone.castShadow=true;g.add(cone)}}
-else{const trunk=new THREE.Mesh(new THREE.CylinderGeometry(.04*s,.07*s,1.5*s,6),M.bark);trunk.position.y=.75*s;trunk.castShadow=true;g.add(trunk);
-const cc=[0x2d8a2d,0x3a9a3a,0x228822,0x44aa44];for(let i=0;i<5;i++){const r=(.4+Math.random()*.3)*s;const sp=new THREE.Mesh(new THREE.SphereGeometry(r,8,6),new THREE.MeshStandardMaterial({color:cc[i%4],roughness:.72}));sp.position.set((Math.random()-.5)*.3*s,1.5*s+Math.random()*.5*s,(Math.random()-.5)*.3*s);sp.castShadow=true;g.add(sp)}}
-g.position.set(x,gndH(x,z),z);return g}
+/* ========== 나무 생성 — 크고 풍성한 나무 ========== */
+function mkTree(type,x,z,sc=1){
+const g=new THREE.Group();
+const s=(2.8+Math.random()*2.0)*sc;
+const h=gndH(x,z);
 
-/* ===== MOUNTAINS ===== */
-function mkMountains(){const g=new THREE.Group();
-const layerColors=[[0x2a5a2a,0x4a8a4a],[0x3a6a3a,0x5a9a5a],[0x5a8a5a,0x7aaa7a]];
-for(let layer=0;layer<3;layer++){const dist=75+layer*38,peaks=12+layer*5;
-const verts=[],idx=[],colors=[];
-for(let i=0;i<=peaks;i++){const a=(i/peaks)*Math.PI*2,r=dist+Math.random()*15;
-const x=Math.cos(a)*r,z=Math.sin(a)*r,h=(12+Math.random()*22)*(1-layer*.22);
-verts.push(x,0,z,x,h,z);
-// Base color
-const bc=new THREE.Color(layerColors[layer][0]);colors.push(bc.r,bc.g,bc.b);
-// Peak color - snow caps on tallest peaks
-const peak=h>18?new THREE.Color(0xe8e8f0):h>14?new THREE.Color(0x8aaa7a):new THREE.Color(layerColors[layer][1]);
-colors.push(peak.r,peak.g,peak.b);
+if(type==='palm'){
+// 야자수 — 곡선 줄기 + 큰 잎
+const pts=[];for(let i=0;i<=12;i++){const t=i/12;
+pts.push(new THREE.Vector3(Math.sin(t*1.2)*.5*s,t*3.2*s,Math.cos(t*.4)*.15*s))}
+const curve=new THREE.CatmullRomCurve3(pts);
+const trunk=new THREE.Mesh(new THREE.TubeGeometry(curve,16,.07*s,7,false),M.barkLight);
+trunk.castShadow=true;trunk.receiveShadow=true;g.add(trunk);
+// 코코넛
+for(let i=0;i<3;i++){const ca=i/3*Math.PI*2,cr=.08*s;
+const nut=new THREE.Mesh(new THREE.SphereGeometry(.05*s,6,5),new THREE.MeshStandardMaterial({color:0x6a4422,roughness:.7}));
+nut.position.set(pts[12].x+Math.cos(ca)*cr,pts[12].y-.1*s,pts[12].z+Math.sin(ca)*cr);
+g.add(nut)}
+// 야자 잎 — 길고 곡선
+for(let i=0;i<8;i++){const a=i/8*Math.PI*2,len=1.8*s+Math.random()*.8*s;
+const lpts=[];for(let j=0;j<=8;j++){const jt=j/8;
+lpts.push(new THREE.Vector3(Math.cos(a)*jt*len,pts[12].y+.1*s-jt*jt*len*.35,Math.sin(a)*jt*len+pts[12].z))}
+lpts[0].set(pts[12].x,pts[12].y+.1*s,pts[12].z);
+for(let j=1;j<=8;j++){lpts[j].x+=pts[12].x;lpts[j].z+=pts[12].z-pts[12].z+lpts[j].z}
+// 잎 평면
+const leafG=new THREE.PlaneGeometry(len,.15*s,8,1);
+const lpa=leafG.attributes.position.array;
+for(let j=0;j<lpa.length;j+=3){
+const jt=lpa[j]/len+.5;const droopY=-jt*jt*len*.3;
+lpa[j+1]+=droopY;lpa[j]=Math.cos(a+lpa[j+1]*.001)*jt*len;
+lpa[j+2]=Math.sin(a+lpa[j+1]*.001)*jt*len}
+leafG.computeVertexNormals();
+const leafC=new THREE.Color().setHSL(.3+Math.random()*.06,.65,.25+Math.random()*.08);
+const lf=new THREE.Mesh(leafG,new THREE.MeshStandardMaterial({color:leafC,roughness:.7,side:THREE.DoubleSide}));
+lf.position.copy(pts[12]);lf.castShadow=true;g.add(lf)}}
+else if(type==='pine'){
+// 소나무 — 두꺼운 줄기 + 겹겹 원뿔 캐노피
+const trH=2.5*s;
+const ptrunk=new THREE.Mesh(new THREE.CylinderGeometry(.06*s,.1*s,trH,8),M.bark);
+ptrunk.position.set(0,trH/2,0);ptrunk.castShadow=true;ptrunk.receiveShadow=true;g.add(ptrunk);
+// 5겹 캐노피
+for(let i=0;i<5;i++){
+const y=1.0*s+i*.55*s;
+const r=(.9-i*.12)*s;
+const ch=.7*s;
+const leafC=new THREE.Color().setHSL(.26+i*.01,.55+Math.random()*.15,.18+i*.04);
+const cone=new THREE.Mesh(new THREE.ConeGeometry(r,ch,10),new THREE.MeshStandardMaterial({color:leafC,roughness:.72}));
+cone.position.set(0,y+ch/2,0);cone.castShadow=true;cone.receiveShadow=true;g.add(cone)}}
+else{
+// 활엽수 — 두꺼운 줄기 + 풍성한 구형 캐노피
+const trH=1.8*s;
+const dtrunk=new THREE.Mesh(new THREE.CylinderGeometry(.06*s,.1*s,trH,8),M.bark);
+dtrunk.position.set(0,trH/2,0);dtrunk.castShadow=true;dtrunk.receiveShadow=true;g.add(dtrunk);
+// 가지
+for(const sx of[-1,1]){
+const brLen=.4*s;
+const br=new THREE.Mesh(new THREE.CylinderGeometry(.02*s,.03*s,brLen,5),M.bark);
+br.position.set(sx*.12*s,trH*.7,0);br.rotation.z=sx*-.6;br.castShadow=true;g.add(br)}
+// 풍성한 캐노피 — 8개 구체 클러스터
+const cc=[0x2a8a2a,0x338833,0x228822,0x3a993a,0x44aa44,0x2d7a2d];
+for(let i=0;i<8;i++){
+const r=(.45+Math.random()*.35)*s;
+const leafC=new THREE.Color(cc[Math.floor(Math.random()*cc.length)]);
+const sp=new THREE.Mesh(new THREE.SphereGeometry(r,8,7),new THREE.MeshStandardMaterial({color:leafC,roughness:.68}));
+const ang=Math.random()*Math.PI*2,dist2=Math.random()*.3*s;
+sp.position.set(Math.cos(ang)*dist2,trH+.2*s+Math.random()*.4*s,Math.sin(ang)*dist2);
+sp.castShadow=true;sp.receiveShadow=true;g.add(sp)}}
+// 나무 그림자 원
+const tShadow=new THREE.Mesh(new THREE.CircleGeometry(.5*s,10),new THREE.MeshBasicMaterial({color:0x001100,transparent:true,opacity:.08,depthWrite:false}));
+tShadow.rotation.x=-Math.PI/2;tShadow.position.set(0,.01,0);g.add(tShadow);
+
+g.position.set(x,h,z);return g}
+
+/* ========== 산 — 더 크고 웅장한 배경산 ========== */
+function mkMountains(){
+const g=new THREE.Group();
+const colors=[[0x2a5a2a,0x4a8a4a],[0x3a6a3a,0x5a9a5a],[0x4a7a4a,0x6aaa6a]];
+for(let layer=0;layer<3;layer++){
+const dist=100+layer*45,peaks=16+layer*6;
+const verts=[],idx=[],cols=[];
+for(let i=0;i<=peaks;i++){
+const a=(i/peaks)*Math.PI*2;
+const r=dist+Math.random()*25;
+const x=Math.cos(a)*r,z=Math.sin(a)*r;
+const mh=(20+Math.random()*35)*(1-layer*.18);
+verts.push(x,-2,z,x,mh,z);
+const bc=new THREE.Color(colors[layer][0]);cols.push(bc.r,bc.g,bc.b);
+const pc=mh>30?new THREE.Color(0xe8e8f0):mh>22?new THREE.Color(0x8aaa7a):new THREE.Color(colors[layer][1]);
+cols.push(pc.r,pc.g,pc.b);
 if(i<peaks){const b=i*2;idx.push(b,b+1,b+2,b+1,b+3,b+2)}}
-const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
-geo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+const geo=new THREE.BufferGeometry();
+geo.setAttribute('position',new THREE.Float32BufferAttribute(verts,3));
+geo.setAttribute('color',new THREE.Float32BufferAttribute(cols,3));
 geo.setIndex(idx);geo.computeVertexNormals();
-const m=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.78,flatShading:true}));m.receiveShadow=true;g.add(m)}
-// Distant haze layer
-const hazeGeo=new THREE.RingGeometry(110,180,32);
-const hazeMat=new THREE.MeshBasicMaterial({color:0xc0ddf0,transparent:true,opacity:.15,side:THREE.DoubleSide,depthWrite:false});
-const haze=new THREE.Mesh(hazeGeo,hazeMat);haze.rotation.x=-Math.PI/2;haze.position.y=2;g.add(haze);
+const mtn=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({vertexColors:true,roughness:.72,flatShading:true}));
+mtn.receiveShadow=true;g.add(mtn)}
 return g}
 
-/* ===== COURSE BUILDER ===== */
-function buildCourse(ci,hi){if(grp)scene.remove(grp);grp=new THREE.Group();bunks=[];waters=[];fwPath=[];
+/* ========== 코스 빌더 ========== */
+function buildCourse(ci,hi){
+if(grp)scene.remove(grp);
+grp=new THREE.Group();bunks=[];waters=[];fwPath=[];
 const c=COURSES[ci],seed=ci*100+hi,rng=mulberry32(seed),dist=c.dist[hi];
-const _teeX=0,_teeZ=0,ang=rng()*Math.PI*.4-.2,_holeX=Math.sin(ang)*dist*.3,_holeZ=-dist*.3;
-teeP=new THREE.Vector3(_teeX,gndH(_teeX,_teeZ),_teeZ);holeP=new THREE.Vector3(_holeX,gndH(_holeX,_holeZ),_holeZ);
-// Ground
-const gndGeo=new THREE.PlaneGeometry(140,140,80,80),pa=gndGeo.attributes.position.array;
-for(let i=0;i<pa.length;i+=3){const gx=pa[i],gy=pa[i+1];pa[i+2]=Math.sin(gx*.04)*Math.cos(gy*.04)*1.4+Math.sin(gx*.1+gy*.07)*.7+Math.cos(gx*.06-gy*.09)*.5+Math.sin(gx*.02+gy*.015)*.9}
-gndGeo.computeVertexNormals();const gnd=new THREE.Mesh(gndGeo,M.grass);gnd.rotation.x=-Math.PI/2;gnd.receiveShadow=true;grp.add(gnd);
-// Extended ground
-const gnd2=new THREE.Mesh(new THREE.PlaneGeometry(300,300),M.grass);gnd2.rotation.x=-Math.PI/2;gnd2.position.y=-.05;gnd2.receiveShadow=true;grp.add(gnd2);
-// Fairway
-const midX=(teeP.x+holeP.x)/2+(rng()-.5)*dist*.15;
-for(let i=0;i<=20;i++){const t=i/20,x=teeP.x*(1-t)*(1-t)+2*midX*t*(1-t)+holeP.x*t*t,z=teeP.z*(1-t)+holeP.z*t;fwPath.push(new THREE.Vector3(x,gndH(x,z)+.01,z))}
-const fwW=2.8+dist*.015;
-for(let i=0;i<fwPath.length-1;i++){const p1=fwPath[i],p2=fwPath[i+1],dx=p2.x-p1.x,dz=p2.z-p1.z,len=Math.sqrt(dx*dx+dz*dz);
-const fw=new THREE.Mesh(new THREE.PlaneGeometry(fwW,len),M.fairway);fw.rotation.x=-Math.PI/2;fw.rotation.z=-Math.atan2(dz,dx)+Math.PI/2;
-const fwY=gndH((p1.x+p2.x)/2,(p1.z+p2.z)/2);
-fw.position.set((p1.x+p2.x)/2,fwY+.02,(p1.z+p2.z)/2);fw.receiveShadow=true;grp.add(fw);
-for(const side of[-1,1]){const rw=new THREE.Mesh(new THREE.PlaneGeometry(fwW*.7,len),M.rough);const nx=-dz/len*side,nz=dx/len*side;
-const rwx=(p1.x+p2.x)/2+nx*(fwW*.85),rwz=(p1.z+p2.z)/2+nz*(fwW*.85);
-rw.rotation.x=-Math.PI/2;rw.rotation.z=-Math.atan2(dz,dx)+Math.PI/2;rw.position.set(rwx,gndH(rwx,rwz)+.015,rwz);rw.receiveShadow=true;grp.add(rw)}}
-// Tee box
-const teeH=gndH(teeP.x,teeP.z);
-const tb=new THREE.Mesh(new THREE.PlaneGeometry(2.2,2.8),M.tee);tb.rotation.x=-Math.PI/2;tb.position.set(teeP.x,teeH+.03,teeP.z);tb.receiveShadow=true;grp.add(tb);
-for(const sx of[-.6,.6]){const mk=new THREE.Mesh(new THREE.SphereGeometry(.055,8,6),M.white);mk.position.set(teeP.x+sx,teeH+.055,teeP.z+.8);mk.castShadow=true;grp.add(mk)}
-// Green
-grnR=2.8+dist*.012;grnC=holeP.clone();
-const grnH=gndH(grnC.x,grnC.z);
-const gm=new THREE.Mesh(new THREE.CircleGeometry(grnR,32),M.green);gm.rotation.x=-Math.PI/2;gm.position.set(grnC.x,grnH+.03,grnC.z);gm.receiveShadow=true;grp.add(gm);
-const fri=new THREE.Mesh(new THREE.RingGeometry(grnR,grnR+.6,32),M.fairway);fri.rotation.x=-Math.PI/2;fri.position.set(grnC.x,grnH+.02,grnC.z);fri.receiveShadow=true;grp.add(fri);
-// Hole + flag
-const holeH=gndH(holeP.x,holeP.z);
-grp.add(mkM(new THREE.CylinderGeometry(.054,.054,.05,16),new THREE.MeshStandardMaterial({color:0x111111}),holeP.x,holeH+.01,holeP.z,false));
-const pl=new THREE.Mesh(new THREE.CylinderGeometry(.007,.007,1.2,6),M.pole);pl.position.set(holeP.x,holeH+.6,holeP.z);pl.castShadow=true;grp.add(pl);
-const fs=new THREE.Shape();fs.moveTo(0,0);fs.lineTo(.28,-.07);fs.lineTo(0,-.14);
-flagM=new THREE.Mesh(new THREE.ShapeGeometry(fs),M.red);flagM.position.set(holeP.x+.007,holeH+1.18,holeP.z);flagM.castShadow=true;grp.add(flagM);
-// Bunkers
-if(rng()>.25){const nb=1+Math.floor(rng()*2);for(let i=0;i<nb;i++){const bt=.5+rng()*.35,bp=new THREE.Vector3();bp.lerpVectors(teeP,holeP,bt);
-const bpx=bp.x+(rng()-.5)*fwW*1.5,bpz=bp.z+(rng()-.5)*2,br=.8+rng()*.9;
-const bunkH=gndH(bpx,bpz);
-const bm=new THREE.Mesh(new THREE.CircleGeometry(br,16),M.sand);bm.rotation.x=-Math.PI/2;bm.position.set(bpx,bunkH+.025,bpz);bm.receiveShadow=true;grp.add(bm);
-const lip=new THREE.Mesh(new THREE.TorusGeometry(br,.055,6,24),new THREE.MeshStandardMaterial({color:0xc4a44a,roughness:.78}));lip.rotation.x=-Math.PI/2;lip.position.set(bpx,bunkH+.06,bpz);lip.castShadow=true;grp.add(lip);
-bunks.push({x:bpx,z:bpz,r:br})}}
-// Water
-if(c.water.includes(hi+1)){const wt=.3+rng()*.35,wp=new THREE.Vector3();wp.lerpVectors(teeP,holeP,wt);
-const woff=(rng()>.5?1:-1)*(fwW*.8+rng()*2),wx=wp.x+woff,wz=wp.z+(rng()-.5)*3,ww=3.5+rng()*3.5,wh=2.5+rng()*2;
-const waterH=gndH(wx,wz)-.15;
-const wm=new THREE.Mesh(new THREE.PlaneGeometry(ww,wh),M.water);wm.rotation.x=-Math.PI/2;wm.position.set(wx,waterH,wz);wm.receiveShadow=true;wm.userData={isWater:true,baseY:waterH};grp.add(wm);
-waters.push({x:wx,z:wz,w:ww/2,h:wh/2,mesh:wm});
-for(let i=0;i<8;i++){const ra=rng()*Math.PI*2,rd=Math.max(ww,wh)/2+.2+rng()*.5;
-const rk=new THREE.Mesh(new THREE.DodecahedronGeometry(.12+rng()*.22,0),M.rock);rk.position.set(wx+Math.cos(ra)*rd,.08,wz+Math.sin(ra)*rd);rk.rotation.set(rng(),rng(),rng());rk.castShadow=true;grp.add(rk)}}
-// Trees
-const nTrees=65+Math.floor(rng()*35);for(let i=0;i<nTrees;i++){const ta=rng()*Math.PI*2,td=4+rng()*55;
-const tx=Math.cos(ta)*td,tz=-dist*.15+Math.sin(ta)*td;let onFw=false;for(const fp of fwPath)if(Math.hypot(tx-fp.x,tz-fp.z)<fwW*1.5){onFw=true;break}
-if(onFw)continue;const tt=c.trees==='mixed'?['deciduous','pine','palm'][Math.floor(rng()*3)]:c.trees;grp.add(mkTree(tt,tx,tz,.7+rng()*.7))}
-// Dense bushes between trees
-for(let i=0;i<40+Math.floor(rng()*25);i++){const ba=rng()*Math.PI*2,bd=5+rng()*40;
-const bx=Math.cos(ba)*bd,bz=-dist*.15+Math.sin(ba)*bd;let onFw2=false;for(const fp of fwPath)if(Math.hypot(bx-fp.x,bz-fp.z)<fwW*1.2){onFw2=true;break}
-if(onFw2)continue;const bs=.3+rng()*.5,bh=new THREE.Color().setHSL(.28+rng()*.08,.55+rng()*.2,.18+rng()*.12);
-const bush=new THREE.Mesh(new THREE.SphereGeometry(bs,7,5),new THREE.MeshStandardMaterial({color:bh,roughness:.8}));
-bush.position.set(bx,gndH(bx,bz)+bs*.4,bz);bush.scale.set(1,.6+rng()*.4,1);bush.castShadow=true;bush.receiveShadow=true;grp.add(bush)}
-// Scattered rocks
-for(let i=0;i<15+Math.floor(rng()*10);i++){const ra2=rng()*Math.PI*2,rd2=6+rng()*35;
-const rx=Math.cos(ra2)*rd2,rz=-dist*.15+Math.sin(ra2)*rd2;
-const rk2=new THREE.Mesh(new THREE.DodecahedronGeometry(.15+rng()*.35,0),M.rock);
-rk2.position.set(rx,gndH(rx,rz)+.05,rz);rk2.rotation.set(rng()*2,rng()*2,rng()*2);rk2.castShadow=true;grp.add(rk2)}
-// Flowers
-const fMats=[M.fl1,M.fl2,M.fl3];
-for(let i=0;i<45+Math.floor(rng()*35);i++){const fa=rng()*Math.PI*2,fd=3+rng()*28,fx=Math.cos(fa)*fd,fz=-dist*.15+Math.sin(fa)*fd;
-const fgh=gndH(fx,fz);
-const fl=new THREE.Mesh(new THREE.SphereGeometry(.06+rng()*.06,6,4),fMats[Math.floor(rng()*3)]);fl.position.set(fx,fgh+.07+rng()*.04,fz);fl.castShadow=true;grp.add(fl);
-grp.add(mkM(new THREE.CylinderGeometry(.006,.006,.08,4),new THREE.MeshStandardMaterial({color:0x228822}),fx,fgh+.035,fz,false));
-// Flower clusters — 2-3 blooms near each other
-if(rng()>.5){for(let j=0;j<2;j++){const ox=fx+(rng()-.5)*.3,oz=fz+(rng()-.5)*.3,oh=gndH(ox,oz);
-const fl2=new THREE.Mesh(new THREE.SphereGeometry(.04+rng()*.04,5,3),fMats[Math.floor(rng()*3)]);
-fl2.position.set(ox,oh+.06,oz);grp.add(fl2)}}}
-// Cart path
-const cpx=teeP.x+fwW+1.8,cpz=(teeP.z+holeP.z)/2;
-const cp=new THREE.Mesh(new THREE.PlaneGeometry(.65,dist*.38),M.dirt);cp.rotation.x=-Math.PI/2;cp.position.set(cpx,gndH(cpx,cpz)+.015,cpz);cp.receiveShadow=true;grp.add(cp);
-// OB stakes
-obB=16+dist*.13;for(let a=0;a<Math.PI*2;a+=Math.PI/6){const ox=Math.cos(a)*obB,oz=-dist*.15+Math.sin(a)*obB;grp.add(mkM(new THREE.CylinderGeometry(.018,.018,.38,4),M.ob,ox,.19,oz,false))}
-grp.add(mkMountains());scene.add(grp)}
+const ang=rng()*Math.PI*.4-.2;
+const tx=0,tz=0,hx=Math.sin(ang)*dist*.3,hz=-dist*.3;
+teeP=new THREE.Vector3(tx,gndH(tx,tz),tz);
+holeP=new THREE.Vector3(hx,gndH(hx,hz),hz);
 
-/* ===== BALL + AIM + TRAIL ===== */
+// 지면 — 넓은 잔디 언덕
+const gndGeo=new THREE.PlaneGeometry(250,250,150,150);
+const pa=gndGeo.attributes.position.array;
+for(let i=0;i<pa.length;i+=3){const gx=pa[i],gy=pa[i+1];pa[i+2]=gndH(gx,gy)}
+gndGeo.computeVertexNormals();
+const gnd=new THREE.Mesh(gndGeo,M.grass);gnd.rotation.x=-Math.PI/2;gnd.receiveShadow=true;grp.add(gnd);
+// 먼 곳 확장 지면
+const gnd2=new THREE.Mesh(new THREE.PlaneGeometry(600,600),new THREE.MeshStandardMaterial({color:0x3a7a2a,roughness:.9}));
+gnd2.rotation.x=-Math.PI/2;gnd2.position.y=-1;gnd2.receiveShadow=true;grp.add(gnd2);
+
+// 페어웨이 경로
+const midX=(teeP.x+holeP.x)/2+(rng()-.5)*dist*.12;
+for(let i=0;i<=24;i++){const t=i/24;
+const x=teeP.x*(1-t)*(1-t)+2*midX*t*(1-t)+holeP.x*t*t;
+const z=teeP.z*(1-t)+holeP.z*t;
+fwPath.push(new THREE.Vector3(x,gndH(x,z)+.02,z))}
+const fwW=3.2+dist*.015;
+
+// 페어웨이 매트
+for(let i=0;i<fwPath.length-1;i++){
+const p1=fwPath[i],p2=fwPath[i+1],dx=p2.x-p1.x,dz=p2.z-p1.z,len=Math.sqrt(dx*dx+dz*dz);
+const my=gndH((p1.x+p2.x)/2,(p1.z+p2.z)/2);
+const fw=new THREE.Mesh(new THREE.PlaneGeometry(fwW,len+.5),M.fairway);
+fw.rotation.x=-Math.PI/2;fw.rotation.z=-Math.atan2(dz,dx)+Math.PI/2;
+fw.position.set((p1.x+p2.x)/2,my+.03,(p1.z+p2.z)/2);fw.receiveShadow=true;grp.add(fw);
+// 러프 경계
+for(const side of[-1,1]){const rw=new THREE.Mesh(new THREE.PlaneGeometry(fwW*.7,len+.5),M.rough);
+const nx=-dz/len*side,nz=dx/len*side;
+const rwx=(p1.x+p2.x)/2+nx*(fwW*.85),rwz=(p1.z+p2.z)/2+nz*(fwW*.85);
+rw.rotation.x=-Math.PI/2;rw.rotation.z=-Math.atan2(dz,dx)+Math.PI/2;
+rw.position.set(rwx,gndH(rwx,rwz)+.02,rwz);rw.receiveShadow=true;grp.add(rw)}}
+
+// 티박스 — 깔끔한 직사각형
+const tH=gndH(teeP.x,teeP.z);
+const tb=new THREE.Mesh(new THREE.PlaneGeometry(2.6,3.2),M.tee);tb.rotation.x=-Math.PI/2;tb.position.set(teeP.x,tH+.04,teeP.z);tb.receiveShadow=true;grp.add(tb);
+for(const sx of[-.8,.8]){const mkr=new THREE.Mesh(new THREE.SphereGeometry(.06,8,6),M.white);mkr.position.set(teeP.x+sx,tH+.07,teeP.z+1);mkr.castShadow=true;grp.add(mkr)}
+
+// 그린 — 완만한 원형
+grnR=3.2+dist*.012;grnC=holeP.clone();
+const gH=gndH(grnC.x,grnC.z);
+const gmesh=new THREE.Mesh(new THREE.CircleGeometry(grnR,36),M.green);
+gmesh.rotation.x=-Math.PI/2;gmesh.position.set(grnC.x,gH+.04,grnC.z);gmesh.receiveShadow=true;grp.add(gmesh);
+const fring=new THREE.Mesh(new THREE.RingGeometry(grnR,grnR+.8,36),M.fairway);
+fring.rotation.x=-Math.PI/2;fring.position.set(grnC.x,gH+.03,grnC.z);fring.receiveShadow=true;grp.add(fring);
+
+// 홀+깃발
+const hH=gndH(holeP.x,holeP.z);
+const holeCup=new THREE.Mesh(new THREE.CylinderGeometry(.054,.054,.06,16),new THREE.MeshStandardMaterial({color:0x111111}));
+holeCup.position.set(holeP.x,hH+.02,holeP.z);grp.add(holeCup);
+const pl=new THREE.Mesh(new THREE.CylinderGeometry(.008,.008,1.4,6),M.pole);
+pl.position.set(holeP.x,hH+.7,holeP.z);pl.castShadow=true;grp.add(pl);
+const fs=new THREE.Shape();fs.moveTo(0,0);fs.lineTo(.32,-.08);fs.lineTo(0,-.16);
+flagM=new THREE.Mesh(new THREE.ShapeGeometry(fs),M.red);
+flagM.position.set(holeP.x+.008,hH+1.38,holeP.z);flagM.castShadow=true;grp.add(flagM);
+
+// 벙커
+if(rng()>.2){const nb=1+Math.floor(rng()*2);for(let i=0;i<nb;i++){
+const bt=.35+rng()*.4;
+const bp=new THREE.Vector3();bp.lerpVectors(teeP,holeP,bt);
+const bx=bp.x+(rng()-.5)*fwW*1.6,bz=bp.z+(rng()-.5)*2.5,br=1.0+rng()*1.2;
+const bH=gndH(bx,bz);
+const bkm=new THREE.Mesh(new THREE.CircleGeometry(br,20),M.sand);
+bkm.rotation.x=-Math.PI/2;bkm.position.set(bx,bH+.03,bz);bkm.receiveShadow=true;grp.add(bkm);
+const lip=new THREE.Mesh(new THREE.TorusGeometry(br,.065,6,28),new THREE.MeshStandardMaterial({color:0xc4a44a,roughness:.72}));
+lip.rotation.x=-Math.PI/2;lip.position.set(bx,bH+.07,bz);lip.castShadow=true;grp.add(lip);
+bunks.push({x:bx,z:bz,r:br})}}
+
+// 워터 해저드
+if(c.water.includes(hi+1)){
+const wt=.28+rng()*.3;
+const wp=new THREE.Vector3();wp.lerpVectors(teeP,holeP,wt);
+const woff=(rng()>.5?1:-1)*(fwW*.9+rng()*2.5);
+const wx=wp.x+woff,wz=wp.z+(rng()-.5)*3;
+const ww=4+rng()*4,wh=3+rng()*2.5;
+const wH=gndH(wx,wz)-.12;
+const wm=new THREE.Mesh(new THREE.PlaneGeometry(ww,wh),M.water);
+wm.rotation.x=-Math.PI/2;wm.position.set(wx,wH,wz);wm.receiveShadow=true;wm.userData={isWater:true,baseY:wH};grp.add(wm);
+waters.push({x:wx,z:wz,w:ww/2,h:wh/2,mesh:wm});
+// 연못 주변 바위
+for(let i=0;i<12;i++){
+const ra2=rng()*Math.PI*2,rd2=Math.max(ww,wh)/2+.4+rng()*.7;
+const rkx=wx+Math.cos(ra2)*rd2,rkz=wz+Math.sin(ra2)*rd2;
+const rk=new THREE.Mesh(new THREE.DodecahedronGeometry(.15+rng()*.3,0),rng()>.5?M.rock:M.rockLight);
+rk.position.set(rkx,gndH(rkx,rkz)+.08,rkz);rk.rotation.set(rng(),rng(),rng());rk.castShadow=true;grp.add(rk)}}
+
+// === 나무 === 페어웨이 양쪽으로 밀집된 숲
+const treeTT=c.trees==='mixed'?null:c.trees;
+function rndTree(){return treeTT||((['deciduous','pine','palm'])[Math.floor(rng()*3)])}
+
+// 1열: 페어웨이 바로 옆
+for(let fi=0;fi<fwPath.length;fi+=1){const fp=fwPath[fi];
+for(const side of[-1,1]){
+const off=fwW*1.6+rng()*2;
+const nx=fp.x+side*off+(rng()-.5)*1.2,nz=fp.z+(rng()-.5)*2;
+grp.add(mkTree(rndTree(),nx,nz,.8+rng()*.5));
+// 덤불도 함께
+const bs=.4+rng()*.6;
+const bC=new THREE.Color().setHSL(.28+rng()*.08,.55+rng()*.2,.16+rng()*.12);
+const bush=new THREE.Mesh(new THREE.SphereGeometry(bs,8,6),new THREE.MeshStandardMaterial({color:bC,roughness:.78}));
+bush.position.set(nx+(rng()-.5)*1,gndH(nx,nz)+bs*.3,nz+(rng()-.5)*1);
+bush.scale.set(1,.55+rng()*.3,1);bush.castShadow=true;grp.add(bush)}}
+
+// 2열: 중간 거리
+for(let fi=0;fi<fwPath.length;fi+=2){const fp=fwPath[fi];
+for(const side of[-1,1]){for(let j=0;j<2;j++){
+const off=fwW*3.5+rng()*4;
+const nx=fp.x+side*off+(rng()-.5)*3,nz=fp.z+(rng()-.5)*4;
+grp.add(mkTree(rndTree(),nx,nz,1.0+rng()*.7))}}}
+
+// 3열: 뒤쪽 숲 벽
+for(let fi=0;fi<fwPath.length;fi+=2){const fp=fwPath[fi];
+for(const side of[-1,1]){for(let j=0;j<3;j++){
+const off=fwW*6+rng()*8;
+const nx=fp.x+side*off+(rng()-.5)*4,nz=fp.z+(rng()-.5)*5;
+grp.add(mkTree(rndTree(),nx,nz,1.1+rng()*1.0))}}}
+
+// 배경 숲 (원형)
+for(let i=0;i<120;i++){
+const ta2=rng()*Math.PI*2,td2=15+rng()*55;
+const ttx=Math.cos(ta2)*td2,ttz=-dist*.15+Math.sin(ta2)*td2;
+let onFw=false;
+for(const fp of fwPath)if(Math.hypot(ttx-fp.x,ttz-fp.z)<fwW*1.3){onFw=true;break}
+if(onFw)continue;
+grp.add(mkTree(rndTree(),ttx,ttz,.7+rng()*1.0))}
+
+// 원경 대형나무
+for(let i=0;i<50;i++){
+const ta3=rng()*Math.PI*2,td3=45+rng()*40;
+const ttx2=Math.cos(ta3)*td3,ttz2=-dist*.15+Math.sin(ta3)*td3;
+grp.add(mkTree(rndTree(),ttx2,ttz2,1.2+rng()*1.3))}
+
+// === 추가 덤불 ===
+for(let i=0;i<70+Math.floor(rng()*40);i++){
+const ba=rng()*Math.PI*2,bd=5+rng()*45;
+const bx=Math.cos(ba)*bd,bz=-dist*.15+Math.sin(ba)*bd;
+let onFw2=false;for(const fp of fwPath)if(Math.hypot(bx-fp.x,bz-fp.z)<fwW*1.1){onFw2=true;break}
+if(onFw2)continue;
+const bs=.35+rng()*.7;
+const bC=new THREE.Color().setHSL(.26+rng()*.1,.5+rng()*.25,.14+rng()*.13);
+const bush=new THREE.Mesh(new THREE.SphereGeometry(bs,8,6),new THREE.MeshStandardMaterial({color:bC,roughness:.78}));
+bush.position.set(bx,gndH(bx,bz)+bs*.3,bz);bush.scale.set(1,.5+rng()*.35,1);bush.castShadow=true;grp.add(bush)}
+
+// === 바위 ===
+for(let i=0;i<25+Math.floor(rng()*15);i++){
+const ra=rng()*Math.PI*2,rd=6+rng()*40;
+const rx=Math.cos(ra)*rd,rz=-dist*.15+Math.sin(ra)*rd;
+const rsize=.15+rng()*.5;
+const rk=new THREE.Mesh(new THREE.DodecahedronGeometry(rsize,1),rng()>.5?M.rock:M.rockLight);
+rk.position.set(rx,gndH(rx,rz)+rsize*.25,rz);rk.rotation.set(rng()*2,rng()*2,rng()*2);
+rk.castShadow=true;grp.add(rk)}
+
+// === 꽃 클러스터 ===
+const fMats=[M.fl1,M.fl2,M.fl3,M.fl4];
+for(let i=0;i<70+Math.floor(rng()*40);i++){
+const fa=rng()*Math.PI*2,fd=3+rng()*30;
+const fx=Math.cos(fa)*fd,fz=-dist*.15+Math.sin(fa)*fd;
+const fh=gndH(fx,fz);
+const fsize=.06+rng()*.07;
+const fl=new THREE.Mesh(new THREE.SphereGeometry(fsize,6,4),fMats[Math.floor(rng()*4)]);
+fl.position.set(fx,fh+fsize+.02,fz);grp.add(fl);
+const stem=new THREE.Mesh(new THREE.CylinderGeometry(.004,.004,.1,4),new THREE.MeshStandardMaterial({color:0x228822}));
+stem.position.set(fx,fh+.045,fz);grp.add(stem);
+// 주변 추가 꽃
+if(rng()>.35){for(let j=0;j<4;j++){
+const ox=fx+(rng()-.5)*.5,oz=fz+(rng()-.5)*.5,oh=gndH(ox,oz);
+const fl2=new THREE.Mesh(new THREE.SphereGeometry(.04+rng()*.05,5,3),fMats[Math.floor(rng()*4)]);
+fl2.position.set(ox,oh+.06,oz);grp.add(fl2)}}}
+
+// === 잔디 터프트 (티 주변 디테일) ===
+for(let i=0;i<100;i++){
+const gta=rng()*Math.PI*2,gtd=1.5+rng()*10;
+const gtx=teeP.x+Math.cos(gta)*gtd,gtz=teeP.z+Math.sin(gta)*gtd;
+const gth=gndH(gtx,gtz);
+const tH2=.1+rng()*.1;
+const tuft=new THREE.Mesh(new THREE.ConeGeometry(.03+rng()*.03,tH2,4),
+new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(.28+rng()*.06,.5+rng()*.2,.2+rng()*.12),roughness:.8}));
+tuft.position.set(gtx,gth+tH2/2,gtz);grp.add(tuft)}
+
+// 카트 길
+const cpx=teeP.x+fwW+2.5,cpz=(teeP.z+holeP.z)/2;
+const cp=new THREE.Mesh(new THREE.PlaneGeometry(.8,dist*.38),M.dirt);
+cp.rotation.x=-Math.PI/2;cp.position.set(cpx,gndH(cpx,cpz)+.02,cpz);cp.receiveShadow=true;grp.add(cp);
+
+// OB 말뚝
+obB=22+dist*.16;
+for(let a=0;a<Math.PI*2;a+=Math.PI/7){
+const ox=Math.cos(a)*obB,oz=-dist*.15+Math.sin(a)*obB;
+const ob=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,.5,4),M.ob);
+ob.position.set(ox,gndH(ox,oz)+.25,oz);grp.add(ob)}
+
+grp.add(mkMountains());
+scene.add(grp)}
+
+/* ========== 볼 + 조준 ========== */
 let ballM,ballShadow,aimLine,aimDot,landingZone,landingRing,trailLine,trailPts=[],particles=[];
-function mkBall(){ballM=new THREE.Mesh(new THREE.SphereGeometry(.021,16,12),new THREE.MeshStandardMaterial({color:0xffffff,roughness:.22,metalness:.05}));ballM.castShadow=true;ballM.scale.set(3,3,3);scene.add(ballM);
-ballShadow=new THREE.Mesh(new THREE.CircleGeometry(.05,12),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.28,depthWrite:false}));ballShadow.rotation.x=-Math.PI/2;scene.add(ballShadow)}
-function updBM(){if(!ballM)return;ballM.position.set(G.ball.x,G.ball.y,G.ball.z);ballShadow.position.set(G.ball.x,.004,G.ball.z);const h=Math.max(0,G.ball.y-.063);ballShadow.scale.setScalar(1+h*2);ballShadow.material.opacity=.28/(1+h*3)}
+function mkBall(){
+ballM=new THREE.Mesh(new THREE.SphereGeometry(.021,16,12),new THREE.MeshStandardMaterial({color:0xffffff,roughness:.15,metalness:.05}));
+ballM.castShadow=true;ballM.scale.set(3,3,3);scene.add(ballM);
+ballShadow=new THREE.Mesh(new THREE.CircleGeometry(.06,12),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.3,depthWrite:false}));
+ballShadow.rotation.x=-Math.PI/2;scene.add(ballShadow)}
+function updBM(){if(!ballM)return;ballM.position.set(G.ball.x,G.ball.y,G.ball.z);
+ballShadow.position.set(G.ball.x,gndH(G.ball.x,G.ball.z)+.005,G.ball.z);
+const h=Math.max(0,G.ball.y-gndH(G.ball.x,G.ball.z)-.063);ballShadow.scale.setScalar(1+h*2);ballShadow.material.opacity=.3/(1+h*3)}
+
 function mkAim(){
-// Thick visible trajectory — mesh tube instead of invisible THREE.Line
-const aimPts=[];for(let i=0;i<30;i++)aimPts.push(new THREE.Vector3(0,0,0));
-const aimCurve=new THREE.CatmullRomCurve3(aimPts);
-const tubeGeo=new THREE.TubeGeometry(aimCurve,40,.025,6,false);
-const tubeMat=new THREE.MeshBasicMaterial({color:0x66ccff,transparent:true,opacity:.75,depthWrite:false});
-aimLine=new THREE.Mesh(tubeGeo,tubeMat);aimLine._pts=aimPts;scene.add(aimLine);
-// Glow outline tube
-const glowGeo=new THREE.TubeGeometry(aimCurve,40,.04,6,false);
-const glowMat=new THREE.MeshBasicMaterial({color:0x2288ff,transparent:true,opacity:.2,depthWrite:false});
-const aimGlow=new THREE.Mesh(glowGeo,glowMat);aimGlow.name='aimGlow';aimLine.add(aimGlow);
-// Landing zone circle — BIG + BRIGHT
-const lzGeo=new THREE.RingGeometry(.8,1.6,32);
-const lzMat=new THREE.MeshBasicMaterial({color:0xffdd22,transparent:true,opacity:.55,side:THREE.DoubleSide,depthWrite:false});
-landingZone=new THREE.Mesh(lzGeo,lzMat);landingZone.rotation.x=-Math.PI/2;landingZone.position.y=.05;scene.add(landingZone);
-// Center target circle
-const ctGeo=new THREE.CircleGeometry(.25,16);
-const ctMat=new THREE.MeshBasicMaterial({color:0xffee44,transparent:true,opacity:.4,side:THREE.DoubleSide,depthWrite:false});
-const centerTarget=new THREE.Mesh(ctGeo,ctMat);centerTarget.rotation.x=-Math.PI/2;centerTarget.position.y=.001;landingZone.add(centerTarget);
-// Landing ring outer glow — bigger + brighter
-const lrGeo=new THREE.RingGeometry(1.5,1.75,32);
-const lrMat=new THREE.MeshBasicMaterial({color:0xffaa00,transparent:true,opacity:.65,side:THREE.DoubleSide,depthWrite:false});
-landingRing=new THREE.Mesh(lrGeo,lrMat);landingRing.rotation.x=-Math.PI/2;landingRing.position.y=.048;scene.add(landingRing);
-// Aim dot at landing point — bigger
-aimDot=new THREE.Mesh(new THREE.SphereGeometry(.12,12,8),new THREE.MeshBasicMaterial({color:0x44aaff,transparent:true,opacity:.8}));scene.add(aimDot)}
+// 밝고 두꺼운 조준선
+const pts=[];for(let i=0;i<30;i++)pts.push(new THREE.Vector3(0,0,0));
+const curve=new THREE.CatmullRomCurve3(pts);
+aimLine=new THREE.Mesh(new THREE.TubeGeometry(curve,40,.06,8,false),
+new THREE.MeshBasicMaterial({color:0x55eeff,transparent:true,opacity:.9,depthWrite:false}));
+aimLine._pts=pts;scene.add(aimLine);
+// 글로우
+const glow=new THREE.Mesh(new THREE.TubeGeometry(curve,40,.12,8,false),
+new THREE.MeshBasicMaterial({color:0x33bbff,transparent:true,opacity:.35,depthWrite:false}));
+glow.name='glow';aimLine.add(glow);
+
+// 랜딩존 — 크고 밝게
+landingZone=new THREE.Mesh(new THREE.RingGeometry(.6,2.5,36),
+new THREE.MeshBasicMaterial({color:0xffdd22,transparent:true,opacity:.7,side:THREE.DoubleSide,depthWrite:false}));
+landingZone.rotation.x=-Math.PI/2;scene.add(landingZone);
+// 중앙 타겟
+const ct=new THREE.Mesh(new THREE.CircleGeometry(.4,20),
+new THREE.MeshBasicMaterial({color:0xffee44,transparent:true,opacity:.4,side:THREE.DoubleSide,depthWrite:false}));
+ct.rotation.x=-Math.PI/2;ct.position.y=.002;landingZone.add(ct);
+// 외곽 링
+landingRing=new THREE.Mesh(new THREE.RingGeometry(2.2,2.8,36),
+new THREE.MeshBasicMaterial({color:0xffaa00,transparent:true,opacity:.75,side:THREE.DoubleSide,depthWrite:false}));
+landingRing.rotation.x=-Math.PI/2;scene.add(landingRing);
+// 조준점
+aimDot=new THREE.Mesh(new THREE.SphereGeometry(.22,12,8),
+new THREE.MeshBasicMaterial({color:0x55eeff,transparent:true,opacity:.95}));scene.add(aimDot)}
+
 function updAim(pwr){if(!aimLine||!G)return;
-const club=CLUBS[G.ci_||0],maxD=club.power*(pwr/100)*2.5,loft=rad(club.loft),dir=G.aim;
-const n=30,dx=Math.sin(dir),dz=-Math.cos(dir);
-const landD=maxD*.3;
-// Update tube trajectory points
+const cl=G.putting?PUTTER:CLUB,maxD=cl.power*(pwr/100)*2.5,loft=rad(cl.loft),dir=G.aim;
+const n=30,dx=Math.sin(dir),dz=-Math.cos(dir),landD=maxD*.3;
 const pts=aimLine._pts;
 for(let i=0;i<n;i++){const t=i/(n-1),d=landD*t;
-const h=Math.sin(t*Math.PI)*maxD*Math.sin(loft)*.09;
-pts[i].set(G.ball.x+dx*d,.063+h,G.ball.z+dz*d)}
-// Rebuild tube geometry from updated points
+const terrH=gndH(G.ball.x+dx*d,G.ball.z+dz*d);
+const arcH=Math.sin(t*Math.PI)*maxD*Math.sin(loft)*.12;
+pts[i].set(G.ball.x+dx*d,Math.max(terrH+.2,G.ball.y+arcH)+.1,G.ball.z+dz*d)}
 const curve=new THREE.CatmullRomCurve3(pts);
-aimLine.geometry.dispose();
-aimLine.geometry=new THREE.TubeGeometry(curve,40,.025,6,false);
-// Update glow
-const glow=aimLine.getObjectByName('aimGlow');
-if(glow){glow.geometry.dispose();glow.geometry=new THREE.TubeGeometry(curve,40,.04,6,false)}
-// Landing zone position
-const lx=G.ball.x+dx*landD,lz=G.ball.z+dz*landD;
-if(landingZone){landingZone.position.set(lx,.05,lz);landingZone.visible=true;
-const sc=.7+maxD*.025;landingZone.scale.set(sc,sc,sc)}
-if(landingRing){landingRing.position.set(lx,.048,lz);landingRing.visible=true;
-const sc=.7+maxD*.025;landingRing.scale.set(sc,sc,sc)}
-if(aimDot){aimDot.position.set(lx,.12,lz);aimDot.visible=true}}
-function hideAim(){if(aimLine)aimLine.visible=false;if(aimDot)aimDot.visible=false;
-if(landingZone)landingZone.visible=false;if(landingRing)landingRing.visible=false}
-function showAimL(){if(aimLine)aimLine.visible=true;if(aimDot)aimDot.visible=true;
-if(landingZone)landingZone.visible=true;if(landingRing)landingRing.visible=true}
-function initTrail(){const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(90*3),3));geo.setDrawRange(0,0);trailLine=new THREE.Line(geo,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.45}));scene.add(trailLine)}
-function updTrail(){if(!trailLine||!G.ball.flying)return;trailPts.push(G.ball.x,G.ball.y,G.ball.z);if(trailPts.length>90*3)trailPts.splice(0,3);const a=trailLine.geometry.attributes.position.array;for(let i=0;i<trailPts.length;i++)a[i]=trailPts[i];trailLine.geometry.attributes.position.needsUpdate=true;trailLine.geometry.setDrawRange(0,trailPts.length/3);trailLine.visible=true}
-function clearTrail(){trailPts=[];if(trailLine){trailLine.geometry.setDrawRange(0,0);trailLine.visible=false}}
-function spawnP(x,y,z,col,n=10){for(let i=0;i<n;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(.012,4,3),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.75}));m.position.set(x,y,z);scene.add(m);particles.push({m,v:{x:(Math.random()-.5)*.1,y:.04+Math.random()*.1,z:(Math.random()-.5)*.1},life:1})}}
-function updP(dt){for(let i=particles.length-1;i>=0;i--){const p=particles[i];p.m.position.x+=p.v.x*dt*3;p.m.position.y+=p.v.y*dt*3;p.m.position.z+=p.v.z*dt*3;p.v.y-=.15*dt;p.life-=dt*1.5;p.m.material.opacity=p.life;if(p.life<=0){scene.remove(p.m);particles.splice(i,1)}}}
+aimLine.geometry.dispose();aimLine.geometry=new THREE.TubeGeometry(curve,40,.06,8,false);
+const glow=aimLine.getObjectByName('glow');
+if(glow){glow.geometry.dispose();glow.geometry=new THREE.TubeGeometry(curve,40,.12,8,false)}
+const lx=G.ball.x+dx*landD,lz=G.ball.z+dz*landD,lh=gndH(lx,lz);
+if(landingZone){landingZone.position.set(lx,lh+.08,lz);landingZone.visible=true;const sc=.5+maxD*.03;landingZone.scale.set(sc,sc,sc)}
+if(landingRing){landingRing.position.set(lx,lh+.07,lz);landingRing.visible=true;const sc=.5+maxD*.03;landingRing.scale.set(sc,sc,sc)}
+if(aimDot){aimDot.position.set(lx,lh+.2,lz);aimDot.visible=true}}
 
-/* ===== CAMERA ===== */
+function hideAim(){if(aimLine)aimLine.visible=false;if(aimDot)aimDot.visible=false;if(landingZone)landingZone.visible=false;if(landingRing)landingRing.visible=false}
+function showAimL(){if(aimLine)aimLine.visible=true;if(aimDot)aimDot.visible=true;if(landingZone)landingZone.visible=true;if(landingRing)landingRing.visible=true}
+
+function initTrail(){const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(90*3),3));geo.setDrawRange(0,0);
+trailLine=new THREE.Line(geo,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:.5}));scene.add(trailLine)}
+function updTrail(){if(!trailLine||!G.ball.flying)return;trailPts.push(G.ball.x,G.ball.y,G.ball.z);if(trailPts.length>90*3)trailPts.splice(0,3);
+const a=trailLine.geometry.attributes.position.array;for(let i=0;i<trailPts.length;i++)a[i]=trailPts[i];
+trailLine.geometry.attributes.position.needsUpdate=true;trailLine.geometry.setDrawRange(0,trailPts.length/3);trailLine.visible=true}
+function clearTrail(){trailPts=[];if(trailLine){trailLine.geometry.setDrawRange(0,0);trailLine.visible=false}}
+
+function spawnP(x,y,z,col,n=10){for(let i=0;i<n;i++){const m=new THREE.Mesh(new THREE.SphereGeometry(.015,4,3),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.8}));
+m.position.set(x,y,z);scene.add(m);particles.push({m,v:{x:(Math.random()-.5)*.12,y:.05+Math.random()*.12,z:(Math.random()-.5)*.12},life:1})}}
+function updP(dt){for(let i=particles.length-1;i>=0;i--){const p=particles[i];
+p.m.position.x+=p.v.x*dt*3;p.m.position.y+=p.v.y*dt*3;p.m.position.z+=p.v.z*dt*3;p.v.y-=.15*dt;p.life-=dt*1.5;p.m.material.opacity=p.life;
+if(p.life<=0){scene.remove(p.m);particles.splice(i,1)}}}
+
+/* ========== 카메라 — 골프킹 스타일 (더 넓은 시야) ========== */
 const CAM={
 tgt:new THREE.Vector3(),pos:new THREE.Vector3(),mode:'behind',shakeT:0,shakeI:0,
-behind(bp,aa){const d=5.5,h=2.8;this.tgt.set(bp.x-Math.sin(aa)*3.5,.4,bp.z+Math.cos(aa)*3.5);this.pos.set(bp.x+Math.sin(aa)*d,bp.y+h,bp.z+Math.cos(aa)*d)},
-swingClose(bp,aa){this.tgt.set(bp.x,1.0,bp.z);const sa=aa+Math.PI*.15;this.pos.set(bp.x+Math.sin(sa)*4.5,bp.y+2.2,bp.z+Math.cos(sa)*4.5)},
-follow(bp,v){const sp=Math.sqrt(v.x*v.x+v.z*v.z),d=5.0+sp*.35,h=2.8+bp.y*.35;const bh=sp>.1?Math.atan2(-v.x,-v.z):G.aim;this.tgt.lerp(new THREE.Vector3(bp.x,bp.y*.35+.2,bp.z),.08);this.pos.lerp(new THREE.Vector3(bp.x+Math.sin(bh)*d,h,bp.z+Math.cos(bh)*d),.06)},
-flyover(t,tp,hp){const p=clamp(t,0,1),cx=lerp(tp.x,hp.x,p),cz=lerp(tp.z,hp.z,p),d=tp.distanceTo(hp),h=4.5+d*.08,a=Math.atan2(hp.x-tp.x,hp.z-tp.z);this.pos.set(cx+Math.sin(a+.3)*6.5,h,cz+Math.cos(a+.3)*6.5);this.tgt.set(cx,0,cz)},
-result(hp){const t=performance.now()*.00025;this.pos.set(hp.x+Math.sin(t)*3.5,2.2,hp.z+Math.cos(t)*3.5);this.tgt.set(hp.x,.4,hp.z)},
+behind(bp,aa){
+// Golf King 스타일 — 골퍼 어깨 뒤 위에서 홀 방향
+const d=3.2,h=1.6;
+this.pos.set(bp.x-Math.sin(aa)*d,bp.y+h,bp.z+Math.cos(aa)*d);
+this.tgt.set(bp.x+Math.sin(aa)*5,bp.y+.2,bp.z-Math.cos(aa)*5)},
+swingClose(bp,aa){
+const sa=aa+Math.PI*.15;
+// 뒤쪽 약간 측면에서
+this.pos.set(bp.x-Math.sin(sa)*3.0,bp.y+1.6,bp.z+Math.cos(sa)*3.0);
+this.tgt.set(bp.x+Math.sin(aa)*3,bp.y+.4,bp.z-Math.cos(aa)*3)},
+follow(bp,v){
+const sp=Math.sqrt(v.x*v.x+v.z*v.z),d=5.0+sp*.2,h=2.8+bp.y*.3;
+const bh=sp>.1?Math.atan2(-v.x,-v.z):G.aim;
+this.tgt.lerp(new THREE.Vector3(bp.x,bp.y*.3+.2,bp.z),.08);
+// 공 뒤쪽에서 추적
+this.pos.lerp(new THREE.Vector3(bp.x-Math.sin(bh)*d,h,bp.z+Math.cos(bh)*d),.06)},
+flyover(t,tp,hp){
+const p=clamp(t,0,1);
+const cx=lerp(tp.x,hp.x,p),cz=lerp(tp.z,hp.z,p);
+const d=tp.distanceTo(hp),h=7+d*.12;
+const a=Math.atan2(hp.x-tp.x,hp.z-tp.z);
+this.pos.set(cx+Math.sin(a+.4)*10,h,cz+Math.cos(a+.4)*10);
+this.tgt.set(cx,gndH(cx,cz)+.3,cz)},
+result(hp){const t=performance.now()*.00025;
+this.pos.set(hp.x+Math.sin(t)*4,hp.y+3.2,hp.z+Math.cos(t)*4);
+this.tgt.set(hp.x,hp.y+.3,hp.z)},
 shake(i=.03,d=.2){this.shakeT=d;this.shakeI=i},
-update(dt){const sp=this.mode==='flyover'||this.mode==='result'?.99:.06;camera.position.lerp(this.pos,sp);const lt=this.tgt.clone();if(this.shakeT>0){this.shakeT-=dt;const s=this.shakeI*(this.shakeT/.2);lt.x+=Math.sin(performance.now()*.05)*s;lt.y+=Math.cos(performance.now()*.07)*s}camera.lookAt(lt)}
-};
+snap(){camera.position.copy(this.pos);camera.lookAt(this.tgt)},
+update(dt){
+const sp=this.mode==='flyover'||this.mode==='result'?.99:this.mode==='behind'?.15:this.mode==='swing'?.12:.09;
+camera.position.lerp(this.pos,sp);
+const lt=this.tgt.clone();
+if(this.shakeT>0){this.shakeT-=dt;const s=this.shakeI*(this.shakeT/.2);
+lt.x+=Math.sin(performance.now()*.05)*s;lt.y+=Math.cos(performance.now()*.07)*s}
+camera.lookAt(lt)}};
 
-/* ===== PHYSICS ===== */
-function gndH(x,z){return Math.sin(x*.04)*Math.cos(z*.04)*1.4+Math.sin(x*.1+z*.07)*.7+Math.cos(x*.06-z*.09)*.5+Math.sin(x*.02+z*.015)*.9}
+/* ========== 물리 ========== */
 function isGrn(x,z){return grnC&&Math.hypot(x-grnC.x,z-grnC.z)<grnR}
 function isBnk(x,z){for(const b of bunks)if(Math.hypot(x-b.x,z-b.z)<b.r)return true;return false}
 function physTick(dt){
@@ -752,19 +980,20 @@ G.ball.vx+=G.wind.x*sd*.08;G.ball.vz+=G.wind.z*sd*.08;
 G.ball.x+=G.ball.vx*sd;G.ball.y+=G.ball.vy*sd;G.ball.z+=G.ball.vz*sd;
 const gh=gndH(G.ball.x,G.ball.z);
 if(G.ball.y<=gh+.063){
-G.ball.y=gh+.063;const onG=isGrn(G.ball.x,G.ball.z),inB=isBnk(G.ball.x,G.ball.z);
+G.ball.y=gh+.063;
+const onG=isGrn(G.ball.x,G.ball.z),inB=isBnk(G.ball.x,G.ball.z);
 if(G.ball.vy<-.3){G.ball.vy=-G.ball.vy*(inB?.15:onG?.3:.45);G.ball.vx*=.7;G.ball.vz*=.7;AUD.play('bounce');spawnP(G.ball.x,G.ball.y,G.ball.z,inB?0xd4b978:0x44aa44,5)}else G.ball.vy=0;
 const fr=onG?.985:inB?.93:.96;G.ball.vx*=fr;G.ball.vz*=fr;
-if(onG&&holeP){const dx=holeP.x-G.ball.x,dz=holeP.z-G.ball.z,dd=Math.sqrt(dx*dx+dz*dz);if(dd>.1&&dd<grnR){const sl=.015/(dd+.5);G.ball.vx+=dx/dd*sl;G.ball.vz+=dz/dd*sl}}
+if(onG&&holeP){const ddx=holeP.x-G.ball.x,ddz=holeP.z-G.ball.z,dd=Math.sqrt(ddx*ddx+ddz*ddz);if(dd>.1&&dd<grnR){const sl=.015/(dd+.5);G.ball.vx+=ddx/dd*sl;G.ball.vz+=ddz/dd*sl}}
 const spd=Math.sqrt(G.ball.vx*G.ball.vx+G.ball.vy*G.ball.vy+G.ball.vz*G.ball.vz);
 if(spd<.02&&Math.abs(G.ball.vy)<.05){G.ball.vx=G.ball.vy=G.ball.vz=0;G.ball.flying=false;G.ball.stopped=true}}
-for(const w of waters){if(Math.abs(G.ball.x-w.x)<w.w&&Math.abs(G.ball.z-w.z)<w.h&&G.ball.y<.1){G.ball.flying=false;G.ball.stopped=true;G.ball.inWater=true;AUD.play('splash');spawnP(G.ball.x,.05,G.ball.z,0x4488cc,15);CAM.shake(.04,.3);return}}
+for(const w of waters){if(Math.abs(G.ball.x-w.x)<w.w&&Math.abs(G.ball.z-w.z)<w.h&&G.ball.y<gndH(w.x,w.z)+.1){G.ball.flying=false;G.ball.stopped=true;G.ball.inWater=true;AUD.play('splash');spawnP(G.ball.x,.05,G.ball.z,0x4488cc,15);CAM.shake(.04,.3);return}}
 if(holeP&&Math.hypot(G.ball.x,G.ball.z+holeP.z*.5)>obB){G.ball.flying=false;G.ball.stopped=true;G.ball.isOB=true;AUD.play('ob');return}
 if(holeP){const hd=Math.hypot(G.ball.x-holeP.x,G.ball.z-holeP.z),sp2=Math.sqrt(G.ball.vx*G.ball.vx+G.ball.vz*G.ball.vz);
-if(hd<.12&&G.ball.y<.15&&sp2<2.2){G.ball.x=holeP.x;G.ball.z=holeP.z;G.ball.y=0;G.ball.vx=G.ball.vy=G.ball.vz=0;G.ball.flying=false;G.ball.stopped=true;G.ball.holed=true;AUD.play('hole');spawnP(holeP.x,.1,holeP.z,0xffd700,20);CAM.shake(.02,.3);return}}
+if(hd<.12&&G.ball.y<gndH(holeP.x,holeP.z)+.15&&sp2<2.2){G.ball.x=holeP.x;G.ball.z=holeP.z;G.ball.y=gndH(holeP.x,holeP.z);G.ball.vx=G.ball.vy=G.ball.vz=0;G.ball.flying=false;G.ball.stopped=true;G.ball.holed=true;AUD.play('hole');spawnP(holeP.x,.1,holeP.z,0xffd700,20);CAM.shake(.02,.3);return}}
 }}
 
-/* ===== GAME STATE ===== */
+/* ========== 게임 상태 ========== */
 const G={
 state:'menu',ci:0,hi:0,par:0,stroke:0,maxStk:8,
 scores:[],wind:{spd:0,dir:0,x:0,z:0},
@@ -773,432 +1002,258 @@ swPhase:'idle',gaugeVal:0,gaugeDir:1,
 accVal:50,accDir:1,
 flyT:0,flyActive:false,
 ball:{x:0,y:.063,z:0,vx:0,vy:0,vz:0,flying:false,stopped:true,holed:false,inWater:false,isOB:false},
-ci_:0,putting:false,settled:false,roundActive:false
+putting:false,settled:false,roundActive:false
 };
 
-/* ===== UI HELPERS ===== */
-const $=id=>document.getElementById(id);
-const SCREENS=['hud','clubBtn','minimap','swingPanel','flyover','scoreScr','resultScr','menuScr','courseScr','recordScr','settingScr','loading','distPin'];
-function hideAll(){SCREENS.forEach(id=>{const el=$(id);if(el)el.style.display='none'})}
-
-function showScr(name){
-hideAll();
-if(name==='menu'){$('menuScr').style.display='flex'}
-else if(name==='game'){$('hud').style.display='block';$('clubBtn').style.display='block';$('minimap').style.display='block';if($('distPin'))$('distPin').style.display='block'}
-else if(name==='swing'){$('hud').style.display='block';$('minimap').style.display='block';$('swingPanel').style.display='block';if($('distPin'))$('distPin').style.display='none'}
-else if(name==='flyover'){$('hud').style.display='block';$('flyover').style.display='block'}
-else if(name==='score'){$('scoreScr').style.display='flex'}
-else if(name==='result'){$('resultScr').style.display='flex'}
-else if(name==='course'){$('courseScr').style.display='block'}
-else if(name==='records'){$('recordScr').style.display='block'}
-else if(name==='settings'){$('settingScr').style.display='block'}
-else if(name==='loading'){$('loading').style.display='flex'}
-}
+/* ========== UI ========== */
+const SCREENS=['hud','clubBtn','miniWrap','swingPanel','flyover','scoreScr','resultScr','menuScr','courseScr','recordScr','settingScr','loading','distShow'];
+function hideAll(){SCREENS.forEach(id=>{const e=$(id);if(e)e.style.display='none'})}
+function showScr(mode){hideAll();
+if(mode==='menu'){$('menuScr').style.display='flex'}
+else if(mode==='loading'){$('loading').style.display='flex'}
+else if(mode==='flyover'){$('hud').style.display='block';$('flyover').style.display='block'}
+else if(mode==='game'){$('hud').style.display='block';$('miniWrap').style.display='block';$('distShow').style.display='block';$('swingPanel').style.display='block';$('clubBtn').style.display='block'}
+else if(mode==='score'){$('scoreScr').style.display='block'}
+else if(mode==='result'){$('resultScr').style.display='block'}
+else if(mode==='course'){$('courseScr').style.display='block'}
+else if(mode==='records'){$('recordScr').style.display='block'}
+else if(mode==='settings'){$('settingScr').style.display='block'}}
 
 function updHUD(){
-const c=COURSES[G.ci],h=c.par[G.hi];
-$('hCrs').textContent=c.name;
+const c=COURSES[G.ci];
+$('hCourse').textContent=c.name;
 $('hHole').textContent=`${G.hi+1}홀`;
-$('hPar').textContent=`PAR ${h}`;
-$('hStk').textContent=G.stroke;
+$('hPar').textContent=`PAR ${G.par}`;
+$('hClub').textContent=G.putting?PUTTER.name:CLUB.name;
+$('hWind').textContent=`${G.wind.spd.toFixed(1)} m/s`;
+const dirs=['↑','↗','→','↘','↓','↙','←','↖'];
+$('hWindDir').textContent=dirs[Math.round(G.wind.dir/(Math.PI/4))%8]||'↑';
+$('hStroke').textContent=G.stroke;
 const d=holeP?Math.hypot(G.ball.x-holeP.x,G.ball.z-holeP.z):0;
-$('hDst').textContent=`${d.toFixed(1)}m`;
-// Wind
-$('hWndSpd').textContent=G.wind.spd.toFixed(1);
-$('hWndArr').style.transform=`rotate(${Math.round(G.wind.dir*180/Math.PI)}deg)`;
-// Club info
-const club=CLUBS[G.ci_];
-$('clubNm').textContent=club.name;
-const maxD=(club.power*2.5).toFixed(0);
-$('clubDst').textContent=`비거리: ~${maxD}m`;
-$('clubIco').textContent=G.ci_===3?'🏌':'🏌';
-// Distance to pin
-$('dpDist').textContent=d.toFixed(1);
-if($('distPin'))$('distPin').style.display=(G.state==='aim'||G.state==='swing')?'block':'none';
-}
+$('hDist').textContent=d.toFixed(0)+'m';
+$('dpVal').textContent=d.toFixed(1)}
 
-function showBig(txt,dur=1800){
-const el=$('bigMsg');el.textContent=txt;el.style.display='block';el.style.opacity='1';
-el.style.animation='none';el.offsetHeight;el.style.animation='';
-setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.style.display='none',400)},dur);
-}
+function showBig(txt,dur=1500){$('bigMsg').textContent=txt;$('bigMsg').style.display='block';setTimeout(()=>$('bigMsg').style.display='none',dur)}
 
-function showSwing(show){
-$('swingPanel').style.display=show?'block':'none';
-if(show){$('pwrFill').style.width='0%';$('accFill').style.width='0%';$('accWrap').style.display='none';$('accLabel').style.display='none';
-G.swPhase='power';G.gaugeVal=0;G.gaugeDir=1;$('swVal').textContent='0%'}}
-
-/* ===== MINIMAP ===== */
+/* ========== 미니맵 ========== */
 function drawMinimap(){
-const cv=$('mmCvs');if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
-ctx.clearRect(0,0,W,H);
-ctx.fillStyle='rgba(0,60,0,0.85)';ctx.fillRect(0,0,W,H);
-ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=1;ctx.strokeRect(0,0,W,H);
-const sc=W/160,ox=W/2,oz=H*.85;
-const tx=x=>ox+x*sc,tz=z=>oz+z*sc;
-// Fairway
-if(teeP&&holeP){
-ctx.fillStyle='rgba(100,200,80,0.4)';ctx.beginPath();
-ctx.ellipse(tx((teeP.x+holeP.x)/2),tz((teeP.z+holeP.z)/2),
-Math.abs(holeP.z-teeP.z)*sc/2+10,15,
-Math.atan2(holeP.x-teeP.x,holeP.z-teeP.z),0,Math.PI*2);ctx.fill();
-// Green
-ctx.fillStyle='rgba(0,180,60,0.7)';ctx.beginPath();ctx.arc(tx(holeP.x),tz(holeP.z),8,0,Math.PI*2);ctx.fill();
-// Pin
-ctx.fillStyle='#ff3333';ctx.beginPath();ctx.arc(tx(holeP.x),tz(holeP.z),3,0,Math.PI*2);ctx.fill();
-// Tee
-ctx.fillStyle='#ffcc00';ctx.beginPath();ctx.arc(tx(teeP.x),tz(teeP.z),3,0,Math.PI*2);ctx.fill()}
-// Water
-waters.forEach(w=>{ctx.fillStyle='rgba(30,100,200,0.5)';ctx.beginPath();ctx.arc(tx(w.x),tz(w.z),5,0,Math.PI*2);ctx.fill()});
-// Ball
-ctx.fillStyle='#ffffff';ctx.strokeStyle='#000';ctx.lineWidth=1;
-ctx.beginPath();ctx.arc(tx(G.ball.x),tz(G.ball.z),4,0,Math.PI*2);ctx.fill();ctx.stroke();
-// Wind arrow
-if(G.wind.spd>0){ctx.save();ctx.translate(W-20,20);ctx.rotate(G.wind.dir);
-ctx.strokeStyle='#ff6';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,-10);ctx.lineTo(0,10);ctx.moveTo(-4,-5);ctx.lineTo(0,-10);ctx.lineTo(4,-5);ctx.stroke();ctx.restore();
-ctx.fillStyle='#ff6';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText(`${G.wind.spd.toFixed(1)}`,W-20,38)}}
+const c=$('miniCvs');if(!c||!holeP||!teeP)return;const x=c.getContext('2d');
+const w=c.width,h=c.height;
+x.clearRect(0,0,w,h);
+x.fillStyle='rgba(0,40,0,.85)';x.fillRect(0,0,w,h);
+const scale=w/(Math.max(Math.abs(holeP.z-teeP.z),Math.abs(holeP.x-teeP.x))*1.5+10);
+const ox=w/2,oz=h/2;
+function mtx(wx){return ox+(wx-(teeP.x+holeP.x)/2)*scale}
+function mtz(wz){return oz+(wz-(teeP.z+holeP.z)/2)*scale}
+// 페어웨이
+x.strokeStyle='rgba(80,180,80,.6)';x.lineWidth=8*scale*.3;x.beginPath();
+fwPath.forEach((p,i)=>{i===0?x.moveTo(mtx(p.x),mtz(p.z)):x.lineTo(mtx(p.x),mtz(p.z))});x.stroke();
+// 그린
+x.fillStyle='rgba(100,220,100,.6)';x.beginPath();x.arc(mtx(grnC.x),mtz(grnC.z),grnR*scale,0,Math.PI*2);x.fill();
+// 홀
+x.fillStyle='#ffd700';x.beginPath();x.arc(mtx(holeP.x),mtz(holeP.z),3,0,Math.PI*2);x.fill();
+// 볼
+x.fillStyle='#fff';x.beginPath();x.arc(mtx(G.ball.x),mtz(G.ball.z),3.5,0,Math.PI*2);x.fill();
+// 방향
+x.strokeStyle='rgba(100,200,255,.7)';x.lineWidth=1.5;x.beginPath();
+x.moveTo(mtx(G.ball.x),mtz(G.ball.z));
+x.lineTo(mtx(G.ball.x)+Math.sin(G.aim)*18,mtz(G.ball.z)-Math.cos(G.aim)*18);x.stroke()}
 
-/* ===== SCORECARD ===== */
+/* ========== 스코어카드 ========== */
 function mkScore(){
-const c=COURSES[G.ci];
-let html='<tr><th>홀</th>';for(let i=0;i<9;i++)html+=`<th>${i+1}</th>`;html+='<th>합</th></tr>';
-html+='<tr><td>PAR</td>';let tp=0;for(let i=0;i<9;i++){tp+=c.par[i];html+=`<td>${c.par[i]}</td>`}html+=`<td>${tp}</td></tr>`;
-html+='<tr><td>타수</td>';let ts=0;
-for(let i=0;i<9;i++){const s=G.scores[i];
-if(s!==undefined){ts+=s;const d=s-c.par[i];const cls=d<=-2?'eagle':d===-1?'birdie':d===0?'par':d===1?'bogey':'dbogey';
+const c=COURSES[G.ci],tp=c.par.reduce((a,v)=>a+v,0);
+let html='<tr><th>홀</th>';for(let i=0;i<9;i++)html+=`<th>${i+1}</th>`;html+='<th>합계</th></tr>';
+html+='<tr><td style="color:#ffd700;font-weight:700">PAR</td>';for(let i=0;i<9;i++)html+=`<td>${c.par[i]}</td>`;html+=`<td style="color:#ffd700;font-weight:700">${tp}</td></tr>`;
+html+='<tr><td style="font-weight:700">타수</td>';let tot=0;
+for(let i=0;i<9;i++){const s=G.scores[i];if(s!==undefined){tot+=s;const d=s-c.par[i];
+const cls=d<=-2?'eagle':d===-1?'birdie':d===0?'par-sc':d===1?'bogey':'dbogey';
 html+=`<td class="${cls}">${s}</td>`}else html+='<td>-</td>'}
-html+=`<td>${ts||'-'}</td></tr>`;
+html+=`<td style="font-weight:800">${tot||'-'}</td></tr>`;
 $('scTbl').innerHTML=html;
-$('scTot').textContent=ts?`${ts}타 (${ts-tp>=0?'+':''}${ts-tp})`:'';
-$('scTitle').textContent=c.name;$('scSub').textContent=`${G.hi+1}홀 완료`}
+$('scTot').textContent=`합계: ${tot}타 (${tot-tp>=0?'+':''}${tot-tp})`}
 
-/* ===== WIND ===== */
-function setWind(){
-const c=COURSES[G.ci];
-G.wind.spd=Math.random()*(c.wind||3)+.5;
-G.wind.dir=Math.random()*Math.PI*2;
-G.wind.x=Math.sin(G.wind.dir)*G.wind.spd*.15;
-G.wind.z=Math.cos(G.wind.dir)*G.wind.spd*.15}
+/* ========== 바람/자동클럽 ========== */
+function setWind(){const s=.5+Math.random()*3,d=Math.random()*Math.PI*2;G.wind={spd:s,dir:d,x:Math.cos(d)*s*.01,z:Math.sin(d)*s*.01}}
+function autoClub(){const d=holeP?Math.hypot(G.ball.x-holeP.x,G.ball.z-holeP.z):50;G.putting=d<6}
+function posGolfer(){if(!golfer)return;golfer.visible=true;golfer.position.set(G.ball.x,gndH(G.ball.x,G.ball.z),G.ball.z);golfer.rotation.set(0,G.aim,0);P.addr(golfer)}
 
-/* ===== AUTO CLUB ===== */
-function autoClub(){
-const d=holeP?Math.hypot(G.ball.x-holeP.x,G.ball.z-holeP.z):50;
-if(d<8){G.ci_=3;G.putting=true}
-else if(d<25){G.ci_=2;G.putting=false}
-else if(d<50){G.ci_=1;G.putting=false}
-else{G.ci_=0;G.putting=false}}
-
-/* ===== POSITION GOLFER ===== */
-function posGolfer(){
-if(!golfer)return;golfer.visible=true;
-golfer.position.set(G.ball.x,gndH(G.ball.x,G.ball.z),G.ball.z);
-golfer.rotation.set(0,G.aim,0);
-P.addr(golfer)}
-
-/* ===== START ROUND ===== */
+/* ========== 게임 흐름 ========== */
 function startRound(ci){
 G.ci=ci;G.hi=0;G.scores=[];G.roundActive=true;
 showScr('loading');$('ldFill').style.width='0%';
-setTimeout(()=>{$('ldFill').style.width='50%'},100);
+setTimeout(()=>$('ldFill').style.width='50%',100);
 setTimeout(()=>{$('ldFill').style.width='100%';startHole()},500)}
 
-/* ===== START HOLE ===== */
 function startHole(){
 const c=COURSES[G.ci];
-G.par=c.par[G.hi];G.stroke=0;G.settled=false;G.putting=false;G.ci_=0;
+G.par=c.par[G.hi];G.stroke=0;G.settled=false;G.putting=false;
 G.ball.holed=false;G.ball.inWater=false;G.ball.isOB=false;G.ball.flying=false;G.ball.stopped=true;
 setWind();buildCourse(G.ci,G.hi);
-// Reset ball to tee
 G.ball.x=teeP.x;G.ball.y=gndH(teeP.x,teeP.z)+.063;G.ball.z=teeP.z;
 G.ball.vx=G.ball.vy=G.ball.vz=0;
 updBM();if(ballM)ballM.visible=true;
 autoClub();
-// Aim toward hole
 G.aim=Math.atan2(holeP.x-teeP.x,-(holeP.z-teeP.z));
 clearTrail();
-// Flyover
 G.flyActive=true;G.flyT=0;
 showScr('flyover');
 $('flyH').textContent=`${G.hi+1}홀`;
 $('flyPar').textContent=G.par;
-$('flyDist').textContent=c.dist[G.hi];
+$('flyDist').textContent=COURSES[G.ci].dist[G.hi];
 updHUD();drawMinimap();
 AUD.init();AUD.resume()}
 
-/* ===== END FLYOVER ===== */
 window.endFly=function(){
-G.flyActive=false;G.state='aim';
+G.flyActive=false;G.state='aim';G.swPhase='idle';
 showScr('game');
-posGolfer();
-updAim(70);showAimL();
-CAM.behind({x:G.ball.x,y:G.ball.y,z:G.ball.z},G.aim);CAM.mode='behind';
+posGolfer();updAim(70);showAimL();
+CAM.behind({x:G.ball.x,y:G.ball.y,z:G.ball.z},G.aim);CAM.mode='behind';CAM.snap();
 updHUD();drawMinimap();
 showBig(`${G.hi+1}홀 PAR ${G.par}`,1500)};
 
-/* ===== DO SWING ===== */
 function doSwing(power,accuracy){
 G.state='swing';G.settled=false;G.stroke++;
-const club=CLUBS[G.ci_];
+const cl=G.putting?PUTTER:CLUB;
 const accOff=(accuracy-50)/50*.12;
 const dir=G.aim+accOff;
-const spd=club.power*(power/100);
-const loft=rad(club.loft);
+const spd=cl.power*(power/100);
+const loft=rad(cl.loft);
 G.ball.vx=Math.sin(dir)*Math.cos(loft)*spd;
 G.ball.vy=Math.sin(loft)*spd;
 G.ball.vz=-Math.cos(dir)*Math.cos(loft)*spd;
 G.ball.flying=true;G.ball.stopped=false;G.ball.holed=false;G.ball.inWater=false;G.ball.isOB=false;
 hideAim();clearTrail();
 if(!G.putting)AUD.play('hit');else AUD.play('putt');
-SA.start(power,G.putting,null);
+SA.start(power,G.putting);
 CAM.swingClose({x:G.ball.x,y:G.ball.y,z:G.ball.z},G.aim);CAM.mode='swing';
-CAM.shake(.03,.25);
-updHUD()}
+CAM.shake(.03,.25);updHUD()}
 
-/* ===== ON BALL STOP ===== */
 function onBallStop(){
-if(G.settled)return;G.settled=true;
-updBM();
-// Holed
+if(G.settled)return;G.settled=true;updBM();
 if(G.ball.holed){
-if(ballM)ballM.visible=false;
-const diff=G.stroke-G.par;
-let msg='';
-if(G.stroke===1)msg='🎉 홀인원!!!';
-else if(diff<=-3)msg='🦅 알바트로스!';
-else if(diff===-2)msg='🦅 이글!';
-else if(diff===-1)msg='🐦 버디!';
-else if(diff===0)msg='👍 파!';
-else if(diff===1)msg='보기';
-else if(diff===2)msg='더블보기';
-else msg='트리플보기+';
-showBig(msg,2500);if(golfer)P.celebrate(golfer);
+const d=G.stroke-G.par;
+const names={'-3':'앨버트로스!','-2':'이글!','-1':'버디!','0':'파!','1':'보기','2':'더블보기'};
+showBig(names[d]||(d<0?`${Math.abs(d)}언더!`:`+${d}`),2000);
+if(golfer)P.celebrate(golfer);
 G.scores[G.hi]=G.stroke;
-setTimeout(()=>showScorecard(),3000);return}
-// Water penalty
-if(G.ball.inWater){showBig('💦 워터 해저드! +1벌타',1800);G.stroke++;
-G.ball.x=teeP.x;G.ball.y=gndH(teeP.x,teeP.z)+.063;G.ball.z=teeP.z;
-G.ball.vx=G.ball.vy=G.ball.vz=0;G.ball.flying=false;G.ball.stopped=true;updBM()}
-// OB penalty
-if(G.ball.isOB){showBig('⚠️ OB! +1벌타',1800);G.stroke++;
-G.ball.x=teeP.x;G.ball.y=gndH(teeP.x,teeP.z)+.063;G.ball.z=teeP.z;
-G.ball.vx=G.ball.vy=G.ball.vz=0;G.ball.flying=false;G.ball.stopped=true;updBM()}
-// Max strokes
-if(G.stroke>=G.maxStk){showBig('최대타수 도달',1500);G.scores[G.hi]=G.maxStk;
-setTimeout(()=>showScorecard(),2000);return}
-// Continue
-setTimeout(()=>{
-autoClub();
+setTimeout(()=>showScorecard(),2500);return}
+if(G.ball.inWater){showBig('워터 해저드! +1벌타',1500);G.stroke++;G.ball.x=fwPath[Math.floor(fwPath.length*.3)].x;G.ball.z=fwPath[Math.floor(fwPath.length*.3)].z;G.ball.y=gndH(G.ball.x,G.ball.z)+.063;updBM()}
+else if(G.ball.isOB){showBig('OB! +1벌타',1500);G.stroke++;G.ball.x=fwPath[Math.floor(fwPath.length*.2)].x;G.ball.z=fwPath[Math.floor(fwPath.length*.2)].z;G.ball.y=gndH(G.ball.x,G.ball.z)+.063;updBM()}
+if(G.stroke>=G.maxStk){G.scores[G.hi]=G.maxStk;setTimeout(()=>showScorecard(),1000);return}
+setTimeout(()=>{G.state='aim';G.swPhase='idle';autoClub();
 G.aim=Math.atan2(holeP.x-G.ball.x,-(holeP.z-G.ball.z));
-posGolfer();updAim(70);showAimL();
-G.state='aim';
-CAM.behind({x:G.ball.x,y:G.ball.y,z:G.ball.z},G.aim);CAM.mode='behind';
-showScr('game');updHUD();drawMinimap()},800)}
+posGolfer();showScr('game');updAim(70);showAimL();
+CAM.behind({x:G.ball.x,y:G.ball.y,z:G.ball.z},G.aim);CAM.mode='behind';CAM.snap();
+updHUD();drawMinimap()},1200)}
 
-/* ===== SCORECARD ===== */
-function showScorecard(){mkScore();showScr('score');G.state='score'}
+function showScorecard(){mkScore();$('scTitle').textContent=`${G.hi+1}홀 완료`;
+$('scSub').textContent=COURSES[G.ci].name;
+$('scNext').textContent=G.hi<8?'다음 홀':'결과 보기';
+$('scNext').onclick=G.hi<8?nextHole:showResult;
+showScr('score')}
 
-/* ===== NEXT HOLE ===== */
-window.nextHole=function(){
-if(G.hi<8){G.hi++;showScr('loading');$('ldFill').style.width='0%';
-setTimeout(()=>{$('ldFill').style.width='100%';startHole()},400)}
-else showResult()};
-
-/* ===== RESULT ===== */
+window.nextHole=function(){G.hi++;startHole()};
 function showResult(){
-G.roundActive=false;const c=COURSES[G.ci];
-let tp=0,ts=0;for(let i=0;i<9;i++){tp+=c.par[i];ts+=G.scores[i]||0}
-$('rsTitle').textContent=c.name+' 라운드 결과';
-$('rsSub').textContent=`${ts}타`;
-const diff=ts-tp;
-$('rsTot').textContent=diff===0?'이븐파':diff>0?`+${diff}`:`${diff}`;
-$('rsTot').style.color=diff<0?'#4f4':diff===0?'#fff':'#f66';
-let html='';for(let i=0;i<9;i++){const s=G.scores[i]||0,p=c.par[i],d=s-p;
-const cls=d<=-2?'eagle':d===-1?'birdie':d===0?'par':d===1?'bogey':'dbogey';
-html+=`<div class="resHole"><span>${i+1}홀</span><span>PAR${p}</span><span class="${cls}">${s}(${d>=0?'+':''}${d})</span></div>`}
+const c=COURSES[G.ci],tp=c.par.reduce((a,v)=>a+v,0),tot=G.scores.reduce((a,v)=>a+v,0);
+$('rsSub').textContent=c.name;$('rsTot').textContent=`최종: ${tot}타 (${tot-tp>=0?'+':''}${tot-tp})`;
+let html='';G.scores.forEach((s,i)=>{const d=s-c.par[i];html+=`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px;color:#fff"><span>${i+1}홀 (PAR ${c.par[i]})</span><span style="color:${d<0?'#ff4444':d===0?'rgba(255,255,255,.5)':'#4af'}">${s}타 (${d>=0?'+':''}${d})</span></div>`});
 $('rsBody').innerHTML=html;
-// Save best
-const data=STO.d;const key='c'+G.ci;
-if(!data.best[key]||ts<data.best[key]){data.best[key]=ts;STO.save()}
-showScr('result');G.state='result'}
+if(!STO.d.best)STO.d.best={};
+if(!STO.d.best['c'+G.ci]||tot<STO.d.best['c'+G.ci]){STO.d.best['c'+G.ci]=tot;STO.save()}
+showScr('result');G.state='result';if(holeP){CAM.result(holeP);CAM.mode='result'}
+$('rsReplay').onclick=()=>startRound(G.ci);$('rsMenuBtn').onclick=()=>showMenu()}
 
-/* ===== GAUGE TICK ===== */
+/* ========== 스윙 게이지 ========== */
 function tickGauge(dt){
-if(G.swPhase==='power'){
-G.gaugeVal+=G.gaugeDir*1.0*dt*100;
-if(G.gaugeVal>=100){G.gaugeVal=100;G.gaugeDir=-1}
-if(G.gaugeVal<=0){G.gaugeVal=0;G.gaugeDir=1}
-$('pwrFill').style.width=G.gaugeVal+'%';
-$('swVal').textContent=Math.round(G.gaugeVal)+'%';
-updAim(G.gaugeVal)}
-else if(G.swPhase==='accuracy'){
-G.accVal+=G.accDir*1.4*dt*100;
-if(G.accVal>=100){G.accVal=100;G.accDir=-1}
-if(G.accVal<=0){G.accVal=0;G.accDir=1}
-$('accFill').style.width=G.accVal+'%';
-const d=Math.abs(G.accVal-50);
-$('accValTxt').textContent=d<8?'Perfect!':d<18?'Good':'조준중...'}}
+if(G.swPhase==='power'){G.gaugeVal+=G.gaugeDir*dt*100;if(G.gaugeVal>=100){G.gaugeVal=100;G.gaugeDir=-1}else if(G.gaugeVal<=0){G.gaugeVal=0;G.gaugeDir=1}
+$('pwrFill').style.width=G.gaugeVal+'%';$('pwrVal').textContent=Math.round(G.gaugeVal)+'%';updAim(G.gaugeVal)}
+else if(G.swPhase==='accuracy'){G.accVal+=G.accDir*dt*140;if(G.accVal>=100){G.accVal=100;G.accDir=-1}else if(G.accVal<=0){G.accVal=0;G.accDir=1}
+$('accFill').style.width=G.accVal+'%';$('accVal').textContent=Math.abs(G.accVal-50)<8?'GOOD!':Math.abs(G.accVal-50)<16?'OK':'MISS'}}
 
-/* ===== SWING TAP ===== */
-window.onSwTap=function(e){
-if(e)e.preventDefault();
-if(G.swPhase==='power'){
-G.power=G.gaugeVal;G.swPhase='accuracy';
-$('accWrap').style.display='block';$('accLabel').style.display='flex';G.accVal=50;G.accDir=1;
-$('swVal').textContent=Math.round(G.power)+'%';AUD.play('click');vib(15)}
-else if(G.swPhase==='accuracy'){
-G.accuracy=G.accVal;G.swPhase='idle';
-showSwing(false);showScr('game');
-doSwing(G.power,G.accuracy);AUD.play('click')}};
+function showSwing(){$('swingPanel').style.display='block';G.swPhase='power';G.gaugeVal=0;G.gaugeDir=1;
+$('pwrFill').style.width='0%';$('accWrap').style.display='none';$('accLabel').style.display='none';$('swBtn').textContent='탭하여 스윙!'}
 
-/* ===== TOUCH / MOUSE INPUT ===== */
-let dragStart=null,dragging=false,lastTouch=null;
-function getXY(e){if(e.touches&&e.touches.length>0)return{x:e.touches[0].clientX,y:e.touches[0].clientY};return{x:e.clientX,y:e.clientY}}
+window.onSwTap=function(e){e.preventDefault();AUD.play('click');
+if(G.swPhase==='idle'&&G.state==='aim'){showSwing();return}
+if(G.swPhase==='power'){G.power=G.gaugeVal;G.swPhase='accuracy';G.accVal=0;G.accDir=1;
+$('accWrap').style.display='block';$('accLabel').style.display='flex';$('swBtn').textContent='탭하여 조준!'}
+else if(G.swPhase==='accuracy'){G.accuracy=G.accVal;G.swPhase='idle';
+$('swingPanel').style.display='none';doSwing(G.power,G.accuracy)}};
 
-function onPtrDown(e){
-AUD.init();AUD.resume();
-const p=getXY(e);dragStart={x:p.x,y:p.y};dragging=false;lastTouch=p}
-
-function onPtrMove(e){
-if(!dragStart)return;const p=getXY(e);
-if(Math.abs(p.x-dragStart.x)+Math.abs(p.y-dragStart.y)>5)dragging=true;
-if(dragging&&G.state==='aim'){
-const sens=0.004;
-G.aim-=(p.x-lastTouch.x)*sens;
-updAim(70);
-if(golfer)golfer.rotation.y=G.aim;
-CAM.behind({x:G.ball.x,y:G.ball.y,z:G.ball.z},G.aim);CAM.update(0)}
-lastTouch=p}
-
-function onPtrUp(e){
-if(!dragging){
-if(G.state==='aim'){
-showSwing(true);showScr('swing');
-if(G.putting)P.paddr(golfer);else P.addr(golfer)}
-else if(G.flyActive){endFly()}}
-dragStart=null;dragging=false}
-
-/* Keyboard */
-function onKey(e){
-if(e.code==='Space'||e.code==='Enter'){
-if(G.state==='aim'){showSwing(true);showScr('swing')}
-else if(G.swPhase==='power'||G.swPhase==='accuracy'){onSwTap()}
-else if(G.flyActive){endFly()}
-else if(G.state==='score'){nextHole()}}
-if(G.state==='aim'){
-if(e.code==='ArrowLeft'){G.aim+=.03;updAim(70);if(golfer)golfer.rotation.y=G.aim;CAM.behind({x:G.ball.x,y:G.ball.y,z:G.ball.z},G.aim)}
-if(e.code==='ArrowRight'){G.aim-=.03;updAim(70);if(golfer)golfer.rotation.y=G.aim;CAM.behind({x:G.ball.x,y:G.ball.y,z:G.ball.z},G.aim)}}}
-
+/* ========== 입력 처리 ========== */
+let dragStart=null,dragAim=0;
 function bindInput(){
-const cv=renderer.domElement;
-cv.addEventListener('mousedown',onPtrDown);cv.addEventListener('mousemove',onPtrMove);cv.addEventListener('mouseup',onPtrUp);
-cv.addEventListener('touchstart',onPtrDown,{passive:true});cv.addEventListener('touchmove',onPtrMove,{passive:true});cv.addEventListener('touchend',onPtrUp);
-document.addEventListener('keydown',onKey)}
+const gc=$('gameContainer');
+gc.addEventListener('touchstart',e=>{if(G.state!=='aim')return;dragStart={x:e.touches[0].clientX,y:e.touches[0].clientY};dragAim=G.aim},{passive:true});
+gc.addEventListener('touchmove',e=>{if(!dragStart||G.state!=='aim')return;const dx=e.touches[0].clientX-dragStart.x;G.aim=dragAim-dx*.004;posGolfer();updAim(G.gaugeVal||70);updHUD();drawMinimap()},{passive:true});
+gc.addEventListener('touchend',()=>{dragStart=null},{passive:true});
+gc.addEventListener('mousedown',e=>{if(G.state!=='aim')return;dragStart={x:e.clientX,y:e.clientY};dragAim=G.aim});
+gc.addEventListener('mousemove',e=>{if(!dragStart||G.state!=='aim')return;const dx=e.clientX-dragStart.x;G.aim=dragAim-dx*.004;posGolfer();updAim(G.gaugeVal||70);updHUD();drawMinimap()});
+gc.addEventListener('mouseup',()=>{dragStart=null});
+document.addEventListener('keydown',e=>{
+if(e.key==='ArrowLeft'&&G.state==='aim'){G.aim-=.02;posGolfer();updAim(G.gaugeVal||70);updHUD();drawMinimap()}
+if(e.key==='ArrowRight'&&G.state==='aim'){G.aim+=.02;posGolfer();updAim(G.gaugeVal||70);updHUD();drawMinimap()}
+if(e.key===' '&&G.state==='aim'){showSwing()}})}
 
-/* ===== CLUB CYCLE ===== */
-$('clubBtn').onclick=function(){
-G.ci_=(G.ci_+1)%4;G.putting=G.ci_===3;
-updHUD();updAim(70);AUD.play('click')};
-
-/* ===== MENU FUNCTIONS ===== */
+/* ========== 메뉴 ========== */
 window.showMenu=function(){G.state='menu';showScr('menu')};
 window.openCourseSelect=function(){
 let html='';COURSES.forEach((c,i)=>{
 const tp=c.par.reduce((a,v)=>a+v,0);
 const best=STO.d.best&&STO.d.best['c'+i]?` 🏆 ${STO.d.best['c'+i]}타`:'';
-html+=`<div class="ci" onclick="startRound(${i})"><div style="width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#2a8a2a,#4aba4a);display:flex;align-items:center;justify-content:center;font-size:18px;margin-right:12px">⛳</div><div><div class="cn">${c.name}</div><div class="cc">${c.city} · 9홀 · PAR ${tp}${best}</div></div></div>`});
+html+=`<div class="course-item" onclick="startRound(${i})"><div class="ci-icon">⛳</div><div><div class="ci-name">${c.name}</div><div class="ci-desc">${c.city} · 9홀 · PAR ${tp}${best}</div></div></div>`});
 $('cList').innerHTML=html;showScr('course');G.state='course'};
 window.openRecords=function(){
 let html='';COURSES.forEach((c,i)=>{
-const tp=c.par.reduce((a,v)=>a+v,0);
-const best=STO.d.best&&STO.d.best['c'+i];
-html+=`<div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.05)"><div style="display:flex;justify-content:space-between"><span style="color:#fff;font-weight:700">${c.name}</span><span style="color:${best?'#ffd700':'rgba(255,255,255,.3)'}">${best?best+'타':'-'}</span></div><div style="font-size:10px;color:rgba(255,255,255,.4)">${c.city} · PAR ${tp}${best?` (${best-tp>=0?'+':''}${best-tp})`:''}</div></div>`});
+const tp=c.par.reduce((a,v)=>a+v,0);const best=STO.d.best&&STO.d.best['c'+i];
+html+=`<div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.04)"><div style="display:flex;justify-content:space-between"><span style="color:#fff;font-weight:700">${c.name}</span><span style="color:${best?'#ffd700':'rgba(255,255,255,.3)'}">${best?best+'타':'-'}</span></div><div style="font-size:11px;color:rgba(255,255,255,.4)">${c.city} · PAR ${tp}${best?` (${best-tp>=0?'+':''}${best-tp})`:''}</div></div>`});
 $('rList').innerHTML=html;showScr('records');G.state='records'};
 window.openSettings=function(){showScr('settings');G.state='settings'};
 window.startRound=startRound;
 
-/* ===== MAIN GAME LOOP ===== */
-const clock=new THREE.Clock();
-let lastMiniT=0;
-
+/* ========== 메인 루프 ========== */
+const clock=new THREE.Clock();let lastMiniT=0;
 function gameLoop(){
 requestAnimationFrame(gameLoop);
-const dt=Math.min(clock.getDelta(),.05);
-const elapsed=clock.getElapsedTime();
+const dt=Math.min(clock.getDelta(),.05),elapsed=clock.getElapsedTime();
 
-// Gauge
 if(G.swPhase==='power'||G.swPhase==='accuracy')tickGauge(dt);
-
-// Swing animation
 SA.update(dt);
 
-// Flyover
-if(G.flyActive){
-G.flyT+=dt*.35;
-if(G.flyT>=1)endFly();
-else{const t=G.flyT;CAM.flyover(t,teeP,holeP);CAM.update(dt)}}
-
-// Physics
-if(G.state==='swing'&&G.ball.flying){
-physTick(dt);updBM();updTrail();
-CAM.follow({x:G.ball.x,y:G.ball.y,z:G.ball.z},{x:G.ball.vx,z:G.ball.vz});CAM.update(dt);
-if(G.ball.stopped&&!G.settled){setTimeout(()=>onBallStop(),400)}}
-
-// Camera in aim
-if(G.state==='aim'){CAM.update(dt)}
-
-// Result cam orbit
+if(G.flyActive){G.flyT+=dt*.3;if(G.flyT>=1)endFly();else{CAM.flyover(G.flyT,teeP,holeP);CAM.update(dt)}}
+if(G.state==='swing'&&G.ball.flying){physTick(dt);updBM();updTrail();CAM.follow({x:G.ball.x,y:G.ball.y,z:G.ball.z},{x:G.ball.vx,z:G.ball.vz});CAM.update(dt);if(G.ball.stopped&&!G.settled)setTimeout(()=>onBallStop(),400)}
+if(G.state==='aim')CAM.update(dt);
 if(G.state==='result'&&holeP){CAM.result(holeP);CAM.update(dt)}
 
-// Particles
 updP(dt);
-
-// Water animation
 waters.forEach(w=>{if(w.mesh)w.mesh.position.y=w.mesh.userData.baseY+Math.sin(elapsed*1.5+w.x*.1)*.05});
-// Landing zone pulse animation
-if(landingZone&&landingZone.visible){const pulse=.2+Math.sin(elapsed*3)*.08;landingZone.material.opacity=pulse;
-if(landingRing){landingRing.material.opacity=.4+Math.sin(elapsed*4)*.15}}
-
-// Flag wave
+if(landingZone&&landingZone.visible){landingZone.material.opacity=.5+Math.sin(elapsed*3)*.12;if(landingRing)landingRing.material.opacity=.55+Math.sin(elapsed*4)*.15}
 if(flagM)flagM.rotation.y=Math.sin(elapsed*3)*.3;
 
-// Golfer idle breathing + weight shift + head look
 if(golfer&&golfer.visible&&G.state==='aim'&&!SA.active){
-const u=golfer.userData;
-const b=Math.sin(elapsed*1.8)*.008;
-u.torso.position.y=u.torsoBaseY+b;
-// Subtle weight shift side to side
-const sw=Math.sin(elapsed*.7)*.012;
-u.hips.rotation.z=sw;
-u.torso.rotation.z=-sw*.5;
-// Subtle head look toward hole
-u.head.rotation.y=Math.sin(elapsed*.5)*.04;
-u.head.rotation.x=.05+Math.sin(elapsed*1.2)*.015;
-// Arms relax slightly
-const ar=Math.sin(elapsed*1.4)*.01;
-u.lArm.rotation.x=.08+ar;u.rArm.rotation.x=.08-ar}
+const u=golfer.userData;u.torso.position.y=u.torsoBaseY+Math.sin(elapsed*1.8)*.008;
+u.hips.rotation.z=Math.sin(elapsed*.7)*.012;u.torso.rotation.z=-Math.sin(elapsed*.7)*.006;
+u.head.rotation.y=Math.sin(elapsed*.5)*.04;u.head.rotation.x=.05+Math.sin(elapsed*1.2)*.015}
 
-// Minimap
 if(elapsed-lastMiniT>.3&&(G.state==='aim'||G.state==='swing')){drawMinimap();lastMiniT=elapsed}
-
 renderer.render(scene,camera)}
 
-/* ===== INITIALIZATION ===== */
+/* ========== 초기화 ========== */
 function init(){
-initScene();initMaterials();
-createGolfer();mkBall();mkAim();initTrail();
-bindInput();
-showScr('menu');G.state='menu';
-$('loading').style.display='none';
-gameLoop();
-console.log('Park Golf Pro v11 initialized')}
+initScene();initMaterials();createGolfer();mkBall();mkAim();initTrail();bindInput();
+showScr('menu');G.state='menu';$('loading').style.display='none';
+gameLoop();console.log('파크골프 프로 v17 초기화 완료');
+window._dbg=()=>({cam:{x:camera.position.x.toFixed(2),y:camera.position.y.toFixed(2),z:camera.position.z.toFixed(2)},
+ball:{x:G.ball.x.toFixed(2),y:G.ball.y.toFixed(2),z:G.ball.z.toFixed(2)},
+aim:G.aim.toFixed(3),state:G.state,
+golferVis:golfer?golfer.visible:false,
+golferPos:golfer?{x:golfer.position.x.toFixed(2),y:golfer.position.y.toFixed(2),z:golfer.position.z.toFixed(2)}:null,
+tee:teeP?{x:teeP.x.toFixed(2),z:teeP.z.toFixed(2)}:null,
+hole:holeP?{x:holeP.x.toFixed(2),z:holeP.z.toFixed(2)}:null,
+aimLineVis:aimLine?aimLine.visible:false})}
 
-/* ===== SERVICE WORKER ===== */
-if('serviceWorker' in navigator){
-navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW:',e))}
-
-/* ===== START ===== */
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW:',e))}
 window.addEventListener('DOMContentLoaded',()=>setTimeout(init,100));
-
 </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-const CACHE='parkgolf-v12';
+const CACHE='parkgolf-v13';
 const ASSETS=['./','./index.html','./manifest.json','./assets/icons/icon-192.png','./assets/icons/icon-512.png'];
 const CDN_URLS=['https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>Promise.all([c.addAll(ASSETS),...CDN_URLS.map(u=>fetch(u).then(r=>c.put(u,r)).catch(()=>{}))])).then(()=>self.skipWaiting()))});

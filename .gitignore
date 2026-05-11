@@ -1,3 +1,6 @@
+# Screenshots (debug/test artifacts)
+*.png
+# Node modules
 node_modules/
-package-lock.json
-package.json
+# OS files
+.DS_Store

@@ -230,19 +230,19 @@ let M={},golfer=null;
 
 function initScene(){
 scene=new THREE.Scene();
-camera=new THREE.PerspectiveCamera(46,innerWidth/innerHeight,.1,800);
+camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.1,800);
 renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance',alpha:false});
 renderer.setSize(innerWidth,innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.15;
+renderer.toneMappingExposure=1.05;
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 $('gameContainer').appendChild(renderer.domElement);
 
 // 강한 태양광 — 골프킹 스타일 밝고 따뜻한 느낌
-sunLight=new THREE.DirectionalLight(0xfffae0,4.0);
+sunLight=new THREE.DirectionalLight(0xfffae0,3.2);
 sunLight.position.set(50,80,30);
 sunLight.castShadow=true;
 sunLight.shadow.mapSize.set(2048,2048);
@@ -260,7 +260,7 @@ scene.add(new THREE.HemisphereLight(0x99ccff,0x447733,.65));
 // 하늘
 scene.background=mkSky();
 // 부드러운 안개 — 먼 배경만 살짝
-scene.fog=new THREE.FogExp2(0xd0e8f8,.00025);
+scene.fog=new THREE.Fog(0xc8e0f4,50,200);
 
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
 }
@@ -413,15 +413,16 @@ leaf:new THREE.MeshStandardMaterial({color:0x227733,roughness:.7,side:THREE.Doub
 
 /* ========== 지형 높이 함수 — 더 풍부한 언덕 ========== */
 function gndH(x,z){
-return Math.sin(x*.03)*Math.cos(z*.03)*2.8
-+Math.sin(x*.07+z*.05)*1.2
-+Math.cos(x*.04-z*.06)*.9
-+Math.sin(x*.015+z*.012)*1.8
-+Math.cos(x*.1+z*.08)*.4}
+return Math.sin(x*.03)*Math.cos(z*.03)*1.4
++Math.sin(x*.07+z*.05)*.6
++Math.cos(x*.04-z*.06)*.45
++Math.sin(x*.015+z*.012)*.9
++Math.cos(x*.1+z*.08)*.2}
 
 /* ========== 골퍼 캐릭터 — 골프킹 스타일 ========== */
 function createGolfer(){
 const g=new THREE.Group(),S=14;
+// 골퍼를 1.8배 키워서 화면에서 확실히 보이게
 function mk(geo,mat,x,y,z,shadow=true){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);if(shadow)m.castShadow=true;return m}
 
 // 몸통
@@ -497,11 +498,11 @@ club.add(mk(headGeo,M.clubMetal,0,-.56,0));
 club.position.set(0,-.19,0);la.fore.add(club);
 
 // 그림자
-const shadow=new THREE.Mesh(new THREE.CircleGeometry(.28,16),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.22,depthWrite:false}));
+const shadow=new THREE.Mesh(new THREE.CircleGeometry(.4,16),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.28,depthWrite:false}));
 shadow.rotation.x=-Math.PI/2;shadow.position.y=.003;g.add(shadow);
 
 g.userData={torso,hips,head,lArm:la.arm,lFore:la.fore,rArm:ra.arm,rFore:ra.fore,lLeg:ll.leg,lShin:ll.shin,rLeg:rl.leg,rShin:rl.shin,club,torsoBaseY:torso.position.y};
-g.scale.set(0.7,0.7,0.7);
+g.scale.set(1.15,1.15,1.15);
 golfer=g;scene.add(g);golfer.visible=false;
 return g}
 
@@ -666,13 +667,13 @@ teeP=new THREE.Vector3(tx,gndH(tx,tz),tz);
 holeP=new THREE.Vector3(hx,gndH(hx,hz),hz);
 
 // 지면 — 넓은 잔디 언덕
-const gndGeo=new THREE.PlaneGeometry(250,250,150,150);
+const gndGeo=new THREE.PlaneGeometry(300,300,160,160);
 const pa=gndGeo.attributes.position.array;
 for(let i=0;i<pa.length;i+=3){const gx=pa[i],gy=pa[i+1];pa[i+2]=gndH(gx,gy)}
 gndGeo.computeVertexNormals();
 const gnd=new THREE.Mesh(gndGeo,M.grass);gnd.rotation.x=-Math.PI/2;gnd.receiveShadow=true;grp.add(gnd);
 // 먼 곳 확장 지면
-const gnd2=new THREE.Mesh(new THREE.PlaneGeometry(600,600),new THREE.MeshStandardMaterial({color:0x3a7a2a,roughness:.9}));
+const gnd2=new THREE.Mesh(new THREE.PlaneGeometry(800,800),new THREE.MeshStandardMaterial({color:0x3a7a2a,roughness:.9}));
 gnd2.rotation.x=-Math.PI/2;gnd2.position.y=-1;gnd2.receiveShadow=true;grp.add(gnd2);
 
 // 페어웨이 경로
@@ -754,12 +755,12 @@ rk.position.set(rkx,gndH(rkx,rkz)+.08,rkz);rk.rotation.set(rng(),rng(),rng());rk
 const treeTT=c.trees==='mixed'?null:c.trees;
 function rndTree(){return treeTT||((['deciduous','pine','palm'])[Math.floor(rng()*3)])}
 
-// 1열: 페어웨이 바로 옆
-for(let fi=0;fi<fwPath.length;fi+=1){const fp=fwPath[fi];
+// 1열: 페어웨이 바로 옆 — 밀집 (매 2번째)
+for(let fi=0;fi<fwPath.length;fi+=2){const fp=fwPath[fi];
 for(const side of[-1,1]){
-const off=fwW*1.6+rng()*2;
-const nx=fp.x+side*off+(rng()-.5)*1.2,nz=fp.z+(rng()-.5)*2;
-grp.add(mkTree(rndTree(),nx,nz,.8+rng()*.5));
+const off=fwW*1.3+rng()*1.5;
+const nx=fp.x+side*off+(rng()-.5)*1.0,nz=fp.z+(rng()-.5)*1.5;
+grp.add(mkTree(rndTree(),nx,nz,1.2+rng()*.6));
 // 덤불도 함께
 const bs=.4+rng()*.6;
 const bC=new THREE.Color().setHSL(.28+rng()*.08,.55+rng()*.2,.16+rng()*.12);
@@ -768,36 +769,36 @@ bush.position.set(nx+(rng()-.5)*1,gndH(nx,nz)+bs*.3,nz+(rng()-.5)*1);
 bush.scale.set(1,.55+rng()*.3,1);bush.castShadow=true;grp.add(bush)}}
 
 // 2열: 중간 거리
-for(let fi=0;fi<fwPath.length;fi+=2){const fp=fwPath[fi];
+for(let fi=0;fi<fwPath.length;fi+=3){const fp=fwPath[fi];
 for(const side of[-1,1]){for(let j=0;j<2;j++){
-const off=fwW*3.5+rng()*4;
-const nx=fp.x+side*off+(rng()-.5)*3,nz=fp.z+(rng()-.5)*4;
-grp.add(mkTree(rndTree(),nx,nz,1.0+rng()*.7))}}}
+const off=fwW*3.0+rng()*4;
+const nx=fp.x+side*off+(rng()-.5)*3,nz=fp.z+(rng()-.5)*3;
+grp.add(mkTree(rndTree(),nx,nz,1.4+rng()*1.0))}}}
 
 // 3열: 뒤쪽 숲 벽
-for(let fi=0;fi<fwPath.length;fi+=2){const fp=fwPath[fi];
-for(const side of[-1,1]){for(let j=0;j<3;j++){
-const off=fwW*6+rng()*8;
-const nx=fp.x+side*off+(rng()-.5)*4,nz=fp.z+(rng()-.5)*5;
-grp.add(mkTree(rndTree(),nx,nz,1.1+rng()*1.0))}}}
+for(let fi=0;fi<fwPath.length;fi+=3){const fp=fwPath[fi];
+for(const side of[-1,1]){for(let j=0;j<2;j++){
+const off=fwW*6+rng()*6;
+const nx=fp.x+side*off+(rng()-.5)*4,nz=fp.z+(rng()-.5)*4;
+grp.add(mkTree(rndTree(),nx,nz,1.5+rng()*1.4))}}}
 
 // 배경 숲 (원형)
-for(let i=0;i<120;i++){
+for(let i=0;i<80;i++){
 const ta2=rng()*Math.PI*2,td2=15+rng()*55;
 const ttx=Math.cos(ta2)*td2,ttz=-dist*.15+Math.sin(ta2)*td2;
 let onFw=false;
 for(const fp of fwPath)if(Math.hypot(ttx-fp.x,ttz-fp.z)<fwW*1.3){onFw=true;break}
 if(onFw)continue;
-grp.add(mkTree(rndTree(),ttx,ttz,.7+rng()*1.0))}
+grp.add(mkTree(rndTree(),ttx,ttz,1.0+rng()*1.2))}
 
-// 원경 대형나무
-for(let i=0;i<50;i++){
+// 원경 대형나무 — 거대한 배경숲
+for(let i=0;i<40;i++){
 const ta3=rng()*Math.PI*2,td3=45+rng()*40;
 const ttx2=Math.cos(ta3)*td3,ttz2=-dist*.15+Math.sin(ta3)*td3;
-grp.add(mkTree(rndTree(),ttx2,ttz2,1.2+rng()*1.3))}
+grp.add(mkTree(rndTree(),ttx2,ttz2,1.8+rng()*2.0))}
 
 // === 추가 덤불 ===
-for(let i=0;i<70+Math.floor(rng()*40);i++){
+for(let i=0;i<30+Math.floor(rng()*20);i++){
 const ba=rng()*Math.PI*2,bd=5+rng()*45;
 const bx=Math.cos(ba)*bd,bz=-dist*.15+Math.sin(ba)*bd;
 let onFw2=false;for(const fp of fwPath)if(Math.hypot(bx-fp.x,bz-fp.z)<fwW*1.1){onFw2=true;break}
@@ -808,7 +809,7 @@ const bush=new THREE.Mesh(new THREE.SphereGeometry(bs,8,6),new THREE.MeshStandar
 bush.position.set(bx,gndH(bx,bz)+bs*.3,bz);bush.scale.set(1,.5+rng()*.35,1);bush.castShadow=true;grp.add(bush)}
 
 // === 바위 ===
-for(let i=0;i<25+Math.floor(rng()*15);i++){
+for(let i=0;i<15+Math.floor(rng()*10);i++){
 const ra=rng()*Math.PI*2,rd=6+rng()*40;
 const rx=Math.cos(ra)*rd,rz=-dist*.15+Math.sin(ra)*rd;
 const rsize=.15+rng()*.5;
@@ -818,7 +819,7 @@ rk.castShadow=true;grp.add(rk)}
 
 // === 꽃 클러스터 ===
 const fMats=[M.fl1,M.fl2,M.fl3,M.fl4];
-for(let i=0;i<70+Math.floor(rng()*40);i++){
+for(let i=0;i<30+Math.floor(rng()*20);i++){
 const fa=rng()*Math.PI*2,fd=3+rng()*30;
 const fx=Math.cos(fa)*fd,fz=-dist*.15+Math.sin(fa)*fd;
 const fh=gndH(fx,fz);
@@ -862,7 +863,7 @@ scene.add(grp)}
 let ballM,ballShadow,aimLine,aimDot,landingZone,landingRing,trailLine,trailPts=[],particles=[];
 function mkBall(){
 ballM=new THREE.Mesh(new THREE.SphereGeometry(.021,16,12),new THREE.MeshStandardMaterial({color:0xffffff,roughness:.15,metalness:.05}));
-ballM.castShadow=true;ballM.scale.set(3,3,3);scene.add(ballM);
+ballM.castShadow=true;ballM.scale.set(3.5,3.5,3.5);scene.add(ballM);
 ballShadow=new THREE.Mesh(new THREE.CircleGeometry(.06,12),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.3,depthWrite:false}));
 ballShadow.rotation.x=-Math.PI/2;scene.add(ballShadow)}
 function updBM(){if(!ballM)return;ballM.position.set(G.ball.x,G.ball.y,G.ball.z);
@@ -873,28 +874,28 @@ function mkAim(){
 // 밝고 두꺼운 조준선
 const pts=[];for(let i=0;i<30;i++)pts.push(new THREE.Vector3(0,0,0));
 const curve=new THREE.CatmullRomCurve3(pts);
-aimLine=new THREE.Mesh(new THREE.TubeGeometry(curve,40,.06,8,false),
-new THREE.MeshBasicMaterial({color:0x55eeff,transparent:true,opacity:.9,depthWrite:false}));
+aimLine=new THREE.Mesh(new THREE.TubeGeometry(curve,40,.09,8,false),
+new THREE.MeshBasicMaterial({color:0x55eeff,transparent:true,opacity:.95,depthWrite:false}));
 aimLine._pts=pts;scene.add(aimLine);
 // 글로우
-const glow=new THREE.Mesh(new THREE.TubeGeometry(curve,40,.12,8,false),
-new THREE.MeshBasicMaterial({color:0x33bbff,transparent:true,opacity:.35,depthWrite:false}));
+const glow=new THREE.Mesh(new THREE.TubeGeometry(curve,40,.18,8,false),
+new THREE.MeshBasicMaterial({color:0x33bbff,transparent:true,opacity:.4,depthWrite:false}));
 glow.name='glow';aimLine.add(glow);
 
 // 랜딩존 — 크고 밝게
-landingZone=new THREE.Mesh(new THREE.RingGeometry(.6,2.5,36),
-new THREE.MeshBasicMaterial({color:0xffdd22,transparent:true,opacity:.7,side:THREE.DoubleSide,depthWrite:false}));
+landingZone=new THREE.Mesh(new THREE.RingGeometry(.8,3.0,36),
+new THREE.MeshBasicMaterial({color:0xffdd22,transparent:true,opacity:.8,side:THREE.DoubleSide,depthWrite:false}));
 landingZone.rotation.x=-Math.PI/2;scene.add(landingZone);
 // 중앙 타겟
 const ct=new THREE.Mesh(new THREE.CircleGeometry(.4,20),
 new THREE.MeshBasicMaterial({color:0xffee44,transparent:true,opacity:.4,side:THREE.DoubleSide,depthWrite:false}));
 ct.rotation.x=-Math.PI/2;ct.position.y=.002;landingZone.add(ct);
 // 외곽 링
-landingRing=new THREE.Mesh(new THREE.RingGeometry(2.2,2.8,36),
-new THREE.MeshBasicMaterial({color:0xffaa00,transparent:true,opacity:.75,side:THREE.DoubleSide,depthWrite:false}));
+landingRing=new THREE.Mesh(new THREE.RingGeometry(2.8,3.5,36),
+new THREE.MeshBasicMaterial({color:0xffaa00,transparent:true,opacity:.8,side:THREE.DoubleSide,depthWrite:false}));
 landingRing.rotation.x=-Math.PI/2;scene.add(landingRing);
 // 조준점
-aimDot=new THREE.Mesh(new THREE.SphereGeometry(.22,12,8),
+aimDot=new THREE.Mesh(new THREE.SphereGeometry(.3,12,8),
 new THREE.MeshBasicMaterial({color:0x55eeff,transparent:true,opacity:.95}));scene.add(aimDot)}
 
 function updAim(pwr){if(!aimLine||!G)return;
@@ -906,9 +907,9 @@ const terrH=gndH(G.ball.x+dx*d,G.ball.z+dz*d);
 const arcH=Math.sin(t*Math.PI)*maxD*Math.sin(loft)*.12;
 pts[i].set(G.ball.x+dx*d,Math.max(terrH+.2,G.ball.y+arcH)+.1,G.ball.z+dz*d)}
 const curve=new THREE.CatmullRomCurve3(pts);
-aimLine.geometry.dispose();aimLine.geometry=new THREE.TubeGeometry(curve,40,.06,8,false);
+aimLine.geometry.dispose();aimLine.geometry=new THREE.TubeGeometry(curve,40,.09,8,false);
 const glow=aimLine.getObjectByName('glow');
-if(glow){glow.geometry.dispose();glow.geometry=new THREE.TubeGeometry(curve,40,.12,8,false)}
+if(glow){glow.geometry.dispose();glow.geometry=new THREE.TubeGeometry(curve,40,.18,8,false)}
 const lx=G.ball.x+dx*landD,lz=G.ball.z+dz*landD,lh=gndH(lx,lz);
 if(landingZone){landingZone.position.set(lx,lh+.08,lz);landingZone.visible=true;const sc=.5+maxD*.03;landingZone.scale.set(sc,sc,sc)}
 if(landingRing){landingRing.position.set(lx,lh+.07,lz);landingRing.visible=true;const sc=.5+maxD*.03;landingRing.scale.set(sc,sc,sc)}
@@ -934,28 +935,32 @@ if(p.life<=0){scene.remove(p.m);particles.splice(i,1)}}}
 const CAM={
 tgt:new THREE.Vector3(),pos:new THREE.Vector3(),mode:'behind',shakeT:0,shakeI:0,
 behind(bp,aa){
-// Golf King 스타일 — 골퍼 어깨 뒤 위에서 홀 방향
-const d=3.2,h=1.6;
+// Golf King 스타일 — 골퍼 뒤 위에서 코스를 넓게
+const d=3.8,h=2.4;
 this.pos.set(bp.x-Math.sin(aa)*d,bp.y+h,bp.z+Math.cos(aa)*d);
-this.tgt.set(bp.x+Math.sin(aa)*5,bp.y+.2,bp.z-Math.cos(aa)*5)},
+this.tgt.set(bp.x+Math.sin(aa)*7,bp.y+.05,bp.z-Math.cos(aa)*7)},
 swingClose(bp,aa){
-const sa=aa+Math.PI*.15;
-// 뒤쪽 약간 측면에서
-this.pos.set(bp.x-Math.sin(sa)*3.0,bp.y+1.6,bp.z+Math.cos(sa)*3.0);
-this.tgt.set(bp.x+Math.sin(aa)*3,bp.y+.4,bp.z-Math.cos(aa)*3)},
+const sa=aa+Math.PI*.14;
+this.pos.set(bp.x-Math.sin(sa)*4.2,bp.y+2.2,bp.z+Math.cos(sa)*4.2);
+this.tgt.set(bp.x+Math.sin(aa)*5,bp.y+.2,bp.z-Math.cos(aa)*5)},
 follow(bp,v){
-const sp=Math.sqrt(v.x*v.x+v.z*v.z),d=5.0+sp*.2,h=2.8+bp.y*.3;
-const bh=sp>.1?Math.atan2(-v.x,-v.z):G.aim;
-this.tgt.lerp(new THREE.Vector3(bp.x,bp.y*.3+.2,bp.z),.08);
-// 공 뒤쪽에서 추적
-this.pos.lerp(new THREE.Vector3(bp.x-Math.sin(bh)*d,h,bp.z+Math.cos(bh)*d),.06)},
+const sp=Math.sqrt(v.x*v.x+v.z*v.z),d=4.5+sp*.15,h=2.5+bp.y*.25;
+const bh=sp>.1?Math.atan2(v.x,-v.z):G.aim;
+this.tgt.lerp(new THREE.Vector3(bp.x,bp.y*.3+.3,bp.z),.09);
+this.pos.lerp(new THREE.Vector3(bp.x-Math.sin(bh)*d,h,bp.z+Math.cos(bh)*d),.07)},
 flyover(t,tp,hp){
 const p=clamp(t,0,1);
-const cx=lerp(tp.x,hp.x,p),cz=lerp(tp.z,hp.z,p);
-const d=tp.distanceTo(hp),h=7+d*.12;
-const a=Math.atan2(hp.x-tp.x,hp.z-tp.z);
-this.pos.set(cx+Math.sin(a+.4)*10,h,cz+Math.cos(a+.4)*10);
-this.tgt.set(cx,gndH(cx,cz)+.3,cz)},
+// 게임뷰 behind 카메라와 동일한 구도로 코스를 따라 이동
+// 홀에서 시작 → 티로 돌아옴 (코스 전체를 역방향으로 보여줌)
+const fwdA=Math.atan2(hp.x-tp.x,-(hp.z-tp.z));
+const rp=1-p;
+const bx=tp.x+(hp.x-tp.x)*rp;
+const bz=tp.z+(hp.z-tp.z)*rp;
+const by=gndH(bx,bz);
+// behind 카메라 스타일 — 뒤 위에서 진행방향을 봄
+const d=3.8,h=2.4;
+this.pos.set(bx-Math.sin(fwdA)*d,by+h,bz+Math.cos(fwdA)*d);
+this.tgt.set(bx+Math.sin(fwdA)*7,by+.05,bz-Math.cos(fwdA)*7)},
 result(hp){const t=performance.now()*.00025;
 this.pos.set(hp.x+Math.sin(t)*4,hp.y+3.2,hp.z+Math.cos(t)*4);
 this.tgt.set(hp.x,hp.y+.3,hp.z)},
@@ -1242,7 +1247,7 @@ renderer.render(scene,camera)}
 function init(){
 initScene();initMaterials();createGolfer();mkBall();mkAim();initTrail();bindInput();
 showScr('menu');G.state='menu';$('loading').style.display='none';
-gameLoop();console.log('파크골프 프로 v17 초기화 완료');
+gameLoop();console.log('파크골프 프로 v18 초기화 완료');
 window._dbg=()=>({cam:{x:camera.position.x.toFixed(2),y:camera.position.y.toFixed(2),z:camera.position.z.toFixed(2)},
 ball:{x:G.ball.x.toFixed(2),y:G.ball.y.toFixed(2),z:G.ball.z.toFixed(2)},
 aim:G.aim.toFixed(3),state:G.state,

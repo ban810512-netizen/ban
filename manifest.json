@@ -1,15 +1,15 @@
 {
-  "name": "파크골프 프로 - 전국투어",
-  "short_name": "파크골프",
-  "description": "전국 파크골프장을 돌며 실감나는 경기를 즐기세요!",
+  "name": "경남형 틈새돌봄 근무현황",
+  "short_name": "틈새돌봄",
+  "description": "경남형 틈새돌봄 매니저 근무현황 시스템 - 출퇴근, 일지, 청구서, 급여 관리",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#000000",
-  "theme_color": "#1a5c1a",
+  "background_color": "#ffffff",
+  "theme_color": "#1a73e8",
   "lang": "ko",
   "icons": [
-    {"src": "assets/icons/icon-192.png","sizes": "192x192","type": "image/png","purpose": "any maskable"},
-    {"src": "assets/icons/icon-512.png","sizes": "512x512","type": "image/png","purpose": "any maskable"}
+    {"src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
   ]
 }

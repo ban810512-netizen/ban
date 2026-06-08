@@ -1,0 +1,2042 @@
+/* ═══════════════════════════════════════
+   경남형 틈새돌봄 매니저 근무현황 시스템
+   Complete Stylesheet
+   ═══════════════════════════════════════ */
+
+:root {
+  --primary: #1a73e8;
+  --primary-light: #e8f0fe;
+  --primary-dark: #1557b0;
+  --success: #0d904f;
+  --success-light: #e6f4ea;
+  --danger: #d93025;
+  --danger-light: #fce8e6;
+  --warning: #f9ab00;
+  --warning-light: #fef7e0;
+  --gray-50: #f8f9fa;
+  --gray-100: #f1f3f4;
+  --gray-200: #e8eaed;
+  --gray-300: #dadce0;
+  --gray-400: #bdc1c6;
+  --gray-500: #9aa0a6;
+  --gray-600: #80868b;
+  --gray-700: #5f6368;
+  --gray-800: #3c4043;
+  --gray-900: #202124;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1), 0 6px 10px rgba(0,0,0,0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--gray-100);
+  color: var(--gray-900);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ─── HEADER ─── */
+.header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-md);
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.header-top h1 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.logo-icon { font-size: 1.3rem; }
+
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+  opacity: 0.95;
+}
+
+.live-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  background: #4caf50;
+  border-radius: 50%;
+  animation: pulse-dot 1.5s infinite;
+  margin-right: 3px;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+/* ─── NAV TABS ─── */
+.nav-tabs {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 0 12px 0;
+  gap: 2px;
+  background: rgba(0,0,0,0.1);
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+
+.nav-tab {
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  opacity: 0.75;
+  transition: all 0.2s;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.nav-tab:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+.nav-tab.active {
+  opacity: 1;
+  border-bottom-color: #fff;
+  background: rgba(255,255,255,0.15);
+}
+
+/* ─── CONTAINER ─── */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* ─── SECTIONS ─── */
+.section { display: none; }
+.section.active { display: block; animation: fadeIn 0.3s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── CARDS ─── */
+.card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 14px 18px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: var(--gray-50);
+}
+
+.card-body { padding: 16px 18px; }
+
+/* ─── STATS GRID ─── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 18px 14px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--primary);
+  transition: transform 0.2s;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+.stat-card.working { border-left-color: var(--success); }
+.stat-card.completed { border-left-color: var(--primary); }
+.stat-card.people { border-left-color: var(--warning); }
+.stat-card.pay { border-left-color: var(--danger); }
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  line-height: 1.2;
+}
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--gray-600);
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* ─── FORMS ─── */
+.form-group { margin-bottom: 14px; }
+
+.form-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 5px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fff;
+  color: var(--gray-900);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+}
+
+select.form-control {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235f6368' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-row .form-control { flex: 1; min-width: 120px; }
+
+/* ─── BUTTONS ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 9px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  text-decoration: none;
+  user-select: none;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); }
+
+.btn-success { background: var(--success); color: #fff; }
+.btn-success:hover { background: #0a7a43; }
+
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-danger:hover { background: #c12a20; }
+
+.btn-outline {
+  background: #fff;
+  color: var(--gray-700);
+  border: 1.5px solid var(--gray-300);
+}
+.btn-outline:hover { background: var(--gray-100); border-color: var(--gray-400); }
+
+.btn-sm { padding: 5px 10px; font-size: 0.78rem; }
+.btn-block { width: 100%; }
+
+/* ─── PHOTO UPLOAD ─── */
+.photo-upload-area {
+  width: 100%;
+  min-height: 120px;
+  border: 2px dashed var(--gray-300);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+  position: relative;
+  background: var(--gray-50);
+}
+.photo-upload-area:hover { border-color: var(--primary); background: var(--primary-light); }
+.photo-upload-area.has-photo { border-style: solid; border-color: var(--success); }
+.photo-upload-area.has-photo .upload-placeholder { display: none; }
+.photo-upload-area.has-photo .photo-preview { display: block; }
+.photo-upload-area.photo-required { border-color: var(--danger); border-width: 3px; animation: pulse-red 1s ease 2; }
+@keyframes pulse-red { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 0 6px rgba(217,48,37,0.25)} }
+.photo-warning { color: var(--danger); font-size: 0.8rem; font-weight: 700; margin-top: 6px; display: none; }
+.photo-warning.show { display: block; }
+
+.upload-placeholder { text-align: center; padding: 20px; }
+.upload-icon { font-size: 2.5rem; margin-bottom: 6px; }
+.upload-text { font-size: 0.82rem; color: var(--gray-600); font-weight: 500; }
+
+.photo-preview {
+  display: none;
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+}
+
+/* ─── CLOCK AREA ─── */
+.clock-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.clock-btn {
+  padding: 16px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: var(--radius);
+}
+.clock-btn .icon { font-size: 1.3rem; margin-right: 6px; }
+
+/* ─── LIVE STATUS ─── */
+.live-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
+
+.live-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 14px;
+  border-left: 4px solid var(--success);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s;
+}
+.live-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.live-card.active { border-left-color: var(--success); }
+.live-card.done { border-left-color: var(--primary); opacity: 0.85; }
+
+.live-name { font-size: 0.95rem; font-weight: 700; color: var(--gray-900); }
+.live-client { font-size: 0.78rem; color: var(--gray-600); margin-top: 2px; }
+.live-time { font-size: 0.78rem; color: var(--gray-700); margin-top: 6px; }
+.live-status { margin-top: 6px; font-size: 0.82rem; font-weight: 600; }
+.live-status.status-working { color: var(--success); }
+.live-status.status-done { color: var(--primary); }
+
+/* ─── DATA TABLE ─── */
+.table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.data-table th {
+  background: var(--gray-100);
+  padding: 10px 8px;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 2px solid var(--gray-300);
+  white-space: nowrap;
+  color: var(--gray-700);
+  font-size: 0.78rem;
+}
+.data-table td {
+  padding: 9px 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--gray-200);
+  vertical-align: middle;
+}
+.data-table tr:hover { background: var(--gray-50); }
+
+td.hours { font-weight: 700; color: var(--primary); }
+td.money { font-weight: 700; color: var(--success); white-space: nowrap; }
+td.td-left { text-align: left; }
+td.actions { white-space: nowrap; }
+td.actions .btn { margin: 0 1px; }
+
+/* ─── LIST ITEMS ─── */
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gray-200);
+  gap: 12px;
+}
+.list-item:last-child { border-bottom: none; }
+
+.list-item-info { flex: 1; min-width: 0; }
+.list-item-name { font-size: 0.92rem; font-weight: 700; color: var(--gray-900); }
+.list-item-detail {
+  font-size: 0.78rem;
+  color: var(--gray-600);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-item-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+/* ─── EMPTY STATE ─── */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--gray-500);
+}
+.empty-state .icon { font-size: 3rem; margin-bottom: 8px; }
+.empty-state p { font-size: 0.9rem; }
+
+/* ─── MODALS ─── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal-overlay.active { display: flex; }
+
+.modal {
+  background: #fff;
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: modalIn 0.25s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--gray-200);
+}
+.modal-header h3 { font-size: 1rem; font-weight: 700; }
+
+.modal-close {
+  width: 32px; height: 32px;
+  border: none; background: none;
+  font-size: 1.5rem;
+  color: var(--gray-600);
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { background: var(--gray-100); }
+
+.modal-body { padding: 18px; }
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 14px 18px;
+  border-top: 1px solid var(--gray-200);
+}
+
+/* ─── PHOTO VIEW MODAL ─── */
+.photo-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.9);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+}
+.photo-modal-overlay.active { display: flex; }
+.photo-modal-img {
+  max-width: 95%;
+  max-height: 95vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* ─── TOAST ─── */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  background: var(--gray-800);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  animation: toastIn 0.3s ease;
+  transition: opacity 0.3s;
+  max-width: 340px;
+}
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ─── SAVED ITEM LIST ─── */
+.saved-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--gray-200);
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: var(--radius-sm);
+}
+.saved-item:hover { background: var(--primary-light); }
+.saved-item:last-child { border-bottom: none; }
+
+.saved-item-info { flex: 1; min-width: 0; }
+.saved-item-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.saved-item-sub {
+  font-size: 0.75rem;
+  color: var(--gray-600);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.saved-item-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: var(--gray-200);
+  color: var(--gray-700);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.saved-item-badge.auto { background: var(--warning-light); color: #b8860b; }
+.saved-item-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+/* ─── PHOTO THUMB ─── */
+.photo-thumb {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid var(--gray-300);
+  cursor: pointer;
+  transition: transform 0.2s;
+  vertical-align: middle;
+}
+.photo-thumb:hover { transform: scale(1.15); }
+
+/* ═══════════════════════════════════════
+   DAILY FORM / PRINTABLE FORMS
+   ═══════════════════════════════════════ */
+.daily-form-paper {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-bottom: 16px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.df-title-area {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 3px double var(--gray-400);
+}
+
+.df-main-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  letter-spacing: -0.5px;
+}
+
+.df-sub-notice {
+  font-size: 0.78rem;
+  color: var(--danger);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.df-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14px;
+  font-size: 0.85rem;
+}
+
+.df-table th, .df-table td {
+  border: 1px solid var(--gray-400);
+  padding: 8px 12px;
+  vertical-align: middle;
+}
+
+.df-section-header {
+  background: #e3ecfa;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--gray-900);
+  text-align: left;
+  padding: 9px 14px;
+}
+
+.df-label {
+  background: var(--gray-100);
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: var(--gray-700);
+  white-space: nowrap;
+  width: 110px;
+  min-width: 90px;
+  text-align: center;
+}
+
+.df-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+.df-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(26,115,232,0.1); }
+
+.df-input-sm { width: 80px; display: inline-block; }
+.df-input-center { text-align: center; }
+.df-input-underline {
+  border: none;
+  border-bottom: 2px solid var(--gray-900);
+  border-radius: 0;
+  background: transparent;
+}
+
+.df-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 50px;
+  line-height: 1.6;
+}
+.df-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(26,115,232,0.15); }
+
+/* ─── 서비스내용 전용 (크게 + 모바일 최적화) ─── */
+.df-service-content {
+  min-height: 200px;
+  font-size: 1rem;
+  line-height: 1.8;
+  padding: 14px 16px;
+  border: 2px solid var(--primary);
+  border-radius: 10px;
+  background: #f8fbff;
+  color: #202124;
+}
+.df-service-content:focus {
+  border-color: #1557b0;
+  box-shadow: 0 0 0 4px rgba(26,115,232,0.2);
+  background: #fff;
+}
+.df-service-content::placeholder {
+  color: #9aa0a6;
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.df-radio, .df-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  margin-right: 10px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.df-radio input, .df-check input { margin: 0; cursor: pointer; }
+
+.df-report-statement {
+  padding: 16px;
+  text-align: center;
+  font-size: 0.88rem;
+  line-height: 1.8;
+}
+
+.df-report-text { display: inline; }
+
+.df-sign-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#dfSignCanvas {
+  border: 1px solid var(--gray-400);
+  border-radius: 4px;
+  background: #fafafa;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.df-bottom {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 14px;
+  font-size: 0.88rem;
+}
+
+.df-date-line { margin-bottom: 8px; }
+.df-to-line { font-size: 1rem; font-weight: 700; color: var(--gray-800); }
+
+.df-photo-display { margin-top: 12px; }
+
+/* ─── Contract Clauses ─── */
+.df-contract-clauses {
+  padding: 16px 20px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  margin: 14px 0;
+  font-size: 0.82rem;
+  line-height: 1.8;
+  color: var(--gray-800);
+}
+.df-contract-clauses p { margin-bottom: 8px; }
+.df-contract-clauses p:last-child { margin-bottom: 0; }
+
+/* ─── Transport Criteria Box ─── */
+.tr-criteria-box {
+  background: var(--warning-light);
+  border: 1px solid #f0d78c;
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+.tr-criteria-item {
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  color: var(--gray-800);
+}
+.tr-criteria-table { margin-top: 8px; }
+.tr-criteria-table .df-table { margin: 0; }
+
+/* ─── Mirror Elements (Provider Form) ─── */
+.df-mirror {
+  display: inline-block;
+  min-width: 40px;
+  min-height: 1.2em;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  color: var(--gray-900);
+  font-weight: 500;
+}
+
+/* ─── Income Tier Box ─── */
+.income-tier-box label.df-radio {
+  padding: 6px 0;
+  font-size: 0.82rem;
+}
+.income-tier-box label.df-radio strong {
+  color: var(--gray-900);
+}
+
+/* ─── Custom Fields ─── */
+.custom-fields-area {
+  margin-top: 14px;
+}
+
+.custom-field-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+}
+
+.custom-field-item input[type="text"] {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1px solid var(--gray-300);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.custom-field-item input[type="text"]:first-of-type {
+  max-width: 120px;
+  font-weight: 600;
+}
+
+.custom-field-item .btn-remove-field {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: var(--danger-light);
+  color: var(--danger);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.custom-field-item .btn-remove-field:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+/* ═══════════════════════════════════════
+   PRINT REPORT
+   ═══════════════════════════════════════ */
+.print-report {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin-top: 16px;
+}
+
+.print-report-header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 3px double var(--gray-400);
+}
+.print-report-header h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.print-manager-section {
+  margin-bottom: 28px;
+  page-break-inside: avoid;
+}
+
+.print-manager-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--primary-light);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.print-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+.print-table th {
+  background: var(--gray-100);
+  padding: 7px 4px;
+  font-weight: 700;
+  border: 1px solid var(--gray-300);
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.72rem;
+}
+.print-table td {
+  padding: 6px 4px;
+  border: 1px solid var(--gray-300);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.print-photo {
+  width: 40px; height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.print-summary-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-300);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+.print-summary-item {
+  text-align: center;
+  flex: 1;
+  min-width: 80px;
+}
+.print-summary-item .label {
+  font-size: 0.72rem;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+.print-summary-item .value {
+  font-size: 1rem;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.print-grand-total {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  background: var(--primary-light);
+  border-radius: var(--radius);
+  margin-top: 16px;
+  border: 2px solid var(--primary);
+}
+.print-grand-total .print-summary-item .value {
+  font-size: 1.15rem;
+}
+
+.print-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-300);
+  font-size: 0.78rem;
+  color: var(--gray-500);
+}
+
+/* ═══════════════════════════════════════
+   PRINT STYLES
+   ═══════════════════════════════════════ */
+@media print {
+  body { background: #fff !important; margin: 0; padding: 0; }
+  * { box-shadow: none !important; }
+  .header, .no-print, .nav-tabs, .toast-container, .modal-overlay, .photo-modal-overlay { display: none !important; }
+  .container { max-width: 100%; padding: 0; margin: 0; }
+  .section { display: none !important; }
+  .section.print-active { display: block !important; }
+  .section.print-active .no-print { display: none !important; }
+  .card { box-shadow: none; border: none; margin: 0; padding: 0; }
+
+  /* ─── 일일결과 + 출퇴근사진 A4 1장 극한 압축 ─── */
+  @page { margin: 5mm 5mm; size: A4; }
+  .daily-form-paper, .print-report {
+    box-shadow: none;
+    border-radius: 0;
+    margin: 0;
+  }
+  /* 일일결과 등 일반 양식: 극한 압축 (비용청구서/급여대장/회계자료/모니터링은 개별 CSS에서 처리) */
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper), .print-report {
+    padding: 1px 3px;
+    font-size: 0.65rem;
+    line-height: 1.15;
+  }
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-title-area,
+  .print-report .df-title-area { margin-bottom: 1px; padding: 1px 0; }
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-main-title,
+  .print-report .df-main-title { font-size: 0.88rem; margin-bottom: 0; }
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-sub-notice,
+  .print-report .df-sub-notice { font-size: 0.55rem; margin-bottom: 0; }
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-section-header,
+  .print-report .df-section-header { padding: 1px 4px !important; font-size: 0.6rem; }
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-table,
+  .print-report .df-table { margin-bottom: 0 !important; font-size: 0.65rem; border-collapse: collapse; }
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-table th,
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-table td,
+  .print-report .df-table th, .print-report .df-table td { padding: 0px 3px !important; font-size: 0.65rem; line-height: 1.15; }
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-label,
+  .print-report .df-label { font-size: 0.6rem; padding: 0px 3px !important; }
+
+  /* 인쇄시 테이블을 블록이 아닌 테이블 그대로 유지 */
+  .df-table { display: table !important; }
+  .df-table thead { display: table-header-group !important; }
+  .df-table tbody { display: table-row-group !important; }
+  .df-table tr { display: table-row !important; }
+  .df-table th, .df-table td { display: table-cell !important; }
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-table th,
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-table td { width: auto !important; min-width: auto !important; }
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-label { width: 58px !important; min-width: 48px !important; text-align: center !important; }
+
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-input,
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-textarea,
+  .print-report .df-input, .print-report .df-textarea {
+    border: none !important;
+    padding: 0px 1px !important;
+    font-size: 0.65rem !important;
+    line-height: 1.15 !important;
+    min-height: auto !important;
+    max-height: none !important;
+    height: auto !important;
+    background: transparent !important;
+    overflow: visible !important;
+  }
+  /* 비용청구서/급여대장/회계자료/모니터링 공통 input 스타일 */
+  #clm11Paper .df-input, #clm11Paper .df-textarea,
+  #payrollPaper .df-input, #accountingPaper .df-input,
+  #monitoringPaper .df-input, #monitoringPaper .df-textarea {
+    border: none !important;
+    min-height: auto !important;
+    max-height: none !important;
+    height: auto !important;
+    background: transparent !important;
+    overflow: visible !important;
+  }
+  .df-service-content {
+    min-height: auto !important;
+    max-height: none !important;
+    height: auto !important;
+    font-size: 0.65rem !important;
+    line-height: 1.2 !important;
+    padding: 1px 2px !important;
+    border: none !important;
+    background: transparent !important;
+    overflow: visible !important;
+  }
+  .df-input:focus, .df-textarea:focus { box-shadow: none !important; }
+  select.df-input { appearance: none; background-image: none; }
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-radio,
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-check { font-size: 0.58rem; margin-right: 3px; gap: 1px; }
+  .df-contract-clauses p { font-size: 0.58rem; margin: 0; line-height: 1.15; }
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-bottom { margin-top: 1px; padding: 1px 0; }
+  .df-report-statement { margin: 1px 0; }
+  .df-report-text { font-size: 0.65rem; }
+  .daily-form-paper:not(#clm11Paper):not(#payrollPaper):not(#accountingPaper):not(#monitoringPaper) .df-to-line { font-size: 0.68rem; margin-top: 1px; }
+  .df-date-line { margin-bottom: 1px; }
+  /* ─── 서명 이미지 인쇄 최우선 보장 ─── */
+  .df-sign-area {
+    max-height: 70px !important;
+    overflow: visible !important;
+    position: relative !important;
+    display: block !important;
+  }
+  #dfSignCanvas {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+  /* 서명 이미지: 인쇄 시 무조건 표시 (새 서명 강제) */
+  #dfClientSignImg,
+  .client-sign-img {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: 60px !important;
+    max-width: 200px !important;
+    min-height: 30px !important;
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    break-inside: avoid !important;
+  }
+  /* 서명 지우기 버튼 인쇄시 숨김 */
+  .df-sign-area .no-print { display: none !important; }
+  .df-sign-area .btn { display: none !important; }
+  .custom-fields-area { margin: 0; }
+  .custom-field-row .df-table { margin: 0 !important; }
+
+  /* 변경사항/중단 영역 - 미선택시 숨김 압축 */
+  #dfChangeDetailRow[style*="display:none"],
+  #dfStopReasonRow[style*="display:none"] { display: none !important; height: 0 !important; padding: 0 !important; }
+
+  /* 사진 인쇄 크기 강력 제한 */
+  .df-photo-display { page-break-inside: avoid; margin: 1px 0; padding: 1px !important; }
+  .df-photo-display .df-section-header { padding: 1px 4px !important; }
+  .df-photo-display img { max-height: 80px !important; max-width: 120px !important; }
+
+  /* 서명 영역 압축 */
+  .df-sign-area canvas { display: none !important; }
+  .df-sign-area .btn { display: none !important; }
+
+  /* ─── 출퇴근 사진 보고서: 일지 바로 아래에 같은 페이지 ─── */
+  .section.print-active #clockPhotoReport {
+    display: block !important;
+    border: none;
+    margin: 0;
+    padding: 0;
+    page-break-before: avoid !important;
+    page-break-inside: avoid;
+  }
+  .section.print-active #clockPhotoReport .card-header {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-align: center;
+    border-bottom: 1px solid #333;
+    padding: 2px 0;
+    margin: 0;
+  }
+  .section.print-active .photo-report-card {
+    border: 1px solid #ccc;
+    padding: 3px;
+    margin-bottom: 3px;
+    page-break-inside: avoid;
+  }
+  .section.print-active .photo-report-header {
+    font-size: 0.6rem;
+    padding: 1px 4px;
+    margin-bottom: 2px;
+  }
+  .section.print-active .photo-report-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .section.print-active .photo-report-item {
+    flex: 0 0 auto;
+    max-width: 45%;
+    text-align: center;
+  }
+  .section.print-active .photo-report-label {
+    font-size: 0.58rem;
+    padding: 1px 4px;
+    margin-bottom: 1px;
+  }
+  .section.print-active .photo-report-img,
+  .section.print-active .photo-with-time img {
+    max-height: 120px !important;
+    max-width: 160px !important;
+    width: auto !important;
+    height: auto !important;
+    border-width: 1px !important;
+  }
+  .section.print-active .photo-time-overlay {
+    font-size: 0.5rem;
+    padding: 1px 4px;
+  }
+  .section.print-active .photo-report-time {
+    font-size: 0.55rem;
+    font-weight: 700;
+    background: #eee;
+    padding: 1px 4px;
+    border-radius: 2px;
+  }
+
+  .print-manager-section { page-break-inside: avoid; }
+  .live-card { box-shadow: none; border: 1px solid #ddd; }
+  .custom-field-item .btn-remove-field { display: none !important; }
+
+  /* 인쇄 전용 사진 촬영시간 오버레이 */
+  .photo-with-time { position: relative; display: inline-block; width: 100%; }
+  .photo-time-overlay {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8) !important;
+    color: #fff !important;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    z-index: 2;
+  }
+  .thumb-time { font-size: 0.6rem; font-weight: 700; color: #000; }
+
+  /* 모니터링 기록지 인쇄 CSS → 두번째 @media print 블록에서 통합 관리 */
+  /* 수가 기준표 인쇄시 숨김 */
+  .gov-rate-table, #govInvRateTable { display: none !important; }
+  /* 직인 인쇄 */
+  .stamp-img { print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important; }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .header-top { padding: 10px 14px; }
+  .header-top h1 { font-size: 1rem; }
+  .header-info { font-size: 0.78rem; gap: 8px; }
+  .nav-tab { padding: 8px 10px; font-size: 0.78rem; }
+  .container { padding: 8px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat-card { padding: 14px 10px; }
+  .stat-value { font-size: 1.4rem; }
+  .stat-label { font-size: 0.78rem; }
+  .live-grid { grid-template-columns: 1fr; }
+  .clock-area { grid-template-columns: 1fr; }
+  .daily-form-paper { padding: 10px 8px; }
+  .df-main-title { font-size: 1.1rem; }
+
+  /* ── 모바일 글자 가시성 강화 ── */
+
+  /* 리스트 항목 텍스트 줄바꿈 허용 */
+  .list-item-name { font-size: 0.95rem; }
+  .list-item-detail {
+    font-size: 0.85rem;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    line-height: 1.5;
+  }
+
+  /* 저장 일지 목록 텍스트 줄바꿈 허용 */
+  .saved-item-title {
+    font-size: 0.92rem;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    line-height: 1.4;
+  }
+  .saved-item-sub {
+    font-size: 0.82rem;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    line-height: 1.4;
+  }
+
+  /* 실시간 현황 카드 */
+  .live-name { font-size: 1rem; }
+  .live-client { font-size: 0.85rem; }
+  .live-time { font-size: 0.85rem; }
+  .live-status { font-size: 0.88rem; }
+
+  /* 데이터 테이블 폰트 확대 및 줄바꿈 */
+  .data-table { font-size: 0.88rem; }
+  .data-table th { font-size: 0.82rem; white-space: normal; }
+  .data-table td { font-size: 0.88rem; white-space: normal; word-break: keep-all; }
+  td.money { font-size: 0.88rem; white-space: nowrap; }
+
+  /* 테이블을 모바일에서 세로 블록으로 변환 */
+  .df-table,
+  .df-table thead,
+  .df-table tbody,
+  .df-table tr,
+  .df-table th,
+  .df-table td {
+    display: block;
+    width: 100%;
+  }
+  .df-table thead tr {
+    margin-bottom: 0;
+  }
+  .df-table th, .df-table td {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    border-left: none;
+    border-right: none;
+  }
+  .df-table th {
+    border-bottom: none;
+  }
+  .df-table td {
+    border-top: none;
+  }
+  .df-label {
+    width: 100% !important;
+    min-width: 100% !important;
+    font-size: 0.88rem;
+    padding: 8px 10px !important;
+    text-align: left;
+    border-bottom: none !important;
+  }
+  .df-label + td,
+  .df-label ~ td {
+    border-top: none !important;
+  }
+  .df-section-header {
+    font-size: 0.95rem;
+    padding: 10px 12px;
+  }
+
+  .df-input {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+  }
+  .df-textarea {
+    font-size: 0.95rem;
+    padding: 10px 12px;
+  }
+
+  /* 서비스내용 모바일 특별 강화 */
+  .df-service-content {
+    min-height: 250px;
+    font-size: 1.05rem;
+    line-height: 1.9;
+    padding: 16px;
+    border-width: 2px;
+  }
+
+  /* 진행시간 줄바꿈 허용 */
+  td[style*="white-space:nowrap"] {
+    white-space: normal !important;
+  }
+
+  .filter-row { flex-direction: column; }
+  .filter-row .form-control { min-width: 100%; font-size: 0.95rem; }
+  .filter-row .btn { width: 100%; }
+  .print-summary-box { gap: 8px; }
+  .print-grand-total { gap: 8px; }
+  .modal { max-height: 90vh; width: 95%; }
+  .toast-container { right: 10px; top: 10px; left: 10px; }
+  .toast { max-width: 100%; font-size: 0.88rem; }
+
+  /* 사진 업로드 영역 크게 */
+  .photo-upload-area {
+    min-height: 120px;
+  }
+
+  /* 버튼 터치 영역 확대 */
+  .btn { min-height: 44px; font-size: 0.92rem; }
+  .btn-sm { min-height: 38px; }
+
+  /* 카드 간격 */
+  .card { margin-bottom: 12px; }
+  .card-header { font-size: 1rem; padding: 12px 14px; }
+  .card-body { padding: 12px; }
+
+  /* 회계장부 모바일 */
+  .acct-table td, .acct-table th { font-size: 0.88rem; padding: 8px 6px; }
+}
+
+/* ─── 480px 이하 (작은 폰) ─── */
+
+/* ─── Photo Report Cards ─── */
+.photo-report-card {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  page-break-inside: avoid;
+}
+.photo-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e0e0e0;
+}
+.photo-report-names {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #202124;
+}
+.photo-report-date {
+  font-size: 0.85rem;
+  color: #5f6368;
+  background: #e8eaed;
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+.photo-report-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+.photo-report-item {
+  text-align: center;
+  flex: 1;
+  min-width: 280px;
+  max-width: 500px;
+}
+.photo-report-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.photo-report-label.in { color: #0d904f; }
+.photo-report-label.out { color: #d93025; }
+.photo-report-time {
+  font-size: 0.82rem;
+  color: #5f6368;
+  margin-bottom: 4px;
+  padding: 3px 10px;
+  background: #fff;
+  border-radius: 8px;
+  display: none;
+  font-weight: 600;
+}
+.photo-capture-time {
+  display: none;
+}
+/* 사진+촬영시간 감싸는 컨테이너 */
+.photo-with-time {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.photo-with-time img {
+  max-width: 100%;
+  width: 100%;
+  max-height: 450px;
+  border-radius: 10px;
+  cursor: pointer;
+  object-fit: contain;
+  background: #fff;
+  padding: 4px;
+}
+.photo-with-time img.photo-in { border: 3px solid #0d904f; }
+.photo-with-time img.photo-out { border: 3px solid #d93025; }
+.photo-time-overlay {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 8px;
+  white-space: nowrap;
+  z-index: 2;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+/* 썸네일 옆 촬영시간 */
+.thumb-with-time {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.thumb-with-time.thumb-empty {
+  opacity: 0.4;
+}
+.thumb-with-time.thumb-empty .thumb-time {
+  color: #999;
+  font-weight: 400;
+}
+.thumb-placeholder {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+.thumb-time {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #1a73e8;
+  white-space: nowrap;
+}
+/* 기존 단독 img도 유지 (fallback) */
+.photo-report-img {
+  max-width: 100%;
+  width: 100%;
+  max-height: 450px;
+  border-radius: 10px;
+  cursor: pointer;
+  object-fit: contain;
+  background: #fff;
+  padding: 4px;
+}
+.photo-report-img.photo-in { border: 3px solid #0d904f; }
+.photo-report-img.photo-out { border: 3px solid #d93025; }
+
+@media print {
+  .photo-report-card { border: 1px solid #ccc; padding: 12px; margin-bottom: 16px; }
+  .photo-report-img { max-height: 350px; border-width: 2px; }
+
+  /* ─── 지자체 수가 청구서 인쇄 최적화 ─── */
+  .section.print-active #govInvoicePaper {
+    display: block !important;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+  .section.print-active #govInvoicePaper .df-main-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .section.print-active #govInvoicePaper .df-sub-notice {
+    font-size: 0.7rem;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  /* 수가 기준표 인쇄시 완전 숨김 */
+  .gov-rate-table,
+  #govInvRateTable {
+    display: none !important;
+  }
+  /* readonly input 값 인쇄시 잘 보이게 */
+  .section.print-active #govInvoicePaper input[readonly] {
+    border: none !important;
+    background: transparent !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+  }
+  /* 라디오버튼 인쇄시 숨기고 텍스트만 표시 */
+  .section.print-active #govInvoicePaper input[type="radio"] {
+    transform: scale(0.8);
+  }
+  /* 직인 이미지 인쇄시 표시 */
+  .stamp-img {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+  /* ─── 회계자료 인쇄: A4 1장 꽉 차게 ─── */
+  .section.print-active #accountingPaper {
+    display: block !important;
+    font-size: 0.78rem;
+    padding: 4mm 8mm;
+    page-break-inside: avoid;
+    line-height: 1.35;
+  }
+  .section.print-active #accountingPaper .df-title-area {
+    margin-bottom: 10px;
+    padding: 0;
+  }
+  .section.print-active #accountingPaper .df-main-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 2px;
+  }
+  .section.print-active #accountingPaper .df-sub-notice {
+    font-size: 0.78rem;
+    margin-bottom: 0;
+  }
+  .section.print-active #accountingPaper .df-section-header {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    padding: 4px 8px !important;
+    font-size: 0.72rem;
+  }
+  .section.print-active #accountingPaper td,
+  .section.print-active #accountingPaper th {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    font-size: 0.72rem;
+    padding: 4px 6px !important;
+    line-height: 1.3;
+  }
+  .section.print-active #accountingPaper .df-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.72rem;
+    margin-top: 6px !important;
+    margin-bottom: 0 !important;
+  }
+  .section.print-active #accountingPaper .df-bottom {
+    margin-top: 12px;
+    font-size: 0.75rem;
+  }
+  .section.print-active #accountingPaper .df-bottom p {
+    margin: 4px 0;
+  }
+  .section.print-active #accountingPaper .df-bottom .df-table {
+    max-width: 340px;
+  }
+  .section.print-active #accountingPaper .df-bottom .df-label {
+    font-size: 0.72rem;
+    padding: 4px 6px !important;
+  }
+  /* 근거자료 안내 */
+  .section.print-active #accountingPaper > div[style*="border:1px solid #ccc"] {
+    margin-top: 8px !important;
+    padding: 6px 10px !important;
+    font-size: 0.65rem !important;
+    line-height: 1.4 !important;
+  }
+  /* 순수익 요약 색상 강제 인쇄 */
+  .section.print-active #accountingPaper tr[style*="background"] td {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  /* ─── 비용청구서(서식11) 인쇄: A4 1장 + 행렬 정렬 ─── */
+  .section.print-active #clm11Paper {
+    display: block !important;
+    font-size: 0.68rem !important;
+    padding: 4mm 6mm !important;
+    page-break-inside: avoid;
+    line-height: 1.25 !important;
+    margin: 0 !important;
+  }
+  .section.print-active #clm11Paper .df-title-area {
+    margin-bottom: 6px !important;
+    padding: 0 !important;
+  }
+  .section.print-active #clm11Paper .df-main-title {
+    font-size: 1.15rem !important;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 2px !important;
+  }
+  .section.print-active #clm11Paper .df-sub-notice {
+    font-size: 0.62rem !important;
+    margin-bottom: 0 !important;
+  }
+  /* ── 공통 테이블 border + 정렬 ── */
+  .section.print-active #clm11Paper .df-table {
+    border-collapse: collapse;
+    width: 100% !important;
+    font-size: 0.65rem !important;
+    margin-top: 3px !important;
+    margin-bottom: 0 !important;
+    border: 1px solid #333 !important;
+  }
+  .section.print-active #clm11Paper .df-section-header {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    padding: 2px 6px !important;
+    font-size: 0.62rem !important;
+    border: 1px solid #333 !important;
+  }
+  .section.print-active #clm11Paper td,
+  .section.print-active #clm11Paper th {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    font-size: 0.65rem !important;
+    padding: 2px 4px !important;
+    line-height: 1.25 !important;
+    border: 1px solid #333 !important;
+    vertical-align: middle !important;
+  }
+  .section.print-active #clm11Paper .df-label {
+    font-size: 0.62rem !important;
+    padding: 2px 4px !important;
+    width: 55px !important;
+    min-width: 46px !important;
+    text-align: center !important;
+    background: #f5f5f5 !important;
+    font-weight: 600 !important;
+  }
+  .section.print-active #clm11Paper .df-input {
+    font-size: 0.65rem !important;
+    padding: 0 3px !important;
+    border: none !important;
+    background: transparent !important;
+  }
+  .section.print-active #clm11Paper .df-radio {
+    font-size: 0.58rem !important;
+    margin-right: 3px !important;
+  }
+  /* ── 서비스 지원내역 9열 테이블 ── */
+  .section.print-active #clm11ItemsTable {
+    font-size: 0.56rem !important;
+    margin-top: 3px !important;
+    table-layout: fixed !important;
+  }
+  /* 열 너비 고정 배분 (A4 가로 ~190mm) */
+  .section.print-active #clm11ItemsTable col.c-no     { width: 5% !important; }
+  .section.print-active #clm11ItemsTable col.c-date   { width: 14% !important; }
+  .section.print-active #clm11ItemsTable col.c-time   { width: 10% !important; }
+  .section.print-active #clm11ItemsTable col.c-hours  { width: 7% !important; }
+  .section.print-active #clm11ItemsTable col.c-content { width: 24% !important; }
+  .section.print-active #clm11ItemsTable col.c-provide { width: 10% !important; }
+  .section.print-active #clm11ItemsTable col.c-trans   { width: 10% !important; }
+  .section.print-active #clm11ItemsTable col.c-burden  { width: 10% !important; }
+  .section.print-active #clm11ItemsTable col.c-claim   { width: 10% !important; }
+  .section.print-active #clm11ItemsTable thead tr th {
+    font-size: 0.54rem !important;
+    padding: 2px 2px !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    background: #f5f5f5 !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+  }
+  .section.print-active #clm11ItemsTable tbody td {
+    font-size: 0.56rem !important;
+    padding: 1.5px 2px !important;
+    line-height: 1.2 !important;
+  }
+  .section.print-active #clm11ItemsTable tbody td:nth-child(5) {
+    white-space: normal !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    word-break: break-all !important;
+  }
+  .section.print-active #clm11ItemsTable tfoot td {
+    font-size: 0.58rem !important;
+    padding: 2px 3px !important;
+    font-weight: 700 !important;
+  }
+  .section.print-active #clm11ItemsTable tfoot tr {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+  /* ── 안내문 ── */
+  .section.print-active #clm11Paper > div[style*="border:1px solid #eee"] {
+    font-size: 0.52rem !important;
+    padding: 2px 6px !important;
+    line-height: 1.2 !important;
+    border: 1px solid #999 !important;
+    border-top: none !important;
+  }
+  /* ── 하단 서명 영역 ── */
+  .section.print-active #clm11Paper .df-bottom {
+    margin-top: 8px !important;
+    font-size: 0.65rem !important;
+  }
+  .section.print-active #clm11Paper .df-bottom p {
+    margin: 2px 0 !important;
+    font-size: 0.65rem !important;
+  }
+  .section.print-active #clm11Paper .df-bottom .df-table {
+    max-width: 320px;
+    margin: 4px auto 0 !important;
+  }
+  .section.print-active #clm11Paper .df-bottom .df-table td {
+    padding: 2px 6px !important;
+    font-size: 0.62rem !important;
+  }
+  .section.print-active #clm11Paper .df-to-line {
+    margin-top: 8px !important;
+    font-size: 0.7rem !important;
+    font-weight: 700;
+    text-align: center !important;
+  }
+
+  /* ─── 급여대장 인쇄: A4 1장 꽉 차게 (모든 값 !important) ─── */
+  .section.print-active #payrollPaper {
+    display: block !important;
+    font-size: 0.62rem !important;
+    padding: 3mm 5mm !important;
+    page-break-inside: avoid !important;
+    page-break-after: always !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    max-height: 287mm !important;
+  }
+  .section.print-active #payrollPaper .df-title-area {
+    margin-bottom: 2px !important;
+    padding: 0 !important;
+  }
+  .section.print-active #payrollPaper .df-main-title {
+    font-size: 1rem !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    margin-bottom: 0 !important;
+  }
+  .section.print-active #payrollPaper .df-sub-notice {
+    font-size: 0.65rem !important;
+    margin-bottom: 0 !important;
+  }
+  .section.print-active #payrollPaper .df-section-header {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    padding: 1px 4px !important;
+    font-size: 0.58rem !important;
+  }
+  .section.print-active #payrollPaper td,
+  .section.print-active #payrollPaper th {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    font-size: 0.58rem !important;
+    padding: 1px 3px !important;
+    line-height: 1.15 !important;
+    border: 1px solid #333 !important;
+    vertical-align: middle !important;
+  }
+  .section.print-active #payrollPaper .df-table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    font-size: 0.58rem !important;
+    margin-top: 2px !important;
+    margin-bottom: 0 !important;
+  }
+  .section.print-active #payrollPaper .df-label {
+    font-size: 0.58rem !important;
+    padding: 1px 3px !important;
+    font-weight: 600 !important;
+  }
+  .section.print-active #payrollPaper .df-bottom {
+    margin-top: 4px !important;
+    font-size: 0.6rem !important;
+  }
+  .section.print-active #payrollPaper .df-bottom p {
+    margin: 1px 0 !important;
+    font-size: 0.6rem !important;
+  }
+  .section.print-active #payrollPaper .df-bottom .df-table {
+    max-width: 280px !important;
+    margin-top: 2px !important;
+    margin-bottom: 0 !important;
+  }
+  .section.print-active #payrollPaper .df-bottom .df-label {
+    font-size: 0.58rem !important;
+    padding: 1px 3px !important;
+  }
+  /* 급여대장 내 모든 인라인 마진/패딩 강제 축소 */
+  .section.print-active #payrollPaper #payrollTableArea {
+    margin-top: 2px !important;
+  }
+  .section.print-active #payrollPaper #payrollTableArea .df-table {
+    margin-top: 2px !important;
+    table-layout: fixed !important;
+  }
+  .section.print-active #payrollPaper #payrollTableArea td,
+  .section.print-active #payrollPaper #payrollTableArea th {
+    padding: 1px 2px !important;
+    font-size: 0.56rem !important;
+    line-height: 1.15 !important;
+    word-break: keep-all !important;
+    white-space: nowrap !important;
+  }
+  .section.print-active #payrollPaper .df-bottom #payrollDateLine {
+    margin-top: 2px !important;
+  }
+  /* 합계행 색상 강제 인쇄 */
+  .section.print-active #payrollPaper tr[style*="background"] td {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+  /* 급여명세서 (개인별): 각각 A4 1장 */
+  .section.print-active #payrollDetailArea .daily-form-paper {
+    font-size: 0.78rem;
+    padding: 4mm 8mm;
+    page-break-before: always;
+    page-break-inside: avoid;
+    line-height: 1.35;
+    margin-top: 0 !important;
+  }
+  .section.print-active #payrollDetailArea .df-main-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 2px;
+  }
+  .section.print-active #payrollDetailArea .df-sub-notice {
+    font-size: 0.78rem;
+  }
+  .section.print-active #payrollDetailArea .df-section-header {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    padding: 4px 8px !important;
+    font-size: 0.72rem;
+  }
+  .section.print-active #payrollDetailArea td,
+  .section.print-active #payrollDetailArea th {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    font-size: 0.72rem;
+    padding: 4px 6px !important;
+    line-height: 1.3;
+  }
+  .section.print-active #payrollDetailArea .df-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.72rem;
+    margin-top: 8px !important;
+  }
+  .section.print-active #payrollDetailArea .df-bottom {
+    margin-top: 14px;
+    font-size: 0.75rem;
+  }
+
+  /* ─── 모니터링 기록지(서식08호) 인쇄: A4 1장 ─── */
+  .section.print-active #monitoringPaper {
+    display: block !important;
+    font-size: 0.7rem !important;
+    padding: 4mm 6mm !important;
+    page-break-inside: avoid !important;
+    line-height: 1.3 !important;
+    margin: 0 !important;
+  }
+  .section.print-active #monitoringPaper .df-title-area {
+    margin-bottom: 3px !important;
+    padding: 0 !important;
+  }
+  .section.print-active #monitoringPaper .df-main-title {
+    font-size: 1rem !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    margin-bottom: 1px !important;
+  }
+  .section.print-active #monitoringPaper .df-sub-notice {
+    font-size: 0.65rem !important;
+    margin-bottom: 0 !important;
+  }
+  .section.print-active #monitoringPaper .df-section-header {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    padding: 2px 6px !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+  }
+  .section.print-active #monitoringPaper .df-table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    font-size: 0.65rem !important;
+    margin-top: 4px !important;
+    margin-bottom: 0 !important;
+  }
+  .section.print-active #monitoringPaper td,
+  .section.print-active #monitoringPaper th {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    font-size: 0.65rem !important;
+    padding: 2px 4px !important;
+    line-height: 1.25 !important;
+    border: 1px solid #333 !important;
+    vertical-align: middle !important;
+  }
+  .section.print-active #monitoringPaper .df-label {
+    font-size: 0.63rem !important;
+    padding: 2px 4px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    width: 80px !important;
+  }
+  /* 서비스 제공 현황 테이블 */
+  .section.print-active #monServiceTable {
+    table-layout: fixed !important;
+    font-size: 0.6rem !important;
+  }
+  .section.print-active #monServiceTable th {
+    font-size: 0.58rem !important;
+    padding: 2px 2px !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    word-break: keep-all !important;
+  }
+  .section.print-active #monServiceTable td {
+    font-size: 0.6rem !important;
+    padding: 1px 2px !important;
+    line-height: 1.2 !important;
+  }
+  /* 모니터링 input/textarea 인쇄 */
+  .section.print-active #monitoringPaper .df-input {
+    font-size: 0.63rem !important;
+    padding: 1px 2px !important;
+    line-height: 1.2 !important;
+    border: none !important;
+    background: transparent !important;
+  }
+  .section.print-active #monitoringPaper .df-textarea {
+    font-size: 0.63rem !important;
+    padding: 2px 3px !important;
+    line-height: 1.25 !important;
+    border: none !important;
+    background: transparent !important;
+    min-height: auto !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    resize: none !important;
+  }
+  /* 라디오/체크박스 */
+  .section.print-active #monitoringPaper .df-radio {
+    font-size: 0.6rem !important;
+    margin-right: 6px !important;
+    gap: 2px !important;
+  }
+  .section.print-active #monitoringPaper .df-radio input[type="radio"] {
+    width: 10px !important;
+    height: 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .stat-card { padding: 10px 8px; }
+  .stat-value { font-size: 1.2rem; }
+  .stat-label { font-size: 0.75rem; }
+  .df-main-title { font-size: 0.95rem; }
+  .df-label { width: 100% !important; min-width: 100% !important; font-size: 0.85rem; }
+  .photo-report-item { min-width: 100%; }
+  .photo-report-img { max-height: 300px; }
+
+  /* 소형폰 글자 가시성 */
+  .data-table td { font-size: 0.85rem; padding: 8px 4px; }
+  .data-table th { font-size: 0.8rem; padding: 8px 4px; }
+  .list-item-name { font-size: 0.92rem; }
+  .list-item-detail { font-size: 0.82rem; }
+  .saved-item-title { font-size: 0.88rem; }
+  .saved-item-sub { font-size: 0.8rem; }
+  .live-name { font-size: 0.95rem; }
+  .live-client, .live-time { font-size: 0.82rem; }
+
+  /* 서비스내용 소형폰 추가 강화 */
+  .df-service-content {
+    min-height: 280px;
+    font-size: 1.08rem;
+    line-height: 2;
+    padding: 16px 14px;
+  }
+  .df-input {
+    padding: 11px 12px;
+    font-size: 0.95rem;
+    border-radius: 8px;
+  }
+  .container { padding: 6px; }
+  .daily-form-paper { padding: 8px 6px; }
+  .card-body { padding: 10px 8px; }
+  .card-header { font-size: 0.95rem; }
+  .btn { font-size: 0.88rem; }
+}

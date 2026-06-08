@@ -5,15 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>경남형 틈새돌봄 매니저 근무현황</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#1a73e8">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="틈새돌봄">
-  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=20260608a">
+  <link rel="stylesheet" href="/css/style.css?v=20260428f">
   <style>body { font-family: 'Noto Sans KR', sans-serif; }</style>
 </head>
 <body>
@@ -55,12 +49,8 @@
     <div class="nav-tab nav-group-label" data-role="admin" style="color:#ff9800;font-weight:bold;pointer-events:none;">📁 지자체보고용</div>
     <div class="nav-tab" data-tab="records" data-role="admin">📋 매니저 근무기록</div>
     <div class="nav-tab" data-tab="transport" data-role="admin">🚗 교통지원금신청서</div>
-    <div class="nav-tab" data-tab="invoice" data-role="admin">💳 대상자용청구서</div>
-    <div class="nav-tab" data-tab="report10" data-role="admin">📝 결과보고서</div>
-    <div class="nav-tab" data-tab="claim11" data-role="admin">💰 비용청구서</div>
-    <div class="nav-tab" data-tab="payroll" data-role="admin">📒 급여대장</div>
-    <div class="nav-tab" data-tab="monitoring" data-role="admin">📋 모니터링기록지</div>
-    <div class="nav-tab" data-tab="accounting" data-role="admin">📊 회계자료</div>
+    <div class="nav-tab" data-tab="invoice" data-role="admin">💳 매니저청구서</div>
+    <div class="nav-tab" data-tab="gov-invoice" data-role="admin">🏛️ 지자체청구</div>
     <div class="nav-tab nav-group-label" data-role="admin" style="color:#999;font-weight:bold;pointer-events:none;">─────</div>
     <div class="nav-tab" data-tab="summary" data-role="admin">💰 월별정산</div>
     <div class="nav-tab" data-tab="print" data-role="admin">🖨️ 월별출력</div>
@@ -234,10 +224,8 @@
             <td style="padding:12px 14px;display:flex;align-items:center;gap:12px;">
               <input type="text" class="df-input" id="dfSignName" placeholder="성명" style="width:160px;">
               <span>(서명)</span>
-              <div class="df-sign-area" id="dfSignArea" style="flex:1;position:relative;min-height:60px;">
+              <div class="df-sign-area" id="dfSignArea" style="flex:1;">
                 <canvas id="dfSignCanvas" width="300" height="80"></canvas>
-                <img id="dfClientSignImg" class="client-sign-img" src="" alt="대상자 서명" 
-                  style="display:none;max-height:70px;max-width:200px;position:static;">
                 <button class="btn btn-sm btn-outline no-print" onclick="dfClearSign()" style="margin-top:4px;">서명 지우기</button>
               </div>
             </td>
@@ -341,7 +329,6 @@
           <input type="month" class="form-control" id="summaryMonth" onchange="loadSummary()">
           <select class="form-control" id="summaryManager" onchange="loadSummary()"><option value="">전체 매니저</option></select>
           <button class="btn btn-sm btn-primary" onclick="loadSummary()">조회</button>
-          <button class="btn btn-sm" style="background:linear-gradient(135deg,#d32f2f,#f44336);color:#fff;font-weight:700;margin-left:auto;" onclick="monthlyClose()">🔒 월 마감 (자동연계)</button>
         </div>
         <div class="table-wrapper">
           <table class="data-table"><thead><tr><th>매니저</th><th>근무일수</th><th>총 근무시간</th><th>일평균 시간</th><th>총 급여</th><th>총 교통비</th><th>총 지급액</th></tr></thead><tbody id="summaryBody"></tbody></table>
@@ -368,10 +355,10 @@
     <div id="printReportArea"></div>
   </div>
 
-  <!-- ═══ INVOICE (대상자용 청구서) ═══ -->
+  <!-- ═══ INVOICE (본인부담금 청구서) ═══ -->
   <div class="section" id="sec-invoice">
     <div class="card no-print">
-      <div class="card-header">💳 대상자용 청구서 (본인부담금)</div>
+      <div class="card-header">💳 본인부담금 청구서</div>
       <div class="card-body">
         <div class="filter-row">
           <select class="form-control" id="invManager" onchange="invAutoFill()"><option value="">-- 매니저 선택 --</option></select>
@@ -387,7 +374,18 @@
             <label class="df-radio" style="display:block;cursor:pointer;"><input type="checkbox" name="invIncomeTierCb" value="high" onchange="invIncomeTierCheck(this)"> <strong>일반</strong> — 100% (전액 본인부담)</label>
           </div>
         </div>
-        <input type="hidden" name="invFormType" value="user">
+        <!-- 청구서 유형 선택 -->
+        <div class="form-group" style="margin-top:12px;">
+          <label style="font-weight:700;">📄 청구서 유형</label>
+          <div style="display:flex;gap:8px;margin-top:6px;">
+            <label class="df-radio" style="padding:8px 16px;background:var(--primary-light);border:2px solid var(--primary);border-radius:8px;cursor:pointer;">
+              <input type="radio" name="invFormType" value="user" checked onchange="invSwitchForm()"> <strong>이용자용</strong>
+            </label>
+            <label class="df-radio" style="padding:8px 16px;background:var(--gray-100);border:2px solid var(--gray-300);border-radius:8px;cursor:pointer;">
+              <input type="radio" name="invFormType" value="provider" onchange="invSwitchForm()"> <strong>제공기관용</strong>
+            </label>
+          </div>
+        </div>
         <div class="filter-row" style="margin-top:8px;">
           <button class="btn btn-primary" onclick="invSave()">💾 저장</button>
           <button class="btn btn-success" onclick="invPrint()">🖨️ 인쇄 / PDF</button>
@@ -414,15 +412,15 @@
     </div>
     <!-- Saved invoices list -->
     <div class="card no-print">
-      <div class="card-header">📋 저장된 대상자용 청구서 목록 <button class="btn btn-sm btn-primary" onclick="invLoadList()">조회</button></div>
-      <div class="card-body"><div id="invSavedList"></div><div id="invSavedEmpty" class="empty-state" style="display:none;"><div class="icon">💳</div><p>저장된 대상자용 청구서가 없습니다.</p></div></div>
+      <div class="card-header">📋 저장된 청구서 목록 <button class="btn btn-sm btn-primary" onclick="invLoadList()">조회</button></div>
+      <div class="card-body"><div id="invSavedList"></div><div id="invSavedEmpty" class="empty-state" style="display:none;"><div class="icon">💳</div><p>저장된 청구서가 없습니다.</p></div></div>
     </div>
 
-    <!-- ═══ 대상자용 청구서 ═══ -->
+    <!-- ═══ 이용자용 청구서 ═══ -->
     <div class="daily-form-paper" id="invoicePaperUser">
       <div class="df-title-area">
-        <div class="df-main-title">대상자용 청구서</div>
-        <div class="df-sub-notice">산청군 통합돌봄 기본서비스 [대상자용]</div>
+        <div class="df-main-title">본인부담금 청구서</div>
+        <div class="df-sub-notice">산청군 통합돌봄 기본서비스 [이용자용]</div>
       </div>
       <table class="df-table">
         <thead><tr><th colspan="4" class="df-section-header">■ 청구 정보</th></tr></thead>
@@ -535,490 +533,172 @@
       </div>
     </div>
 
-  </div>
-
-  <!-- ═══ 서식10: 기본서비스 결과보고서 ═══ -->
-  <div class="section" id="sec-report10">
-    <div class="card no-print" style="border-left:4px solid #00897b;">
-      <div class="card-header" style="background:linear-gradient(135deg,#00695c,#00897b);color:#fff;">📝 [서식10] 기본서비스 결과보고서</div>
-      <div class="card-body">
-        <div class="filter-row">
-          <select class="form-control" id="rpt10Manager" onchange="rpt10AutoFill()"><option value="">-- 매니저 --</option></select>
-          <select class="form-control" id="rpt10Client" onchange="rpt10AutoFillClient()"><option value="">-- 대상자 --</option></select>
-          <input type="month" class="form-control" id="rpt10Month" style="max-width:160px;">
-        </div>
-        <div class="filter-row" style="margin-top:8px;">
-          <button class="btn btn-primary" onclick="rpt10Save()">💾 저장</button>
-          <button class="btn btn-success" onclick="rpt10Print()">🖨️ 인쇄</button>
-          <button class="btn btn-outline" onclick="rpt10Reset()">🔄 새양식</button>
-          <button class="btn" style="background:#f9ab00;color:#fff;" onclick="rpt10AutoGenerate()">⚡ 일일결과에서 자동생성</button>
-        </div>
-        <input type="hidden" id="rpt10EditId" value="">
-      </div>
-    </div>
-    <div class="card no-print">
-      <div class="card-header">📋 저장된 결과보고서 <button class="btn btn-sm btn-primary" onclick="rpt10LoadList()">조회</button></div>
-      <div class="card-body"><div id="rpt10SavedList"></div><div id="rpt10SavedEmpty" class="empty-state" style="display:none;"><div class="icon">📝</div><p>저장된 결과보고서가 없습니다.</p></div></div>
-    </div>
-    <!-- 서식10 인쇄 양식 -->
-    <div class="daily-form-paper" id="rpt10Paper">
+    <!-- ═══ 제공기관용 청구서 ═══ -->
+    <div class="daily-form-paper" id="invoicePaperProvider" style="display:none;">
       <div class="df-title-area">
-        <div class="df-main-title">산청군 통합돌봄 기본서비스 결과보고서</div>
-        <div class="df-sub-notice">※ &lt;전액 자부담 이용자&gt;도 작성 및 제출</div>
+        <div class="df-main-title">본인부담금 청구서</div>
+        <div class="df-sub-notice">산청군 통합돌봄 기본서비스 [제공기관용]</div>
       </div>
-      <table class="df-table"><thead><tr><th colspan="4" class="df-section-header">■ 제공기관 및 제공인력</th></tr></thead><tbody>
-        <tr><td class="df-label">제공기관명</td><td><input type="text" class="df-input" id="rpt10ProvName"></td><td class="df-label">담당자</td><td><input type="text" class="df-input" id="rpt10ProvContact"></td></tr>
-        <tr><td class="df-label">담당자 연락처</td><td><input type="tel" class="df-input" id="rpt10ProvPhone"></td><td class="df-label">제공인력 성명</td><td><input type="text" class="df-input" id="rpt10StaffName"></td></tr>
-        <tr><td class="df-label">제공인력 연락처</td><td colspan="3"><input type="tel" class="df-input" id="rpt10StaffPhone"></td></tr>
-      </tbody></table>
-      <table class="df-table"><thead><tr><th colspan="6" class="df-section-header">■ 돌봄대상자 인적사항</th></tr></thead><tbody>
-        <tr><td class="df-label">성명</td><td><input type="text" class="df-input" id="rpt10ClientName"></td><td class="df-label">생년월일</td><td><input type="date" class="df-input" id="rpt10ClientBirth"></td><td class="df-label">만 나이</td><td><input type="text" class="df-input" id="rpt10ClientAge" style="width:60px;"> 세</td></tr>
-        <tr><td class="df-label">성별</td><td><label class="df-radio"><input type="radio" name="rpt10Gender" value="남"> 남</label><label class="df-radio"><input type="radio" name="rpt10Gender" value="여"> 여</label></td><td class="df-label">주소</td><td colspan="3"><input type="text" class="df-input" id="rpt10ClientAddr"></td></tr>
-      </tbody></table>
-      <table class="df-table"><thead><tr><th colspan="4" class="df-section-header">■ 서비스 결과</th></tr></thead><tbody>
-        <tr><td class="df-label">서비스명</td><td><input type="text" class="df-input" id="rpt10ServiceName" value="가사지원"></td><td class="df-label">제공기간</td><td>개시일 <input type="date" class="df-input" id="rpt10PeriodStart" style="width:140px;display:inline-block;"> ~ 종결일 <input type="date" class="df-input" id="rpt10PeriodEnd" style="width:140px;display:inline-block;"></td></tr>
-        <tr><td class="df-label">서비스 내용</td><td colspan="3"><textarea class="df-textarea" id="rpt10ServiceSummary" rows="2" placeholder="전체 서비스 개요 기술"></textarea></td></tr>
-      </tbody></table>
-      <!-- 회차별 상세 테이블 -->
-      <table class="df-table" id="rpt10RoundsTable"><thead>
-        <tr><th colspan="4" class="df-section-header">■ 서비스 회차별 상세</th></tr>
-        <tr style="background:#f5f5f5;font-size:0.85rem;"><th style="width:60px;">회차</th><th style="width:100px;">일자</th><th style="width:120px;">진행시간</th><th>서비스내용</th></tr>
-      </thead><tbody id="rpt10RoundsBody">
-        <tr><td colspan="4" class="empty-state" style="padding:20px;text-align:center;">자동생성 버튼을 클릭하면 일일결과등록의 데이터가 채워집니다.</td></tr>
-      </tbody></table>
-      <!-- 변경사항/목표 -->
-      <table class="df-table"><thead><tr><th colspan="4" class="df-section-header">당초 의뢰 대비 서비스 변경사항</th></tr></thead><tbody>
-        <tr><td colspan="4" style="padding:8px;"><label class="df-radio"><input type="radio" name="rpt10Change" value="변경없음" checked> 변경없음</label> <label class="df-radio"><input type="radio" name="rpt10Change" value="변경됨"> 변경됨</label></td></tr>
-        <tr id="rpt10ChangeRow" style="display:none;"><td class="df-label">변경내용</td><td><input type="text" class="df-input" id="rpt10ChangeContent"></td><td class="df-label">변경사유</td><td><input type="text" class="df-input" id="rpt10ChangeReason"></td></tr>
-      </tbody></table>
-      <table class="df-table"><thead><tr><th colspan="2" class="df-section-header">서비스 목표 달성 여부</th></tr></thead><tbody>
-        <tr><td colspan="2" style="padding:8px;"><label class="df-radio"><input type="radio" name="rpt10Goal" value="종결"> 의뢰된 서비스 지원 종결</label> <label class="df-radio"><input type="radio" name="rpt10Goal" value="중단"> 중단</label></td></tr>
-      </tbody></table>
-      <table class="df-table"><thead><tr><th colspan="2" class="df-section-header">제공기관 의견</th></tr></thead><tbody>
-        <tr><td colspan="2"><textarea class="df-textarea" id="rpt10OrgOpinion" rows="3" placeholder="향후 돌봄대상자 지원에 참고할 만한 정보나 의견"></textarea></td></tr>
-      </tbody></table>
+      <table class="df-table">
+        <thead><tr><th colspan="4" class="df-section-header">■ 청구 정보</th></tr></thead>
+        <tbody>
+          <tr><td class="df-label">청구일자</td><td><span class="df-mirror" data-src="invDate"></span></td><td class="df-label">청구월</td><td><span class="df-mirror" data-src="invMonthField"></span></td></tr>
+        </tbody>
+      </table>
+      <table class="df-table">
+        <thead><tr><th colspan="4" class="df-section-header">■ 제공기관</th></tr></thead>
+        <tbody>
+          <tr><td class="df-label">기관명</td><td><span class="df-mirror" data-src="invProvName"></span></td><td class="df-label">대표자</td><td><span class="df-mirror" data-src="invProvRep"></span></td></tr>
+          <tr><td class="df-label">연락처</td><td><span class="df-mirror" data-src="invProvPhone"></span></td><td class="df-label">주소</td><td><span class="df-mirror" data-src="invProvAddr"></span></td></tr>
+          <tr><td class="df-label">사업자번호</td><td><span class="df-mirror" data-src="invProvBizNo"></span></td><td class="df-label">담당자</td><td><span class="df-mirror" data-src="invProvStaff"></span></td></tr>
+        </tbody>
+      </table>
+      <table class="df-table">
+        <thead><tr><th colspan="6" class="df-section-header">■ 이용자 정보</th></tr></thead>
+        <tbody>
+          <tr><td class="df-label">성명</td><td><span class="df-mirror" data-src="invClientName"></span></td><td class="df-label">생년월일</td><td><span class="df-mirror" data-src="invClientBirth"></span></td><td class="df-label">성별</td><td><span class="df-mirror" data-src="invGender"></span></td></tr>
+          <tr><td class="df-label">주소</td><td colspan="3"><span class="df-mirror" data-src="invClientAddr"></span></td><td class="df-label">연락처</td><td><span class="df-mirror" data-src="invClientPhone"></span></td></tr>
+          <tr><td class="df-label">등급</td><td colspan="2"><span class="df-mirror" data-src="invClientGrade"></span></td><td class="df-label">소득구분</td><td colspan="2"><span class="df-mirror" data-src="invIncomeTierText"></span></td></tr>
+        </tbody>
+      </table>
+      <table class="df-table">
+        <thead><tr><th colspan="4" class="df-section-header">■ 서비스 내역</th></tr></thead>
+        <tbody>
+          <tr><td class="df-label">서비스 유형</td><td><span class="df-mirror" data-src="invServiceType"></span></td><td class="df-label">제공 일자</td><td><span class="df-mirror" data-src="invServiceDates" style="font-size:0.78rem;"></span></td></tr>
+          <tr><td class="df-label">총 시간</td><td><span class="df-mirror" data-src="invTotalHours"></span> 시간</td><td class="df-label">기본수가</td><td><span class="df-mirror" data-src="invBasicFee" data-format="money"></span></td></tr>
+          <tr><td class="df-label">가산수가</td><td><span class="df-mirror" data-src="invSurchargeFee" data-format="money"></span></td><td class="df-label">본인부담률</td><td><span class="df-mirror" data-src="invBurdenRate"></span></td></tr>
+          <tr><td class="df-label" style="background:#fce8e6;font-weight:800;">본인부담금</td><td><span class="df-mirror" data-src="invPersonalBurden" data-format="money" style="font-weight:700;color:#d93025;"></span></td><td class="df-label" style="background:#e6f4ea;font-weight:800;">시·군비 지원</td><td><span class="df-mirror" data-src="invGovSupport" data-format="money" style="font-weight:700;color:var(--success);"></span></td></tr>
+          <tr><td class="df-label" style="background:#fff3cd;font-weight:800;">총 서비스비용</td><td colspan="3"><span class="df-mirror" data-src="invClaimAmount" data-format="money" style="font-size:1.1rem;font-weight:800;color:#d93025;"></span></td></tr>
+        </tbody>
+      </table>
+      <table class="df-table">
+        <thead><tr><th colspan="4" class="df-section-header">■ 입금 계좌</th></tr></thead>
+        <tbody>
+          <tr><td class="df-label">은행명</td><td><span class="df-mirror" data-src="invBankName"></span></td><td class="df-label">계좌번호</td><td><span class="df-mirror" data-src="invAccountNo"></span></td></tr>
+          <tr><td class="df-label">예금주</td><td colspan="3"><span class="df-mirror" data-src="invAccountHolder"></span></td></tr>
+        </tbody>
+      </table>
+      <table class="df-table">
+        <thead><tr><th colspan="2" class="df-section-header">■ 비고</th></tr></thead>
+        <tbody><tr><td colspan="2" style="padding:10px 14px;"><span class="df-mirror" data-src="invNotes" style="white-space:pre-wrap;"></span></td></tr></tbody>
+      </table>
+      <div id="invProvCustomFieldsMirror" class="custom-fields-area"></div>
+      <div id="invProvPhotoPrintArea" class="df-photo-display" style="display:none;">
+        <div class="df-section-header" style="padding:9px 14px;background:#e3ecfa;font-weight:700;border:1px solid var(--gray-400);">■ 첨부 사진</div>
+        <div style="padding:10px;border:1px solid var(--gray-400);border-top:none;text-align:center;">
+          <img id="invProvPhotoPrintImg" style="max-width:300px;max-height:200px;border-radius:8px;">
+        </div>
+      </div>
       <div class="df-bottom">
-        <p style="margin-bottom:8px;">기관은 해당 서비스 이용자에게 위와 같은 내용으로 서비스를 제공하였음을 보고합니다.</p>
-        <div class="df-to-line" style="margin-top:12px;">산청군수 귀하</div>
+        <p style="margin-bottom:12px;">위와 같이 본인부담금을 청구합니다.</p>
+        <table class="df-table" style="max-width:500px;margin:0 auto;">
+          <tbody>
+            <tr><td class="df-label">청구인</td><td style="padding:8px;"><span style="font-weight:600;">직위</span> <span class="df-mirror" data-src="invClaimantTitle" style="border-bottom:1px solid #333;padding:0 8px;"></span> <span style="font-weight:600;margin-left:10px;">성명</span> <span class="df-mirror" data-src="invClaimantName" style="border-bottom:1px solid #333;padding:0 8px;"></span></td></tr>
+          </tbody>
+        </table>
+        <div class="df-to-line" style="margin-top:20px;">산청군수 귀하</div>
       </div>
     </div>
   </div>
 
-  <!-- ═══ 서식11: 기본서비스 비용청구서 ═══ -->
-  <div class="section" id="sec-claim11">
-    <div class="card no-print" style="border-left:4px solid #e65100;">
-      <div class="card-header" style="background:linear-gradient(135deg,#e65100,#ff6d00);color:#fff;">💰 [서식11] 기본서비스 비용청구서</div>
+  <!-- ═══ GOV INVOICE (지자체 수가 청구서) ═══ -->
+  <div class="section" id="sec-gov-invoice">
+    <div class="card no-print" style="border-left:4px solid #1a73e8;">
+      <div class="card-header" style="background:linear-gradient(135deg,#1a73e8,#4285f4);color:#fff;">🏛️ 지자체 수가 청구서 <span style="font-size:0.75rem;opacity:0.85;margin-left:8px;">※ 매니저 청구서(💳)와 수가 다름</span></div>
       <div class="card-body">
+        <div style="background:#e8f0fe;border:1px solid #4285f4;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem;">
+          <strong>📌</strong> 이 청구서는 <strong style="color:#1a73e8;">지자체(산청군)</strong>에 청구하는 수가입니다. 매니저 지급 단가(💳)와 별도입니다.
+        </div>
         <div class="filter-row">
-          <select class="form-control" id="clm11Manager" onchange="clm11AutoFill()"><option value="">-- 매니저 --</option></select>
-          <select class="form-control" id="clm11Client" onchange="clm11AutoFillClient()"><option value="">-- 대상자 --</option></select>
-          <input type="month" class="form-control" id="clm11Month" style="max-width:160px;">
+          <select class="form-control" id="govInvManager" onchange="govInvAutoFill()"><option value="">-- 매니저 --</option></select>
+          <select class="form-control" id="govInvClient" onchange="govInvAutoFillClient()"><option value="">-- 대상자 --</option></select>
+          <input type="month" class="form-control" id="govInvMonth" style="max-width:160px;">
+        </div>
+        <div class="form-group" style="margin-top:12px;">
+          <label style="font-weight:700;">📋 소득 구분 (지자체 부담분 자동계산)</label>
+          <div style="margin-top:8px;padding:12px;background:#f0f4ff;border:1px solid #90b4f4;border-radius:8px;">
+            <label style="display:block;margin-bottom:8px;cursor:pointer;"><input type="radio" name="govInvIncomeTier" value="basic" checked onchange="govInvCalc()"> <strong style="color:#0d904f;">기초수급자</strong> — 본인부담 0%, <strong>지자체 100%</strong></label>
+            <label style="display:block;margin-bottom:8px;cursor:pointer;"><input type="radio" name="govInvIncomeTier" value="low" onchange="govInvCalc()"> <strong style="color:#e67700;">차상위</strong> — 본인부담 15%, <strong>지자체 85%</strong></label>
+            <label style="display:block;cursor:pointer;"><input type="radio" name="govInvIncomeTier" value="general" onchange="govInvCalc()"> <strong style="color:#d93025;">일반</strong> — 본인부담 100%, 지자체 청구 없음</label>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:12px;">
+          <label style="font-weight:700;">📋 가산 구분</label>
+          <div style="display:flex;gap:8px;margin-top:6px;">
+            <label style="padding:8px 16px;background:var(--primary-light);border:2px solid var(--primary);border-radius:8px;cursor:pointer;"><input type="radio" name="govInvSurcharge" value="normal" checked onchange="govInvCalc()"> <strong>일반수가</strong></label>
+            <label style="padding:8px 16px;background:#fff3cd;border:2px solid #f0d78c;border-radius:8px;cursor:pointer;"><input type="radio" name="govInvSurcharge" value="30" onchange="govInvCalc()"> <strong>30%가산</strong></label>
+            <label style="padding:8px 16px;background:#fce8e6;border:2px solid #f5c2c0;border-radius:8px;cursor:pointer;"><input type="radio" name="govInvSurcharge" value="50" onchange="govInvCalc()"> <strong>50%가산</strong></label>
+          </div>
         </div>
         <div class="filter-row" style="margin-top:8px;">
-          <button class="btn btn-primary" onclick="clm11Save()">💾 저장</button>
-          <button class="btn btn-success" onclick="clm11Print()">🖨️ 인쇄</button>
-          <button class="btn btn-outline" onclick="clm11Reset()">🔄 새양식</button>
-          <button class="btn" style="background:#f9ab00;color:#fff;" onclick="clm11AutoGenerate()">⚡ 출석/일지에서 자동생성</button>
+          <button class="btn btn-primary" onclick="govInvSave()">💾 저장</button>
+          <button class="btn btn-success" onclick="govInvPrint()">🖨️ 인쇄</button>
+          <button class="btn btn-outline" onclick="govInvReset()">🔄 새양식</button>
+          <button class="btn" style="background:#f9ab00;color:#fff;" onclick="govInvAutoGenerate()">⚡ 자동생성</button>
         </div>
-        <input type="hidden" id="clm11EditId" value="">
+        <input type="hidden" id="govInvEditId" value="">
       </div>
     </div>
     <div class="card no-print">
-      <div class="card-header">📋 저장된 비용청구서 <button class="btn btn-sm btn-primary" onclick="clm11LoadList()">조회</button></div>
-      <div class="card-body"><div id="clm11SavedList"></div><div id="clm11SavedEmpty" class="empty-state" style="display:none;"><div class="icon">💰</div><p>저장된 비용청구서가 없습니다.</p></div></div>
+      <div class="card-header">📋 저장된 지자체 청구서 <button class="btn btn-sm btn-primary" onclick="govInvLoadList()">조회</button></div>
+      <div class="card-body"><div id="govInvSavedList"></div><div id="govInvSavedEmpty" class="empty-state" style="display:none;"><div class="icon">🏛️</div><p>저장된 지자체 청구서가 없습니다.</p></div></div>
     </div>
-    <!-- 서식11 인쇄 양식 -->
-    <div class="daily-form-paper" id="clm11Paper">
-      <div class="df-title-area">
-        <div class="df-main-title">서비스 비용 청구서</div>
-        <div class="df-sub-notice">※ &lt;서비스비용 지원대상자&gt;만 작성</div>
-      </div>
-      <table class="df-table"><thead><tr><th colspan="4" class="df-section-header">■ 서비스 종류</th></tr></thead><tbody>
-        <tr><td colspan="4"><input type="text" class="df-input" id="clm11ServiceType" value="가사지원" style="font-weight:700;"></td></tr>
+    <div class="daily-form-paper" id="govInvoicePaper">
+      <div class="df-title-area"><div class="df-main-title">지자체 수가 청구서</div><div class="df-sub-notice">산청군 통합돌봄 기본서비스 수가 청구</div></div>
+      <table class="df-table"><thead><tr><th colspan="4" class="df-section-header">■ 청구 정보</th></tr></thead><tbody>
+        <tr><td class="df-label">청구일자</td><td><input type="date" class="df-input" id="govInvDate"></td><td class="df-label">청구월</td><td><input type="month" class="df-input" id="govInvMonthField"></td></tr>
       </tbody></table>
       <table class="df-table"><thead><tr><th colspan="4" class="df-section-header">■ 제공기관</th></tr></thead><tbody>
-        <tr><td class="df-label">제공기관명</td><td><input type="text" class="df-input" id="clm11ProvName"></td><td class="df-label">담당자</td><td><input type="text" class="df-input" id="clm11ProvContact"></td></tr>
-        <tr><td class="df-label">제공인력</td><td colspan="3"><input type="text" class="df-input" id="clm11StaffName"></td></tr>
+        <tr><td class="df-label">기관명</td><td><input type="text" class="df-input" id="govInvProvName"></td><td class="df-label">대표자</td><td><input type="text" class="df-input" id="govInvProvRep"></td></tr>
+        <tr><td class="df-label">연락처</td><td><input type="tel" class="df-input" id="govInvProvPhone"></td><td class="df-label">주소</td><td><input type="text" class="df-input" id="govInvProvAddr"></td></tr>
+        <tr><td class="df-label">사업자번호</td><td><input type="text" class="df-input" id="govInvProvBizNo"></td><td class="df-label">담당자</td><td><input type="text" class="df-input" id="govInvProvStaff"></td></tr>
       </tbody></table>
-      <table class="df-table"><thead><tr><th colspan="6" class="df-section-header">■ 돌봄대상자 인적사항</th></tr></thead><tbody>
-        <tr><td class="df-label">성명</td><td><input type="text" class="df-input" id="clm11ClientName"></td><td class="df-label">생년월일</td><td><input type="date" class="df-input" id="clm11ClientBirth"></td><td class="df-label">성별</td><td><label class="df-radio"><input type="radio" name="clm11Gender" value="남"> 남</label><label class="df-radio"><input type="radio" name="clm11Gender" value="여"> 여</label></td></tr>
-        <tr><td class="df-label">행정동</td><td><input type="text" class="df-input" id="clm11ClientDong"></td><td class="df-label">주소</td><td colspan="3"><input type="text" class="df-input" id="clm11ClientAddr"></td></tr>
+      <table class="df-table"><thead><tr><th colspan="6" class="df-section-header">■ 이용자 정보</th></tr></thead><tbody>
+        <tr><td class="df-label">성명</td><td><input type="text" class="df-input" id="govInvClientName"></td><td class="df-label">생년월일</td><td><input type="date" class="df-input" id="govInvClientBirth"></td><td class="df-label">성별</td><td><label><input type="radio" name="govInvGender" value="남"> 남</label> <label><input type="radio" name="govInvGender" value="여"> 여</label></td></tr>
+        <tr><td class="df-label">주소</td><td colspan="3"><input type="text" class="df-input" id="govInvClientAddr"></td><td class="df-label">연락처</td><td><input type="tel" class="df-input" id="govInvClientPhone"></td></tr>
       </tbody></table>
-      <!-- 서비스 지원내역 및 비용 테이블 -->
-      <table class="df-table" id="clm11ItemsTable" style="margin-top:4px;">
-      <colgroup>
-        <col class="c-no"><col class="c-date"><col class="c-time"><col class="c-hours">
-        <col class="c-content"><col class="c-provide"><col class="c-trans"><col class="c-burden"><col class="c-claim">
-      </colgroup>
-      <thead>
-        <tr><th colspan="9" class="df-section-header">■ 서비스 지원내역 및 비용</th></tr>
-        <tr style="background:#f5f5f5;text-align:center;">
-          <th>회차</th><th>제공일</th><th>진행시간</th><th>시간</th>
-          <th>서비스내용</th><th>제공금액(a)</th><th>교통지원(b)</th><th>본인부담(c)</th><th>청구액(a+b-c)</th>
-        </tr>
-      </thead><tbody id="clm11ItemsBody">
-        <tr><td colspan="9" class="empty-state" style="padding:20px;text-align:center;">자동생성 버튼을 클릭하면 출석/일지 데이터가 채워집니다.</td></tr>
-      </tbody>
-      <tfoot><tr style="background:#fff3cd;font-weight:700;">
-        <td colspan="5" style="text-align:right;padding:2px 4px;border:1px solid #333;">비용청구 총액</td>
-        <td id="clm11TotalProvide" style="text-align:right;padding:2px 4px;border:1px solid #333;">0</td>
-        <td id="clm11TotalSurcharge" style="text-align:right;padding:2px 4px;border:1px solid #333;">0</td>
-        <td id="clm11TotalPersonal" style="text-align:right;padding:2px 4px;border:1px solid #333;">0</td>
-        <td id="clm11TotalClaimable" style="text-align:right;padding:2px 4px;border:1px solid #333;color:#d93025;font-weight:700;">0</td>
-      </tr></tfoot></table>
-      <div style="font-size:0.78rem;color:#666;padding:4px 8px;border:1px solid #eee;border-top:none;background:#fafafa;">
-        ※ 제공금액(a) = 기본수가, 원거리교통지원금(b) = 설정값 자동반영, 본인부담금(c) = 소득구분별 부담률 적용, 청구가능액 = a+b-c
-      </div>
+      <table class="df-table"><thead><tr><th colspan="6" class="df-section-header">■ 서비스 제공 내역</th></tr></thead><tbody>
+        <tr><td class="df-label">서비스유형</td><td><select class="df-input" id="govInvServiceType"><option>가사지원</option><option>동행지원</option><option>정서지원</option><option>기타</option></select></td><td class="df-label">제공일수</td><td><input type="number" class="df-input" id="govInvWorkDays" oninput="govInvCalc()"></td><td class="df-label">가산구분</td><td><span id="govInvSurchargeDisplay" style="font-weight:700;">일반수가</span></td></tr>
+        <tr><td class="df-label">서비스일자</td><td colspan="5"><textarea class="df-textarea" id="govInvServiceDates" rows="2" placeholder="2026-05-01, 2026-05-02..."></textarea></td></tr>
+      </tbody></table>
+      <table class="df-table"><thead><tr><th colspan="4" class="df-section-header">■ 수가 산정</th></tr></thead><tbody>
+        <tr><td class="df-label">일 이용시간</td><td><input type="number" class="df-input" id="govInvDailyMinutes" placeholder="분" oninput="govInvCalc()" min="1" max="480"> <span style="font-size:0.8rem;color:#666;">분</span></td><td class="df-label">적용수가</td><td><span id="govInvAppliedRate" style="font-weight:700;font-size:1.1rem;color:var(--primary);">-</span></td></tr>
+        <tr><td class="df-label">해당구간</td><td><span id="govInvRateBracket" style="font-weight:600;">-</span></td><td class="df-label">일수x수가</td><td><span id="govInvDayCalc" style="font-weight:600;">-</span></td></tr>
+      </tbody></table>
+      <table class="df-table"><thead><tr><th colspan="4" class="df-section-header" style="background:#e6f4ea;">■ 청구 금액</th></tr></thead><tbody>
+        <tr><td class="df-label">소득구분</td><td><span id="govInvIncomeTierDisplay" style="font-weight:700;color:#0d904f;">기초수급자</span></td><td class="df-label">본인부담률</td><td><span id="govInvBurdenRateDisplay" style="font-weight:700;font-size:1.1rem;">0%</span></td></tr>
+        <tr><td class="df-label" style="background:#fff3cd;font-weight:800;">총 서비스비용</td><td><input type="number" class="df-input" id="govInvTotalServiceFee" readonly style="font-weight:700;"></td><td class="df-label">산출내역</td><td><span id="govInvFeeCalcDisplay" style="font-size:0.85rem;">-</span></td></tr>
+        <tr><td class="df-label" style="background:#fce8e6;font-weight:800;">본인부담금</td><td><input type="number" class="df-input" id="govInvPersonalBurden" readonly style="font-weight:700;color:#d93025;"></td><td class="df-label" style="background:#e6f4ea;font-weight:800;">지자체부담금</td><td><input type="number" class="df-input" id="govInvGovBurden" readonly style="font-weight:700;color:#1a73e8;"></td></tr>
+        <tr><td class="df-label" style="background:#1a73e8;color:#fff;font-weight:800;">지자체 청구액</td><td colspan="3"><input type="number" class="df-input" id="govInvTotalAmount" readonly style="font-size:1.3rem;font-weight:800;color:#1a73e8;background:#e8f0fe;"></td></tr>
+      </tbody></table>
+      <table class="df-table" style="font-size:0.75rem;"><thead>
+        <tr><th colspan="4" class="df-section-header" style="background:#e3ecfa;">■ 수가 기준표</th></tr>
+        <tr style="background:#f5f5f5;"><th style="padding:4px;border:1px solid #ddd;">이용시간</th><th style="padding:4px;border:1px solid #ddd;">일반수가</th><th style="padding:4px;border:1px solid #ddd;">30%가산</th><th style="padding:4px;border:1px solid #ddd;">50%가산</th></tr>
+      </thead><tbody>
+        <tr><td style="text-align:center;border:1px solid #eee;">60분이하</td><td style="text-align:right;border:1px solid #eee;">19,000</td><td style="text-align:right;border:1px solid #eee;">25,000</td><td style="text-align:right;border:1px solid #eee;">29,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">90분이하</td><td style="text-align:right;border:1px solid #eee;">28,500</td><td style="text-align:right;border:1px solid #eee;">37,000</td><td style="text-align:right;border:1px solid #eee;">43,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">120분이하</td><td style="text-align:right;border:1px solid #eee;">38,000</td><td style="text-align:right;border:1px solid #eee;">49,000</td><td style="text-align:right;border:1px solid #eee;">57,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">150분이하</td><td style="text-align:right;border:1px solid #eee;">47,500</td><td style="text-align:right;border:1px solid #eee;">62,000</td><td style="text-align:right;border:1px solid #eee;">71,000</td></tr>
+        <tr style="background:#e8f0fe;font-weight:700;"><td style="text-align:center;border:1px solid #eee;">180분이하</td><td style="text-align:right;border:1px solid #eee;">57,000</td><td style="text-align:right;border:1px solid #eee;">74,000</td><td style="text-align:right;border:1px solid #eee;">86,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">210분이하</td><td style="text-align:right;border:1px solid #eee;">66,500</td><td style="text-align:right;border:1px solid #eee;">86,000</td><td style="text-align:right;border:1px solid #eee;">100,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">240분이하</td><td style="text-align:right;border:1px solid #eee;">76,000</td><td style="text-align:right;border:1px solid #eee;">99,000</td><td style="text-align:right;border:1px solid #eee;">114,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">270분이하</td><td style="text-align:right;border:1px solid #eee;">85,500</td><td style="text-align:right;border:1px solid #eee;">111,000</td><td style="text-align:right;border:1px solid #eee;">128,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">300분이하</td><td style="text-align:right;border:1px solid #eee;">95,000</td><td style="text-align:right;border:1px solid #eee;">124,000</td><td style="text-align:right;border:1px solid #eee;">143,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">330분이하</td><td style="text-align:right;border:1px solid #eee;">104,500</td><td style="text-align:right;border:1px solid #eee;">136,000</td><td style="text-align:right;border:1px solid #eee;">157,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">360분이하</td><td style="text-align:right;border:1px solid #eee;">114,000</td><td style="text-align:right;border:1px solid #eee;">148,000</td><td style="text-align:right;border:1px solid #eee;">171,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">390분이하</td><td style="text-align:right;border:1px solid #eee;">123,500</td><td style="text-align:right;border:1px solid #eee;">161,000</td><td style="text-align:right;border:1px solid #eee;">185,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">420분이하</td><td style="text-align:right;border:1px solid #eee;">133,000</td><td style="text-align:right;border:1px solid #eee;">173,000</td><td style="text-align:right;border:1px solid #eee;">200,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">450분이하</td><td style="text-align:right;border:1px solid #eee;">142,500</td><td style="text-align:right;border:1px solid #eee;">185,000</td><td style="text-align:right;border:1px solid #eee;">214,000</td></tr>
+        <tr><td style="text-align:center;border:1px solid #eee;">480분이하</td><td style="text-align:right;border:1px solid #eee;">152,000</td><td style="text-align:right;border:1px solid #eee;">198,000</td><td style="text-align:right;border:1px solid #eee;">228,000</td></tr>
+      </tbody></table>
+      <table class="df-table"><thead><tr><th colspan="2" class="df-section-header">■ 비고</th></tr></thead><tbody><tr><td colspan="2"><textarea class="df-textarea" id="govInvNotes" rows="2"></textarea></td></tr></tbody></table>
       <div class="df-bottom">
-        <p style="margin-bottom:4px;">기관은 「서비스 제공 결과」에 따라 위와 같이 서비스 비용을 청구합니다.</p>
-        <p style="margin-bottom:4px;"><span id="clm11SubmitYear">2026</span>년 <span id="clm11SubmitMonth"></span>월 <span id="clm11SubmitDay"></span>일</p>
-        <table class="df-table" style="max-width:400px;margin:0 auto;"><tbody>
-          <tr><td class="df-label">청구인</td><td style="padding:3px 6px;position:relative;">(직위) <input type="text" class="df-input" id="clm11ClaimTitle" style="width:80px;display:inline-block;"> (성명) <input type="text" class="df-input" id="clm11ClaimName" style="width:100px;display:inline-block;"> (인)</td></tr>
+        <p style="margin-bottom:12px;">위와 같이 수가를 청구합니다.</p>
+        <table class="df-table" style="max-width:500px;margin:0 auto;"><tbody>
+          <tr><td class="df-label">기관명</td><td style="padding:8px;"><input type="text" class="df-input" id="govInvClaimOrg" style="width:180px;display:inline-block;"></td></tr>
+          <tr><td class="df-label">대표자</td><td style="padding:8px;"><input type="text" class="df-input" id="govInvClaimRep" style="width:150px;display:inline-block;"> (인)</td></tr>
         </tbody></table>
-        <div class="df-to-line" style="margin-top:6px;">산청군수 귀하</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ PAYROLL (급여대장) ═══ -->
-  <div class="section" id="sec-payroll">
-    <div class="card no-print">
-      <div class="card-header" style="background:linear-gradient(135deg,#6a1b9a,#8e24aa);color:#fff;">📒 매니저 급여대장</div>
-      <div class="card-body">
-        <div class="filter-row">
-          <input type="month" class="form-control" id="payrollMonth" style="max-width:180px;">
-          <select class="form-control" id="payrollManager"><option value="">전체 매니저</option></select>
-          <button class="btn btn-primary" onclick="payrollLoad()">📋 조회</button>
-          <button class="btn btn-success" onclick="payrollPrint()">🖨️ 인쇄 / PDF</button>
-        </div>
-      </div>
-    </div>
-    <!-- 급여대장 인쇄 양식 -->
-    <div class="daily-form-paper" id="payrollPaper" style="display:none;">
-      <div class="df-title-area">
-        <div class="df-main-title">급 여 대 장</div>
-        <div class="df-sub-notice" id="payrollPaperMonth"></div>
-      </div>
-      <table class="df-table" id="payrollPaperOrg">
-        <thead><tr><th colspan="4" class="df-section-header">■ 사업장 정보</th></tr></thead>
-        <tbody>
-          <tr><td class="df-label">기관명</td><td id="payrollOrgName">-</td><td class="df-label">대표자</td><td id="payrollOrgRep">-</td></tr>
-          <tr><td class="df-label">사업자번호</td><td id="payrollOrgBizNo">-</td><td class="df-label">연락처</td><td id="payrollOrgPhone">-</td></tr>
-        </tbody>
-      </table>
-      <div id="payrollTableArea"></div>
-      <div class="df-bottom" style="margin-top:4px;">
-        <p>위와 같이 급여를 지급하였음을 확인합니다.</p>
-        <p id="payrollDateLine" style="margin-top:2px;font-weight:600;"></p>
-        <table class="df-table" style="max-width:300px;margin:2px auto 0;">
-          <tbody>
-            <tr><td class="df-label">기관명</td><td id="payrollBottomOrg">-</td></tr>
-            <tr><td class="df-label">대표자</td><td><span id="payrollBottomRep">-</span> (인)</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <!-- 개인별 급여명세서 -->
-    <div id="payrollDetailArea"></div>
-  </div>
-
-  <!-- ═══ MONITORING (모니터링-서비스 제공기관 기록지) [서식 08호] ═══ -->
-  <div class="section" id="sec-monitoring">
-    <div class="card no-print">
-      <div class="card-header" style="background:linear-gradient(135deg,#00695c,#00897b);color:#fff;">📋 [서식 08호] 모니터링 기록지</div>
-      <div class="card-body">
-        <div class="filter-row">
-          <select class="form-control" id="monManager" onchange="monAutoFill()"><option value="">-- 매니저(담당자) 선택 --</option></select>
-          <select class="form-control" id="monClient" onchange="monAutoFillClient()"><option value="">-- 대상자 선택 --</option></select>
-        </div>
-        <div class="filter-row" style="margin-top:8px;">
-          <button class="btn btn-primary" onclick="monSave()">💾 저장</button>
-          <button class="btn btn-success" onclick="monPrint()">🖨️ 인쇄 / PDF</button>
-          <button class="btn btn-outline" onclick="monReset()">🔄 새 양식</button>
-          <button class="btn" style="background:#00897b;color:#fff;" onclick="monAutoGenerate()">⚡ 자동연동</button>
-        </div>
-        <input type="hidden" id="monEditId" value="">
-      </div>
-    </div>
-    <div class="card no-print">
-      <div class="card-header">📋 저장된 모니터링 기록지 목록 <button class="btn btn-sm btn-primary" onclick="monLoadList()">조회</button></div>
-      <div class="card-body"><div id="monSavedList"></div><div id="monSavedEmpty" class="empty-state" style="display:none;"><div class="icon">📋</div><p>저장된 모니터링 기록지가 없습니다.</p></div></div>
-    </div>
-    <!-- 서식 08호 인쇄용 양식 -->
-    <div class="daily-form-paper" id="monitoringPaper">
-      <div class="df-title-area">
-        <div class="df-sub-notice" style="text-align:left;font-size:0.85rem;font-weight:600;">[서식 08호]</div>
-        <div class="df-main-title">모니터링 - 서비스 제공기관 기록지</div>
-        <div class="df-sub-notice">(시군구 전담부서로 제출)</div>
-      </div>
-
-      <!-- ■ 대상자 기본사항 -->
-      <table class="df-table">
-        <thead><tr><th colspan="4" class="df-section-header">￭ 대상자 기본사항</th></tr></thead>
-        <tbody>
-          <tr>
-            <td class="df-label">성명</td>
-            <td><input type="text" class="df-input" id="monClientName" placeholder="대상자 성명"></td>
-            <td class="df-label">생년월일</td>
-            <td><input type="text" class="df-input" id="monClientBirth" placeholder="예: 1961.04.03"></td>
-          </tr>
-          <tr>
-            <td class="df-label">대상자<br>주소지</td>
-            <td colspan="3"><input type="text" class="df-input" id="monClientAddr" placeholder="대상자 주소" style="width:100%;"></td>
-          </tr>
-          <tr>
-            <td class="df-label">제공기관</td>
-            <td colspan="3"><input type="text" class="df-input" id="monProvName" placeholder="제공기관명" style="width:100%;"></td>
-          </tr>
-          <tr>
-            <td class="df-label">담당자 성명</td>
-            <td colspan="3"><input type="text" class="df-input" id="monStaffName" placeholder="담당자 성명"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- ■ 서비스 제공 현황 -->
-      <table class="df-table" id="monServiceTable">
-        <thead>
-          <tr><th colspan="6" class="df-section-header">￭ 서비스 제공 현황</th></tr>
-          <tr style="background:#f5f5f5;">
-            <th style="text-align:center;width:10%;">구분<br>(대분류)</th>
-            <th style="text-align:center;width:10%;">구분<br>(중분류)</th>
-            <th style="text-align:center;width:28%;">서비스 내용(상세)</th>
-            <th style="text-align:center;width:14%;">제공주기<br>(주/월)</th>
-            <th style="text-align:center;width:14%;">최초<br>제공일</th>
-            <th style="text-align:center;width:14%;">직접 제공일<br>(작성시점)</th>
-          </tr>
-        </thead>
-        <tbody id="monServiceBody">
-          <tr>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcCat1_1" value="가사지원" style="text-align:center;width:100%;"></td>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcCat2_1" value="가사지원" style="text-align:center;width:100%;"></td>
-            <td><input type="text" class="df-input" id="monSvcDetail_1" value="일상지원,말벗,청소,활동보조" style="width:100%;"></td>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcCycle_1" value="주3회" style="text-align:center;width:100%;"></td>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcFirstDate_1" placeholder="2026년5월6일" style="text-align:center;width:100%;"></td>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcDirectDate_1" placeholder="2026년5월6일" style="text-align:center;width:100%;"></td>
-          </tr>
-          <tr>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcCat1_2" style="text-align:center;width:100%;"></td>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcCat2_2" style="text-align:center;width:100%;"></td>
-            <td><input type="text" class="df-input" id="monSvcDetail_2" style="width:100%;"></td>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcCycle_2" style="text-align:center;width:100%;"></td>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcFirstDate_2" style="text-align:center;width:100%;"></td>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcDirectDate_2" style="text-align:center;width:100%;"></td>
-          </tr>
-          <tr>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcCat1_3" style="text-align:center;width:100%;"></td>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcCat2_3" style="text-align:center;width:100%;"></td>
-            <td><input type="text" class="df-input" id="monSvcDetail_3" style="width:100%;"></td>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcCycle_3" style="text-align:center;width:100%;"></td>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcFirstDate_3" style="text-align:center;width:100%;"></td>
-            <td style="text-align:center;"><input type="text" class="df-input" id="monSvcDirectDate_3" style="text-align:center;width:100%;"></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- ■ 서비스 제공 결과 -->
-      <table class="df-table">
-        <thead><tr><th colspan="2" class="df-section-header">￭ 서비스 제공 결과</th></tr></thead>
-        <tbody>
-          <tr>
-            <td class="df-label" style="width:120px;">대상자<br>상태변화 여부</td>
-            <td>
-              <label class="df-radio"><input type="radio" name="monStatusChange" value="악화"> 증상 악화</label>
-              <label class="df-radio"><input type="radio" name="monStatusChange" value="개선" checked> 개선</label>
-              <label class="df-radio"><input type="radio" name="monStatusChange" value="변화없음"> 변화없음</label>
-            </td>
-          </tr>
-          <tr>
-            <td class="df-label">대상자<br>상태변화<br>상세내용</td>
-            <td><textarea class="df-textarea" id="monStatusDetail" rows="4" placeholder="대상자 상태변화 상세내용을 기재하세요." style="width:100%;"></textarea></td>
-          </tr>
-          <tr>
-            <td class="df-label">비고</td>
-            <td><textarea class="df-textarea" id="monNote" rows="2" placeholder="비고" style="width:100%;"></textarea></td>
-          </tr>
-        </tbody>
-      </table>
-
-    </div>
-  </div>
-
-  <!-- ═══ ACCOUNTING (회계자료) ═══ -->
-  <div class="section" id="sec-accounting">
-    <div class="card no-print">
-      <div class="card-header" style="background:linear-gradient(135deg,#4a148c,#7b1fa2);color:#fff;">📊 회계자료</div>
-      <div class="card-body">
-        <div class="filter-row">
-          <input type="month" class="form-control" id="acctMonth" style="max-width:200px;">
-          <button class="btn btn-primary" onclick="acctLoad()">📊 조회</button>
-          <button class="btn btn-success" onclick="acctPrint()">🖨️ 인쇄 / PDF</button>
-        </div>
-        <p style="margin-top:8px;font-size:0.85em;color:#666;">
-          ※ 수가청구서(서식11)와 교통지원금 신청서 데이터를 기반으로 자동 생성됩니다.
-        </p>
-      </div>
-    </div>
-
-    <!-- 인쇄용 회계자료 양식 -->
-    <div id="accountingPaper" class="daily-form-paper" style="display:none;">
-      <div class="df-title-area">
-        <div class="df-main-title">월 간 회 계 자 료</div>
-        <div class="df-sub-notice" id="acctPaperMonth" style="font-size:1rem;margin-bottom:4px;"></div>
-        <div class="df-sub-notice" id="acctOrgName" style="font-size:0.9rem;color:#555;"></div>
-      </div>
-
-      <!-- ═══ 수입 Part 1: 지자체 수가 청구 ═══ -->
-      <table class="df-table" style="margin-top:12px;">
-        <thead>
-          <tr><th colspan="6" class="df-section-header" style="background:#e8f5e9;color:#2e7d32;">■ 수입 ① 지자체 수가 청구 (서식11 비용청구서 근거)</th></tr>
-          <tr style="background:#f5f5f5;">
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:5%;">No</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:22%;">매니저</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:22%;">대상자</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:17%;">제공금액</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:17%;">본인부담금</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:17%;">청구가능액</th>
-          </tr>
-        </thead>
-        <tbody id="acctGovClaimBody"></tbody>
-        <tfoot>
-          <tr style="background:#c8e6c9;font-weight:700;">
-            <td colspan="3" style="padding:8px;border:1px solid #333;text-align:center;">수가 청구 합계</td>
-            <td id="acctGovProvideTotal" style="padding:8px;border:1px solid #333;text-align:right;">0원</td>
-            <td id="acctGovPersonalTotal" style="padding:8px;border:1px solid #333;text-align:right;">0원</td>
-            <td id="acctGovClaimTotal" style="padding:8px;border:1px solid #333;text-align:right;font-size:1.05em;">0원</td>
-          </tr>
-        </tfoot>
-      </table>
-
-      <!-- ═══ 수입 Part 2: 원거리 교통지원금 ═══ -->
-      <table class="df-table" style="margin-top:12px;">
-        <thead>
-          <tr><th colspan="6" class="df-section-header" style="background:#e8f5e9;color:#2e7d32;">■ 수입 ② 원거리 교통지원금 (교통지원금 신청서 근거)</th></tr>
-          <tr style="background:#f5f5f5;">
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:5%;">No</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:22%;">매니저</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:22%;">대상자</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:15%;">거리구간</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:18%;">횟수 × 단가</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:18%;">금액</th>
-          </tr>
-        </thead>
-        <tbody id="acctTransportBody"></tbody>
-        <tfoot>
-          <tr style="background:#c8e6c9;font-weight:700;">
-            <td colspan="5" style="padding:8px;border:1px solid #333;text-align:center;">교통지원금 합계</td>
-            <td id="acctTransportTotal" style="padding:8px;border:1px solid #333;text-align:right;font-size:1.05em;">0원</td>
-          </tr>
-        </tfoot>
-      </table>
-
-      <!-- ═══ 수입 합계 ═══ -->
-      <table class="df-table" style="margin-top:4px;">
-        <tr style="background:#a5d6a7;font-weight:800;font-size:1.05em;">
-          <td style="padding:10px;border:2px solid #333;text-align:center;width:70%;">수입 합계 (청구가능액 = 수가 + 교통지원금 - 본인부담)</td>
-          <td id="acctIncomeTotalAll" style="padding:10px;border:2px solid #333;text-align:right;width:30%;">0원</td>
-        </tr>
-      </table>
-      <div style="padding:4px 8px;font-size:0.8em;color:#666;">
-        ※ 청구가능액에 교통지원금이 이미 포함되어 있습니다.
-      </div>
-
-      <!-- ═══ 지출 ① : 매니저 급여 ═══ -->
-      <table class="df-table" style="margin-top:14px;">
-        <thead>
-          <tr><th colspan="5" class="df-section-header" style="background:#ffebee;color:#c62828;">■ 지출 ① 매니저 근무수당 (시급 <span id="acctHourlyRate">13,500</span>원 기준)</th></tr>
-          <tr style="background:#f5f5f5;">
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:5%;">No</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:30%;">매니저</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:20%;">근무일수</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:20%;">총 근무시간</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:25%;">근무수당</th>
-          </tr>
-        </thead>
-        <tbody id="acctPayrollBody"></tbody>
-        <tfoot>
-          <tr style="background:#ffcdd2;font-weight:700;">
-            <td colspan="4" style="padding:8px;border:1px solid #333;text-align:center;">급여 소계</td>
-            <td id="acctWageTotal" style="padding:8px;border:1px solid #333;text-align:right;font-size:1.05em;">0원</td>
-          </tr>
-        </tfoot>
-      </table>
-
-      <!-- ═══ 지출 ② : 교통비 (매니저 지급) ═══ -->
-      <table class="df-table" style="margin-top:12px;">
-        <thead>
-          <tr><th colspan="6" class="df-section-header" style="background:#ffebee;color:#c62828;">■ 지출 ② 교통비 (매니저에게 지급)</th></tr>
-          <tr style="background:#f5f5f5;">
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:5%;">No</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:22%;">매니저</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:22%;">대상자</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:15%;">거리구간</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:18%;">횟수 × 단가</th>
-            <th style="padding:6px;border:1px solid #333;text-align:center;width:18%;">금액</th>
-          </tr>
-        </thead>
-        <tbody id="acctTransportExpBody"></tbody>
-        <tfoot>
-          <tr style="background:#ffcdd2;font-weight:700;">
-            <td colspan="5" style="padding:8px;border:1px solid #333;text-align:center;">교통비 소계</td>
-            <td id="acctTransportExpTotal" style="padding:8px;border:1px solid #333;text-align:right;font-size:1.05em;">0원</td>
-          </tr>
-        </tfoot>
-      </table>
-
-      <!-- ═══ 지출 합계 ═══ -->
-      <table class="df-table" style="margin-top:4px;">
-        <tr style="background:#ef9a9a;font-weight:800;font-size:1.05em;">
-          <td style="padding:10px;border:2px solid #333;text-align:center;width:70%;">지출 합계 (급여 + 교통비)</td>
-          <td id="acctExpenseTotal" style="padding:10px;border:2px solid #333;text-align:right;width:30%;">0원</td>
-        </tr>
-      </table>
-
-      <!-- ═══ 손익 요약 ═══ -->
-      <table class="df-table" style="margin-top:16px;border:2px solid #333;">
-        <thead>
-          <tr><th colspan="2" class="df-section-header" style="background:#fff3e0;color:#e65100;font-size:1.1em;">■ 손익 요약</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="padding:12px;border:1px solid #333;text-align:center;font-weight:600;width:55%;background:#e8f5e9;">총 수입 (청구가능액, 교통지원금 포함)</td>
-            <td id="acctSummaryIncome" style="padding:12px;border:1px solid #333;text-align:right;font-weight:700;font-size:1.1em;background:#e8f5e9;">0원</td>
-          </tr>
-          <tr>
-            <td style="padding:12px;border:1px solid #333;text-align:center;font-weight:600;background:#ffebee;">(-) 급여 (시급 × 근무시간)</td>
-            <td id="acctSummaryWage" style="padding:12px;border:1px solid #333;text-align:right;font-weight:700;font-size:1.1em;background:#ffebee;">0원</td>
-          </tr>
-          <tr>
-            <td style="padding:12px;border:1px solid #333;text-align:center;font-weight:600;background:#ffebee;">(-) 교통비 (매니저 지급)</td>
-            <td id="acctSummaryTransport" style="padding:12px;border:1px solid #333;text-align:right;font-weight:700;font-size:1.1em;background:#ffebee;">0원</td>
-          </tr>
-          <tr style="border-top:3px double #333;">
-            <td style="padding:14px;border:1px solid #333;text-align:center;font-weight:800;font-size:1.15em;background:#fff3e0;">순수익 (청구가능액 - 급여 - 교통비)</td>
-            <td id="acctNetProfit" style="padding:14px;border:1px solid #333;text-align:right;font-weight:800;font-size:1.3em;background:#fff3e0;">0원</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- 근거 자료 안내 -->
-      <div style="margin-top:16px;padding:10px;border:1px solid #ccc;background:#fafafa;font-size:0.82em;color:#555;">
-        <strong>근거 자료:</strong><br>
-        • 수입 ① : [서식11] 기본서비스 비용청구서 (지자체 수가 기준)<br>
-        • 수입 ② : 원거리 교통지원금 신청서 (거리별 지원금)<br>
-        • 지출 ① : 출퇴근 기록 기반 근무시간 × 시급 자동 계산<br>
-        • 지출 ② : 교통지원금 신청서 기반 교통비 (매니저 지급)
-      </div>
-
-      <!-- 하단 기관 정보 -->
-      <div class="df-bottom" style="margin-top:24px;">
-        <p>위 내용은 해당 월의 회계 내역을 정리한 것입니다.</p>
-        <table class="df-table" style="max-width:400px;margin:12px auto 0;">
-          <tbody>
-            <tr><td class="df-label">기관명</td><td style="padding:8px;" id="acctBottomOrg">-</td></tr>
-            <tr><td class="df-label">대표자</td><td style="padding:8px;" id="acctBottomRep">- (인)</td></tr>
-          </tbody>
-        </table>
+        <div class="df-to-line" style="margin-top:20px;">산청군수 귀하</div>
       </div>
     </div>
   </div>
@@ -1160,7 +840,6 @@
         <tbody>
           <tr><td class="df-label">기관명</td><td><input type="text" class="df-input" id="trProvName" placeholder="기관명"></td><td class="df-label">대표자</td><td><input type="text" class="df-input" id="trProvRep" placeholder="대표자명"></td></tr>
           <tr><td class="df-label">제공인력</td><td><input type="text" class="df-input" id="trStaffName" placeholder="매니저 성명"></td><td class="df-label">연락처</td><td><input type="tel" class="df-input" id="trStaffPhone" placeholder="연락처"></td></tr>
-          <tr><td class="df-label">인력 주소</td><td colspan="3"><input type="text" class="df-input" id="trStaffAddr" placeholder="제공인력 주소 (거리 산정 기준)"></td></tr>
         </tbody>
       </table>
       <table class="df-table">
@@ -1210,14 +889,7 @@
           <img id="trPhotoPrintImg" style="max-width:300px;max-height:200px;border-radius:8px;">
         </div>
       </div>
-      <div class="df-bottom">
-        <p style="margin-bottom:12px;">위와 같이 교통지원금을 신청합니다.</p>
-        <table class="df-table" style="max-width:500px;margin:0 auto;"><tbody>
-          <tr><td class="df-label">기관명</td><td style="padding:8px;"><input type="text" class="df-input" id="trAppClaimOrg" style="width:180px;display:inline-block;"></td></tr>
-          <tr><td class="df-label">대표자</td><td style="padding:8px;position:relative;"><input type="text" class="df-input" id="trAppClaimRep" style="width:150px;display:inline-block;"> <span class="stamp-area" style="display:inline-block;position:relative;">(인) <img src="/uploads/stamp.png" class="stamp-img" style="width:60px;height:60px;position:absolute;top:-20px;right:-30px;opacity:0.85;"></span></td></tr>
-        </tbody></table>
-        <div class="df-to-line" style="margin-top:20px;">산청군수 귀하</div>
-      </div>
+      <div class="df-bottom"><div class="df-to-line" style="margin-top:20px;">산청군수 귀하</div></div>
     </div>
   </div>
 
@@ -1371,7 +1043,6 @@
       <input type="hidden" id="managerEditId">
       <div class="form-group"><label>이름 *</label><input type="text" class="form-control" id="managerName" placeholder="매니저 이름"></div>
       <div class="form-group"><label>연락처</label><input type="tel" class="form-control" id="managerPhone" placeholder="010-0000-0000"></div>
-      <div class="form-group"><label>주소</label><input type="text" class="form-control" id="managerAddr" placeholder="매니저 거주 주소"></div>
       <div class="form-group"><label>메모</label><input type="text" class="form-control" id="managerMemo" placeholder="메모 입력"></div>
     </div>
     <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('managerModal')">취소</button><button class="btn btn-primary" onclick="saveManager()">저장</button></div>
@@ -1445,12 +1116,6 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/js/app.js?v=20260608a"></script>
-<script>
-// PWA 서비스 워커 등록
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(e => console.log('SW reg failed:', e));
-}
-</script>
+<script src="/js/app.js?v=20260428f"></script>
 </body>
 </html>
